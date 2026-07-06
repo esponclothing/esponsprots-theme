@@ -158,7 +158,43 @@
       aria-label="{{- product.title -}}"
     >
       {%- capture controls -%}
-        {%- render 'slideshow-controls', style: 'dots', item_count: max_visible_slide_count, controls_on_media: true -%}
+        {%- if visible_slide_count > 1 -%}
+          <div class="fit11-slider-dots" style="position: absolute; bottom: 8px; right: 8px; display: flex; gap: 4px; z-index: 10; pointer-events: none;">
+            {%- for i in (1..visible_slide_count) -%}
+              <span class="fit11-dot{% if forloop.first %} active{% endif %}" style="width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, 0.5); border: 1px solid rgba(0, 0, 0, 0.15); transition: all 0.2s ease; {% if forloop.first %}background: #c5a059; width: 12px; border-radius: 3px;{% endif %}"></span>
+            {%- endfor -%}
+          </div>
+          <script>
+            // Native sync for 11fit dots inside slideshow
+            if (!window.fit11DotsInitialized) {
+              window.fit11DotsInitialized = true;
+              document.addEventListener('scroll', function(e) {
+                var slider = e.target;
+                if (slider.tagName && slider.tagName.toLowerCase() === 'slideshow-slides') {
+                  var container = slider.closest('.card-gallery');
+                  if (container) {
+                    var dotsContainer = container.querySelector('.fit11-slider-dots');
+                    if (dotsContainer) {
+                      var index = Math.round(slider.scrollLeft / slider.clientWidth);
+                      var dots = dotsContainer.querySelectorAll('.fit11-dot');
+                      dots.forEach(function(dot, idx) {
+                        if (idx === index) {
+                          dot.style.background = '#c5a059';
+                          dot.style.width = '12px';
+                          dot.style.borderRadius = '3px';
+                        } else {
+                          dot.style.background = 'rgba(255, 255, 255, 0.5)';
+                          dot.style.width = '6px';
+                          dot.style.borderRadius = '50%';
+                        }
+                      });
+                    }
+                  }
+                }
+              }, true);
+            }
+          </script>
+        {%- endif -%}
       {%- endcapture -%}
 
       {% render 'slideshow',
