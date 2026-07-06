@@ -98,9 +98,8 @@
         assign show_arrows = true
       endif
 
-      # Don't overfetch media if we don't need to
-      # Enable carousel up to 5 images like 11fit theme
-      assign max_visible_slide_count = 5
+      # Enable native carousel for up to 15 images
+      assign max_visible_slide_count = 15
 
       capture slides
         for media in media_list_to_show
@@ -170,7 +169,7 @@
               window.fit11DotsInitialized = true;
               document.addEventListener('scroll', function(e) {
                 var slider = e.target;
-                if (slider.tagName && slider.tagName.toLowerCase() === 'slideshow-slides') {
+                if (slider.classList && slider.classList.contains('fit11-card-media-slider')) {
                   var container = slider.closest('.card-gallery');
                   if (container) {
                     var dotsContainer = container.querySelector('.fit11-slider-dots');
@@ -197,15 +196,14 @@
         {%- endif -%}
       {%- endcapture -%}
 
-      {% render 'slideshow',
-        ref: 'slideshow',
-        initial_slide: 0,
-        slides: slides,
-        slide_count: media_list_to_show.size,
-        show_arrows: show_arrows,
-        attributes: slideshow_attributes,
-        controls: controls
-      %}
+      <div class="fit11-card-media-slider" style="display: flex !important; overflow-x: auto !important; overflow-y: hidden !important; scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: none; width: 100%; height: 100%; cursor: grab;">
+        <style>
+          .fit11-card-media-slider::-webkit-scrollbar { display: none; }
+          .fit11-card-media-slider > * { flex: 0 0 100%; scroll-snap-align: start; width: 100%; height: 100%; position: relative; }
+        </style>
+        {{ slides }}
+      </div>
+      {{ controls }}
     </a>
   {% elsif product != blank and product.media.size == 0 %}
     <product-title class="product-card-gallery__title-placeholder">
