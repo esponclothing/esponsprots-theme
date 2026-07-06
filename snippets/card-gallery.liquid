@@ -157,13 +157,18 @@
       href="{{ product.selected_or_first_available_variant.url }}"
       aria-label="{{- product.title -}}"
     >
+      {%- capture controls -%}
+        {%- render 'slideshow-controls', style: 'dots', item_count: max_visible_slide_count, controls_on_media: true -%}
+      {%- endcapture -%}
+
       {% render 'slideshow',
         ref: 'slideshow',
         initial_slide: 0,
         slides: slides,
         slide_count: media_list_to_show.size,
         show_arrows: show_arrows,
-        attributes: slideshow_attributes
+        attributes: slideshow_attributes,
+        controls: controls
       %}
     </a>
   {% elsif product != blank and product.media.size == 0 %}
