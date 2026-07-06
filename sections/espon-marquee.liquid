@@ -8,9 +8,9 @@
     --text-color: {{ section.settings.text_color | default: '#ffffff' }};
     --speed: {{ section.settings.animation_speed | default: 25 }}s;
     --direction: normal;
-    --padding-y: 4px;
-    --font-size-desktop: 13px;
-    --font-size-mobile: 11px;
+    --padding-y: 2px;
+    --font-size-desktop: 12px;
+    --font-size-mobile: 10px;
     
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -22,6 +22,7 @@
     width: 100%;
     z-index: 1;
     font-family: 'Plus Jakarta Sans', sans-serif;
+    line-height: 1;
   }
 
   .uk-marquee-track {
@@ -49,6 +50,7 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1px;
+    line-height: 1;
   }
 
   .uk-marquee-item i {
