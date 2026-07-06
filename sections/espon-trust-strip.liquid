@@ -1,0 +1,250 @@
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --bg-white: {{ section.settings.bg_color }};
+    --border: {{ section.settings.border_color }};
+    --navy: {{ section.settings.heading_color }};
+    --gold-main: {{ section.settings.icon_color }};
+    --text-muted: {{ section.settings.desc_color }};
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  /* --- ANIMATION --- */
+  #shopify-section-{{ section.id }} .reveal-up {
+    opacity: 0;
+    transform: translateY(50px) translateZ(-50px) rotateX(-5deg);
+    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #shopify-section-{{ section.id }} .reveal-up.active {
+    opacity: 1;
+    transform: translateY(0) translateZ(0) rotateX(0deg);
+  }
+
+  #shopify-section-{{ section.id }} .trust-strip {
+    background: var(--bg-white);
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 20px;
+    padding: {{ section.settings.padding_top }}px 5% {{ section.settings.padding_bottom }}px;
+    text-align: center;
+  }
+  
+  #shopify-section-{{ section.id }} .trust-icon { 
+    font-size: 2rem; 
+    color: var(--gold-main); 
+    margin-bottom: 10px; 
+  }
+  
+  #shopify-section-{{ section.id }} .trust-text h4 { 
+    font-size: 0.9rem; 
+    margin: 0; 
+    font-weight: 800; 
+    color: var(--navy); 
+  }
+  
+  #shopify-section-{{ section.id }} .trust-text p { 
+    font-size: 0.75rem; 
+    color: var(--text-muted); 
+    margin: 0; 
+  }
+
+  /* --- MOBILE OPTIMIZATION --- */
+  @media (max-width: 900px) {
+    #shopify-section-{{ section.id }} .trust-strip {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px;
+      padding-top: {{ section.settings.padding_top_mobile }}px !important;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px !important;
+      padding-left: 10px !important;
+      padding-right: 10px !important;
+    }
+  }
+</style>
+
+<div class="trust-strip reveal-up" id="trust-strip-{{ section.id }}">
+  {%- for block in section.blocks -%}
+    <div {{ block.shopify_attributes }}>
+      <div class="trust-icon"><i class="{{ block.settings.icon_class }}"></i></div>
+      <div class="trust-text">
+        <h4>{{ block.settings.title }}</h4>
+        <p>{{ block.settings.description }}</p>
+      </div>
+    </div>
+  {%- endfor -%}
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.3 });
+    
+    const element = document.getElementById('trust-strip-{{ section.id }}');
+    if (element) {
+      observer.observe(element);
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Espon Trust Strip",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border Color",
+      "default": "#e2e8f0"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#0f172a"
+    },
+    {
+      "type": "color",
+      "id": "desc_color",
+      "label": "Description Color",
+      "default": "#64748b"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon Color",
+      "default": "#CA8A04"
+    },
+    {
+      "type": "header",
+      "content": "Desktop Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top Padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom Padding",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Mobile Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Top Padding (Mobile)",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom Padding (Mobile)",
+      "default": 25
+    }
+  ],
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "trust_badge",
+      "name": "Trust Badge",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon_class",
+          "label": "FontAwesome Icon Class",
+          "default": "fas fa-handshake"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Direct Factory"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description",
+          "default": "No Commissions"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Espon Trust Strip",
+      "blocks": [
+        {
+          "type": "trust_badge",
+          "settings": {
+            "icon_class": "fas fa-handshake",
+            "title": "Direct Factory",
+            "description": "No Commissions"
+          }
+        },
+        {
+          "type": "trust_badge",
+          "settings": {
+            "icon_class": "fas fa-file-invoice-dollar",
+            "title": "GST Invoice",
+            "description": "Input Credit Available"
+          }
+        },
+        {
+          "type": "trust_badge",
+          "settings": {
+            "icon_class": "fas fa-truck-fast",
+            "title": "Express Delivery",
+            "description": "VRL, TCI, BlueDart"
+          }
+        },
+        {
+          "type": "trust_badge",
+          "settings": {
+            "icon_class": "fas fa-video",
+            "title": "Live Stock Check",
+            "description": "Video Call Facility"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

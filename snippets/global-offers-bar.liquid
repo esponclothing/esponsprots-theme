@@ -1,0 +1,59 @@
+<style>
+  /* --- GLOBAL OFFER BAR CSS --- */
+  .global-marquee {
+    background: #000000; /* Black background to stand out */
+    color: #ffffff;      /* White text */
+    padding: 8px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    z-index: 9999; /* Stays on top of everything */
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    border-bottom: 1px solid #333;
+  }
+  
+  .global-marquee-content {
+    display: inline-block;
+    animation: scrollGlobal 20s linear infinite;
+  }
+  
+  .global-marquee-content span {
+    display: inline-block;
+    font-weight: 700;
+    font-size: 0.8rem; /* Small and neat */
+    margin-right: 50px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  
+  .global-marquee-content i {
+    color: #CA8A04; /* Gold Icon */
+    margin-left: 8px;
+  }
+
+  /* Make it pause when you hover over it */
+  .global-marquee:hover .global-marquee-content {
+    animation-play-state: paused;
+  }
+
+  @keyframes scrollGlobal {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+</style>
+
+<div class="global-marquee">
+  <div class="global-marquee-content">
+    <span>FREE SHIPPING ON ALL ORDERS <i class="fas fa-truck"></i></span>
+    <span>GET 5% CASHBACK (WALLET) <i class="fas fa-coins"></i></span>
+    
+    <span>FREE SHIPPING ON ALL ORDERS <i class="fas fa-truck"></i></span>
+    <span>GET 5% CASHBACK (WALLET) <i class="fas fa-coins"></i></span>
+
+    <span>FREE SHIPPING ON ALL ORDERS <i class="fas fa-truck"></i></span>
+    <span>GET 5% CASHBACK (WALLET) <i class="fas fa-coins"></i></span>
+
+    <span>FREE SHIPPING ON ALL ORDERS <i class="fas fa-truck"></i></span>
+    <span>GET 5% CASHBACK (WALLET) <i class="fas fa-coins"></i></span>
+  </div>
+</div>

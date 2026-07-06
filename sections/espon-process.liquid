@@ -1,0 +1,288 @@
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --navy: {{ section.settings.heading_color }};
+    --gold-main: {{ section.settings.accent_color }};
+    --border: {{ section.settings.border_color }};
+    --bg-white: {{ section.settings.bg_color }};
+    --text-muted: {{ section.settings.text_color }};
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  /* --- ANIMATION --- */
+  #shopify-section-{{ section.id }} .reveal-up {
+    opacity: 0;
+    transform: translateY(50px) translateZ(-50px) rotateX(-5deg);
+    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #shopify-section-{{ section.id }} .reveal-up.active {
+    opacity: 1;
+    transform: translateY(0) translateZ(0) rotateX(0deg);
+  }
+
+  /* --- PROCESS SECTION --- */
+  #shopify-section-{{ section.id }} .process-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    padding: {{ section.settings.padding_top }}px 5% {{ section.settings.padding_bottom }}px;
+    background: var(--bg-white);
+  }
+
+  #shopify-section-{{ section.id }} .glass-card {
+    position: relative;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 30px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column; /* Ensures content stacks naturally */
+  }
+
+  /* FIXED: Removed position: absolute to prevent overlapping text */
+  #shopify-section-{{ section.id }} .step-num { 
+    font-size: 3.5rem; 
+    font-weight: 900; 
+    color: var(--gold-main);
+    line-height: 1; 
+    margin-bottom: 15px; /* Creates clean space below the number */
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .glass-card h3 {
+    font-weight: 800; 
+    margin: 0 0 10px 0; 
+    color: var(--gold-main);
+    font-size: 1.25rem;
+  }
+
+  #shopify-section-{{ section.id }} .glass-card p {
+    color: var(--text-muted); 
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  #shopify-section-{{ section.id }} .glass-card p strong {
+    color: var(--navy);
+  }
+
+  /* --- MOBILE OPTIMIZATION --- */
+  @media (max-width: 900px) {
+    #shopify-section-{{ section.id }} .process-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: {{ section.settings.padding_top_mobile }}px !important;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px !important;
+    }
+
+    #shopify-section-{{ section.id }} .glass-card { 
+      padding: 15px; 
+    }
+
+    #shopify-section-{{ section.id }} .step-num { 
+      font-size: 2.2rem; 
+      margin-bottom: 10px;
+    }
+
+    #shopify-section-{{ section.id }} .glass-card h3 { 
+      font-size: 0.85rem !important; 
+      margin-bottom: 5px; 
+      margin-top: 0;
+    }
+
+    #shopify-section-{{ section.id }} .glass-card p { 
+      font-size: 0.7rem !important; 
+      line-height: 1.3; 
+    }
+  }
+</style>
+
+<section class="process-grid" id="process-grid-{{ section.id }}">
+  {%- for block in section.blocks -%}
+    {%- assign delay = forloop.index0 | times: 0.2 -%}
+    <div class="glass-card reveal-up" style="transition-delay: {{ delay }}s;" {{ block.shopify_attributes }}>
+      <span class="step-num">{{ block.settings.step_number }}</span>
+      <h3>{{ block.settings.title }}</h3>
+      <p>{{ block.settings.description }}</p>
+    </div>
+  {%- endfor -%}
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.2 });
+    
+    const elements = document.querySelectorAll('#process-grid-{{ section.id }} .reveal-up');
+    elements.forEach(el => observer.observe(el));
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Espon Process",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color (Numbers & Titles)",
+      "default": "#CA8A04"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Strong Text Color",
+      "default": "#0f172a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Paragraph Text Color",
+      "default": "#64748b"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Card Border Color",
+      "default": "#e2e8f0"
+    },
+    {
+      "type": "header",
+      "content": "Desktop Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 10,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Top Padding",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 10,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom Padding",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Mobile Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top Padding (Mobile)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom Padding (Mobile)",
+      "default": 40
+    }
+  ],
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "process_step",
+      "name": "Process Step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "step_number",
+          "label": "Step Number",
+          "default": "01"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Select Stock"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Choose from our wide range of Trackpants, Shorts, and Tees.",
+          "info": "Use HTML <strong> tags to make words bold/dark."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Espon Process",
+      "blocks": [
+        {
+          "type": "process_step",
+          "settings": {
+            "step_number": "01",
+            "title": "Select Stock",
+            "description": "Choose from our wide range of Trackpants, Shorts, and Tees."
+          }
+        },
+        {
+          "type": "process_step",
+          "settings": {
+            "step_number": "02",
+            "title": "Confirm",
+            "description": "Pay just <strong>10% Advance</strong> to book your shipment. Rest on COD."
+          }
+        },
+        {
+          "type": "process_step",
+          "settings": {
+            "step_number": "03",
+            "title": "Dispatch",
+            "description": "We pack and ship via VRL / TCI / Blue Dart within 24-48 hours."
+          }
+        },
+        {
+          "type": "process_step",
+          "settings": {
+            "step_number": "04",
+            "title": "Sell & Profit",
+            "description": "Receive goods, sell at retail MRP, and enjoy <strong>50% margins.</strong>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

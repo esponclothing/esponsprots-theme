@@ -1,0 +1,325 @@
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --navy: {{ section.settings.heading_color }};
+    --gold-main: {{ section.settings.accent_color }};
+    --gold-light: {{ section.settings.icon_border_color }};
+    --text-muted: {{ section.settings.text_color }};
+    --icon-bg: {{ section.settings.icon_bg_color }};
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  /* --- ANIMATION --- */
+  #shopify-section-{{ section.id }} .reveal-up {
+    opacity: 0;
+    transform: translateY(50px) translateZ(-50px) rotateX(-5deg);
+    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #shopify-section-{{ section.id }} .reveal-up.active {
+    opacity: 1;
+    transform: translateY(0) translateZ(0) rotateX(0deg);
+  }
+
+  /* --- FABRIC SECTION --- */
+  #shopify-section-{{ section.id }} .fabric-section {
+    padding: {{ section.settings.padding_top }}px 5% {{ section.settings.padding_bottom }}px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  #shopify-section-{{ section.id }} .fabric-subheading {
+    color: var(--gold-main); 
+    letter-spacing: 2px; 
+    font-weight: 800;
+    margin: 0;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+
+  #shopify-section-{{ section.id }} .fabric-heading {
+    font-size: 3rem; 
+    font-weight: 900; 
+    margin: 15px 0 40px; 
+    color: var(--navy);
+    line-height: 1.1;
+  }
+
+  #shopify-section-{{ section.id }} .spec-row { 
+    display: flex; 
+    gap: 20px; 
+    margin-bottom: 30px; 
+  }
+
+  #shopify-section-{{ section.id }} .spec-icon { 
+    width: 50px; 
+    height: 50px; 
+    background: var(--icon-bg); 
+    color: var(--gold-main); 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 1.2rem; 
+    flex-shrink: 0; 
+    border: 1px solid var(--gold-light);
+  }
+
+  #shopify-section-{{ section.id }} .spec-title {
+    margin: 0 0 5px; 
+    color: var(--navy);
+    font-size: 1.1rem;
+    font-weight: 800;
+  }
+
+  #shopify-section-{{ section.id }} .spec-desc {
+    color: var(--text-muted); 
+    font-size: 0.9rem; 
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  #shopify-section-{{ section.id }} .spec-desc strong {
+    color: var(--navy);
+  }
+
+  #shopify-section-{{ section.id }} .fabric-image-container {
+    display: flex; 
+    justify-content: center;
+  }
+
+  #shopify-section-{{ section.id }} .fabric-image-container img {
+    width: 100%; 
+    border-radius: 40px; 
+    box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    object-fit: cover;
+  }
+
+  /* --- MOBILE OPTIMIZATION --- */
+  @media (max-width: 900px) {
+    #shopify-section-{{ section.id }} .fabric-section { 
+      grid-template-columns: 1fr; 
+      gap: 40px;
+      padding-top: {{ section.settings.padding_top_mobile }}px !important; 
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px !important; 
+    }
+    #shopify-section-{{ section.id }} .fabric-heading { 
+      margin: 15px 0 25px !important; 
+      font-size: 2.2rem;
+    }
+  }
+</style>
+
+<section class="fabric-section" id="fabric-{{ section.id }}">
+  <div class="reveal-up">
+    <h6 class="fabric-subheading">{{ section.settings.subheading }}</h6>
+    <h2 class="fabric-heading">{{ section.settings.heading }}</h2>
+    
+    {%- for block in section.blocks -%}
+      <div class="spec-row" {{ block.shopify_attributes }}>
+        <div class="spec-icon"><i class="{{ block.settings.icon_class }}"></i></div>
+        <div>
+          <h4 class="spec-title">{{ block.settings.title }}</h4>
+          <p class="spec-desc">{{ block.settings.description }}</p>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+
+  <div class="reveal-up fabric-image-container">
+    {% if section.settings.main_image != blank %}
+      <img src="{{ section.settings.main_image | img_url: '1000x' }}" alt="Technical Fabric">
+    {% else %}
+      <img src="https://cdn.shopify.com/s/files/1/0992/9231/5780/files/3.png?v=1771243569" alt="Espon Fabric Quality">
+    {% endif %}
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.2 });
+    
+    const elements = document.querySelectorAll('#fabric-{{ section.id }} .reveal-up');
+    elements.forEach(el => observer.observe(el));
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Espon Fabric",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text Content"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "TECHNICAL SUPERIORITY"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Engineered for Athletes.<br/>Designed for Retail.",
+      "info": "Use <br/> for line breaks."
+    },
+    {
+      "type": "image_picker",
+      "id": "main_image",
+      "label": "Right Side Image"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color (Gold)",
+      "default": "#CA8A04"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Text Color (Navy)",
+      "default": "#0f172a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Paragraph Text Color",
+      "default": "#64748b"
+    },
+    {
+      "type": "color",
+      "id": "icon_bg_color",
+      "label": "Icon Background Color",
+      "default": "#FFFBEB"
+    },
+    {
+      "type": "color",
+      "id": "icon_border_color",
+      "label": "Icon Border Color",
+      "default": "#FEF08A"
+    },
+    {
+      "type": "header",
+      "content": "Desktop Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 10,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Top Padding",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 10,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom Padding",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Mobile Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top Padding (Mobile)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom Padding (Mobile)",
+      "default": 40
+    }
+  ],
+  "max_blocks": 5,
+  "blocks": [
+    {
+      "type": "spec_item",
+      "name": "Specification",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon_class",
+          "label": "FontAwesome Icon Class",
+          "default": "fas fa-check"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Spec Title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Spec Description here.",
+          "info": "Use HTML <strong> tags to highlight text."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Espon Fabric",
+      "blocks": [
+        {
+          "type": "spec_item",
+          "settings": {
+            "icon_class": "fas fa-layer-group",
+            "title": "Premium Stitch Quality",
+            "description": "Heavy-duty industrial machines for double-lock stitching."
+          }
+        },
+        {
+          "type": "spec_item",
+          "settings": {
+            "icon_class": "fas fa-arrows-alt",
+            "title": "Advanced Fabrics",
+            "description": "Specializing in <strong>Imported 4-Way Lycra</strong> and NS."
+          }
+        },
+        {
+          "type": "spec_item",
+          "settings": {
+            "icon_class": "fas fa-check-double",
+            "title": "100% QC Checked",
+            "description": "3-stage quality check before dispatch."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

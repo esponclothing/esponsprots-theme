@@ -1,0 +1,1635 @@
+<link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="b2b-pro-page">
+  <div class="b2b-container">
+    
+    <div class="b2b-gallery">
+        {% assign featured_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media %}
+        
+        <div class="main-image-frame">
+          <div class="status-badge">IN STOCK</div>
+          <img id="MainImg" src="{{ featured_media | img_url: '1000x' }}" alt="{{ featured_media.alt }}">
+        </div>
+
+        <script>
+          var productImages = [
+            {% for media in product.media %}
+              "{{ media | img_url: '1000x' }}",
+            {% endfor %}
+          ];
+        </script>
+
+        <div class="thumb-grid">
+          {% for media in product.media %}
+            <div class="thumb-item" onclick="manualChangeImage('{{ media | img_url: '1000x' }}', {{ forloop.index0 }})">
+              <img src="{{ media | img_url: '400x' }}" alt="{{ media.alt }}">
+            </div>
+          {% endfor %}
+        </div>
+    </div>
+
+    <div class="b2b-details">
+      
+      <div class="header-group">
+        <span class="vendor-label">{{ product.vendor }}</span>
+        <h1 class="pro-title">{{ product.title }}</h1>
+        
+        <div class="price-row" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+          <div>
+            {% assign first_var = product.selected_or_first_available_variant %}
+            {% assign multiplier = 1 %}
+            
+            {% if first_var.title contains 'M to XXL' %}
+              {% assign multiplier = 4 %}
+            {% elsif first_var.title contains 'M to XL' %}
+              {% assign multiplier = 3 %}
+            {% elsif first_var.title contains 'L to XXL' %}
+              {% assign multiplier = 3 %}
+            {% elsif first_var.title contains 'S to XXL' %}
+              {% assign multiplier = 5 %}
+            {% elsif first_var.title contains '26-36' %}
+              {% assign multiplier = 6 %}
+            {% elsif first_var.title contains '32-36' %}
+              {% assign multiplier = 3 %}
+            {% endif %}
+            
+            {% assign piece_price = first_var.price | divided_by: multiplier %}
+                      
+            <span class="price-large" id="js-main-price">{{ piece_price | money }}</span>
+            <span class="price-sub">/ pc </span>
+            <div class="AirReviews-Widget AirReviews-Widget--Stars"></div>
+          </div>
+
+          {% if section.settings.show_offers %}
+        <div class="offers-section">
+          <div class="offers-heading">
+            <i class="fa-solid {{ section.settings.offer_main_icon }}"></i>
+            <span>{{ section.settings.offer_heading_text }}</span>
+          </div>
+          <div class="offers-track" id="offersTrack">
+            {% if section.settings.offer_1_title != blank %}
+            <div class="offer-card">
+              <div class="offer-card-icon"><i class="fa-solid {{ section.settings.offer_1_icon }}"></i></div>
+              <div class="offer-card-body">
+                <strong>{{ section.settings.offer_1_title }}</strong>
+                <span>{{ section.settings.offer_1_text }}</span>
+              </div>
+            </div>
+            {% endif %}
+            {% if section.settings.offer_2_title != blank %}
+            <div class="offer-card">
+              <div class="offer-card-icon"><i class="fa-solid {{ section.settings.offer_2_icon }}"></i></div>
+              <div class="offer-card-body">
+                <strong>{{ section.settings.offer_2_title }}</strong>
+                <span>{{ section.settings.offer_2_text }}</span>
+              </div>
+            </div>
+            {% endif %}
+            {% if section.settings.offer_3_title != blank %}
+            <div class="offer-card">
+              <div class="offer-card-icon"><i class="fa-solid {{ section.settings.offer_3_icon }}"></i></div>
+              <div class="offer-card-body">
+                <strong>{{ section.settings.offer_3_title }}</strong>
+                <span>{{ section.settings.offer_3_text }}</span>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="app-block-zone">
+          {% for block in section.blocks %}
+            {% case block.type %}
+              {% when '@app' %}
+                <div class="render-app-block">
+                  {% render block %}
+                </div>
+            {% endcase %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="builder-container">
+        <div class="builder-title-bar">
+          <i class="fa-solid fa-palette"></i>
+          <span>Build Your Order</span>
+          <span class="builder-hint">Pick colors &amp; quantities below</span>
+        </div>
+
+        <div id="js-dynamic-rows" class="builder-body"></div>
+        <div class="color-quick-pick" id="js-color-quick-pick">
+          {% for color_val in product.options_by_name['Color'].values %}
+          
+            {% assign hex_color = color_val.swatch.color %}
+            {% if hex_color == blank %}
+              {% assign hex_color = color_val |
+downcase | split: ' ' | last %}
+            {% endif %}
+            <button
+              type="button"
+              class="quick-color-btn"
+              style="--qc: {{ hex_color }};"
+onclick="quickAddColor('{{ color_val.name | default: color_val | escape }}')"
+              title="Add {{ color_val.name | default: color_val }}"
+            >
+              <span class="qc-dot" style="background:{{ hex_color }};"></span>
+              <span class="qc-name" style="display: flex; align-items: center; gap: 4px;">{{ color_val.name |
+default: color_val }} <i class="fa-solid fa-plus" style="font-size: 0.8em; opacity: 0.7;"></i></span>
+            </button>
+          {% endfor %}
+          <div style="width: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+            <button type="button" class="add-all-colors-btn" onclick="addAllColors()">
+              <i class="fa-solid fa-layer-group"></i> Add All Colors (1 Set Each)
+            </button>
+            <div style="text-align: center; font-size: 0.75rem; font-weight: 800; color: #CA8A04; text-transform: uppercase; letter-spacing: 0.5px; background: #fffbeb; padding: 6px; border-radius: 6px; border: 1px dashed #fde68a;">
+              <i class="fa-solid fa-hand-pointer" style="margin-right: 4px;"></i> Or click individual colors to add
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="injected-description" style="margin-top: 30px;">
+        {{ product.description }}
+      </div>
+      {% if section.settings.show_trust %}
+        <div class="product-features-strip" style="display: flex; justify-content: space-between; margin: 15px 0 25px; padding: 15px 0; border-top: 1px solid {{ section.settings.trust_border_color }}; border-bottom: 1px solid {{ section.settings.trust_border_color }};">
+           <div style="text-align: center; flex: 1;">
+             <i class="fa-solid {{ section.settings.trust_1_icon }}" style="font-size: {{ section.settings.trust_icon_size }}px; color: {{ section.settings.trust_icon_color }}; margin-bottom: 5px;"></i>
+             <div style="font-size: {{ section.settings.trust_text_size }}px; color: {{ section.settings.trust_text_color }}; font-weight: 800; text-transform: uppercase;">{{ section.settings.trust_1_text }}</div>
+           </div>
+           <div style="text-align: center; flex: 1; border-left: 1px solid {{ section.settings.trust_border_color }}; border-right: 1px solid {{ section.settings.trust_border_color }};">
+             <i class="fa-solid {{ section.settings.trust_2_icon }}" style="font-size: {{ section.settings.trust_icon_size }}px; color: {{ section.settings.trust_icon_color }}; margin-bottom: 5px;"></i>
+             <div style="font-size: {{ section.settings.trust_text_size }}px; color: {{ section.settings.trust_text_color }}; font-weight: 800; text-transform: uppercase;">{{ section.settings.trust_2_text }}</div>
+           </div>
+           <div style="text-align: center; flex: 1;">
+             <i class="fa-solid {{ section.settings.trust_3_icon }}" style="font-size: {{ section.settings.trust_icon_size }}px; color: {{ section.settings.trust_icon_color }}; margin-bottom: 5px;"></i>
+             <div style="font-size: {{ section.settings.trust_text_size }}px; color: {{ section.settings.trust_text_color }}; font-weight: 800; text-transform: uppercase;">{{ section.settings.trust_3_text }}</div>
+           </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="related-section">
+    <h2 class="related-title">{{ section.settings.ticker_title | default: "FRESH FROM FACTORY" }}</h2>
+    <div class="ticker-wrapper">
+      <div class="ticker-track">
+        
+        {% assign ticker_col = section.settings.ticker_collection %}
+        
+        {% if ticker_col != blank %}
+          {% for i in (1..2) %}
+            {% for prod in ticker_col.products limit: 20 %}
+              
+              {% comment %} --- SKIP HIDDEN GIFTS --- {% endcomment %}
+              {% if prod.tags contains 'hidden-gift' %}
+                {% continue %}
+              {% endif %}
+
+              {% unless prod.id == product.id %}
+              
+              {% comment %} --- ESPON B2B MATH TRICK --- {% endcomment %}
+              {% assign first_var = prod.first_available_variant %}
+              {% assign multiplier = 1 %}
+              {% if first_var.title contains 'M to XXL' %}
+                {% assign multiplier = 4 %}
+              {% elsif first_var.title contains 'M to XL' %}
+                {% assign multiplier = 3 %}
+              {% elsif first_var.title contains 'L to XXL' %}
+                {% assign multiplier = 3 %}
+              {% elsif first_var.title contains 'S to XXL' %}
+                {% assign multiplier = 5 %}
+              {% elsif first_var.title contains '26-36' %}
+                {% assign multiplier = 6 %}
+              {% elsif first_var.title contains '32-36' %}
+                {% assign multiplier = 3 %}
+              {% endif %}
+              {% assign piece_price = prod.price | divided_by: multiplier %}
+
+              <a href="{{ prod.url }}" class="related-card">
+                <div class="related-img">
+                  <img src="{{ prod.featured_image | img_url: '600x' }}" alt="{{ prod.title }}" loading="lazy">
+                  <span class="related-badge">NEW</span>
+                </div>
+                <div class="related-info">
+                  <h4>{{ prod.title }}</h4>
+                  <span class="related-price">{{ piece_price | money }} <span style="font-size:0.8em; color:#64748b; font-weight:600;">/ pc</span></span>
+                </div>
+              </a>
+              {% endunless %}
+            {% endfor %}
+          {% endfor %}
+        
+        {% else %}
+           {% for i in (1..6) %}
+             <div class="related-card" style="display:flex; align-items:center; justify-content:center; background:#f1f5f9; height:330px;">
+               <p style="text-align:center; padding:20px; font-weight:800; color:#64748b; text-transform:uppercase;">PLEASE SELECT A COLLECTION IN THEME SETTINGS</p>
+             </div>
+           {% endfor %}
+        {% endif %}
+        
+      </div>
+    </div>
+  </div>
+
+  <div id="sizeChartModal" class="size-modal-overlay">
+    <div class="size-modal-content">
+      <div class="size-modal-header">
+        <h3>Size Guide</h3>
+        <button class="close-modal" onclick="closeSizeChart()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <div class="size-tabs">
+        <button class="size-tab active" onclick="switchSizeTab('trackpants', this)">TRACK PANTS</button>
+        <button class="size-tab" onclick="switchSizeTab('shorts', this)">SHORTS</button>
+      </div>
+
+      <div id="tab-trackpants" class="size-tab-content active">
+        <table class="size-table">
+          <thead>
+            <tr><th>Size</th><th>Waist (in)</th><th>Length (in)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>S</td><td>26-28</td><td>38</td></tr>
+            <tr><td>M</td><td>28-30</td><td>39</td></tr>
+            <tr><td>L</td><td>30-32</td><td>40</td></tr>
+            <tr><td>XL</td><td>32-34</td><td>41</td></tr>
+            <tr><td>XXL</td><td>34-36</td><td>42</td></tr>
+            <tr><td>XXXL</td><td>36-38</td><td>43</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="tab-shorts" class="size-tab-content">
+        <table class="size-table">
+          <thead>
+            <tr><th>Size</th><th>Waist (in)</th><th>Length (in)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>S</td><td>26-28</td><td>16</td></tr>
+            <tr><td>M</td><td>28-30</td><td>17</td></tr>
+            <tr><td>L</td><td>30-32</td><td>18</td></tr>
+            <tr><td>XL</td><td>32-34</td><td>19</td></tr>
+            <tr><td>XXL</td><td>34-36</td><td>20</td></tr>
+            <tr><td>XXXL</td><td>36-38</td><td>21</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="sticky-footer-bar">
+    <div class="footer-content">
+      <div class="footer-stats">
+        <div class="stat-group">
+          <span class="stat-label">TOTAL PCS</span>
+          <span id="js-grand-pcs" class="stat-val">0</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-group">
+          <span class="stat-label">TOTAL AMOUNT</span>
+          <span id="js-grand-amount" class="stat-val gold-text">₹0</span>
+        </div>
+      </div>
+      <button onclick="pushBatchToShopify(); addRipple(event, this)" id="js-add-btn" class="footer-add-btn">
+        <i class="fa-solid fa-bag-shopping cart-icon"></i>
+        <span>Add to Cart</span>
+      </button>
+    </div>
+  </div>
+
+  <div style="height: 100px;"></div>
+</div>
+
+<script>
+  const shopifyVariants = {{ product.variants | json }};
+  
+  // INJECT LIVE INVENTORY DATA
+  const variantInventories = {
+    {% for variant in product.variants %}
+      "{{ variant.id }}": {
+        "qty": {{ variant.inventory_quantity | default: 0 }},
+        "policy": "{{ variant.inventory_policy }}"
+      },
+    {% endfor %}
+  };
+  
+  const optionsMap = {
+    {% for option in product.options %}
+      "{{ option }}": "option{{ forloop.index }}",
+    {% endfor %}
+  };
+  
+  const colorOptionKey = optionsMap["Color"] || "option1";
+  const sizeOptionKey = optionsMap["Size"] || "option2";
+</script>
+
+<style>
+  /* --- BASE SETUP & GALLERY --- */
+  .b2b-pro-page { font-family: 'Plus Jakarta Sans', sans-serif; background: #fff; color: #0f172a; }
+  
+  /* Base Layout (Mobile Normal Scrolling) */
+  .b2b-container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; display: flex; gap: 50px; }
+  .b2b-gallery { flex: 1; min-width: 300px; }
+
+  /* Desktop ONLY Sticky Gallery */
+  @media (min-width: 900px) {
+    .b2b-container { align-items: flex-start; }
+    .b2b-gallery { position: sticky; top: 80px; z-index: 10; height: max-content; align-self: flex-start; }
+  }
+  .main-image-frame { position: relative; width: 100%; aspect-ratio: 3 / 4; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; margin-bottom: 15px; background: #f8fafc; }
+  .main-image-frame img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.5s ease-in-out; }
+  .status-badge { position: absolute; top: 15px; left: 15px; background: #0f172a; color: #fff; font-size: 0.7rem; font-weight: 800; padding: 5px 12px; border-radius: 4px; z-index: 2; }
+  .thumb-grid { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
+  .thumb-item { width: 80px; height: 100px; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; overflow: hidden; opacity: 0.7; transition: 0.2s; flex-shrink: 0; }
+  .thumb-item:hover { opacity: 1; border-color: #0f172a; }
+  .thumb-item img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* --- DETAILS --- */
+  .b2b-details { flex: 1.2; }
+  .vendor-label { color: #64748b; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .pro-title { font-size: 2.2rem; font-weight: 800; margin: 5px 0 10px; line-height: 1.2; color: #0f172a; }
+  .price-large { font-size: 1.8rem; font-weight: 800; color: #CA8A04; }
+  .price-sub { font-size: 0.9rem; color: #64748b; font-weight: 500; }
+
+  /* --- ACCORDION STYLING --- */
+  .b2b-accordion-wrapper { margin-top: 40px; border-top: 1px solid #e2e8f0; }
+  .acc-item { border-bottom: 1px solid #e2e8f0; }
+  .acc-header { 
+    width: 100%; display: flex; justify-content: space-between; align-items: center; 
+    padding: 20px 0; background: none; border: none; cursor: pointer; 
+    font-size: 1.05rem; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;
+    font-family: inherit; transition: 0.3s;
+  }
+  .acc-header:hover { color: #CA8A04; }
+  .acc-icon { color: #94a3b8; font-size: 1.1rem; transition: transform 0.3s; }
+  .acc-body { 
+    max-height: 0; overflow: hidden; transition: max-height 0.4s ease-in-out; 
+  }
+  .acc-body .rte { padding-bottom: 20px; font-size: 0.95rem; line-height: 1.6; color: #475569; }
+  
+  /* Active State */
+  .acc-item.active .acc-icon { color: #CA8A04; }
+
+  /* ===== BUILDER — NEW CARD DESIGN ===== */
+  .builder-container {
+    margin-top: 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(15,23,42,0.06);
+  }
+  .builder-title-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+    color: #fff;
+    font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px;
+  }
+  .builder-title-bar i { font-size: 0.85rem; color: #CA8A04; }
+  .builder-hint {
+    margin-left: auto;
+    font-size: 0.68rem; font-weight: 500; color: #94a3b8;
+    text-transform: none; letter-spacing: 0;
+  }
+
+  /* Empty state */
+  .builder-empty-state {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 18px 14px;
+    color: #94a3b8; font-size: 0.8rem; font-weight: 600;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .builder-empty-state i { font-size: 1rem; color: #CA8A04; }
+
+  /* Quick color pick row */
+  .color-quick-pick {
+    display: flex; flex-wrap: wrap; gap: 7px;
+    padding: 12px 14px;
+    border-top: 1px dashed #e2e8f0;
+    background: #fafafa;
+  }
+  .quick-color-btn {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px 12px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    font-family: inherit; font-size: 0.75rem; font-weight: 700; color: #334155;
+    transition: border-color 0.18s, transform 0.18s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.18s;
+    position: relative;
+    min-width: 65px;
+  }
+  .quick-color-btn:hover {
+    border-color: var(--qc, #CA8A04);
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  }
+  .quick-color-btn.qcb-active {
+    border-color: var(--qc, #CA8A04);
+    background: #fffbeb;
+    box-shadow: 0 0 0 3px rgba(202,138,4,0.15);
+  }
+  .qc-dot {
+    display: block; width: 18px; height: 18px;
+    border-radius: 50%; border: 1.5px solid rgba(0,0,0,0.15);
+    flex-shrink: 0;
+  }
+  .add-all-colors-btn {
+    width: 100%; padding: 10px; background: #0f172a; color: #CA8A04; 
+    border: none; border-radius: 8px; font-weight: 800; font-size: 0.85rem; 
+    text-transform: uppercase; letter-spacing: 1px; cursor: pointer; 
+    transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .add-all-colors-btn:hover {
+    background: #1e293b; color: #fff; transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  /* Individual row cards */
+  @keyframes rowSlideIn {
+    from { opacity: 0; transform: translateY(-10px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes rowFlash {
+    0%,100% { background: #fff; }
+    40%     { background: #fffbeb; border-color: #CA8A04; }
+  }
+  .b-row-flash { animation: rowFlash 0.9s ease !important; }
+
+  .b-row {
+    padding: 10px 14px 10px;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.2s;
+  }
+  .b-row:hover { background: #fafafa; }
+  .b-row-top {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+  }
+  .b-color-indicator {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid rgba(0,0,0,0.12);
+    flex-shrink: 0;
+    background: #e2e8f0;
+    transition: background 0.3s ease;
+  }
+  .b-row-bottom {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding-left: 22px;
+  }
+  .b-row-right {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .b-info-right {
+    display: flex; flex-direction: column; gap: 1px; font-size: 0.72rem;
+    font-weight: 700; color: #64748b;
+  }
+  .b-pcs-label { font-size: 0.72rem; }
+
+  .b-selectors { display: flex; gap: 6px; flex: 1; }
+  .b-select {
+    flex: 1; padding: 7px 8px;
+    border: 1px solid #e2e8f0; border-radius: 7px;
+    font-family: inherit; font-size: 0.8rem; font-weight: 700; color: #0f172a;
+    background: #f8fafc; cursor: pointer; outline: none;
+    transition: border-color 0.18s, background 0.18s;
+    min-width: 0;
+  }
+  .b-select:focus { border-color: #CA8A04; background: #fff; }
+  .b-select:disabled { background: #f1f5f9; cursor: not-allowed; color: #94a3b8; }
+
+  .qty-wrapper {
+    display: flex; align-items: center;
+    border: 1px solid #e2e8f0; border-radius: 7px;
+    overflow: hidden; background: #fff; height: 34px;
+  }
+  .qty-btn {
+    width: 30px; height: 100%;
+    background: #f8fafc; border: none; cursor: pointer;
+    font-size: 0.75rem; color: #64748b;
+    transition: background 0.15s, color 0.15s;
+    display: flex; justify-content: center; align-items: center;
+  }
+  .qty-btn:hover:not(:disabled) { background: #CA8A04; color: #fff; }
+  .qty-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .b-qty {
+    width: 36px; height: 100%; text-align: center;
+    border: none; border-left: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0;
+    font-weight: 800; font-size: 0.9rem; color: #0f172a;
+    outline: none; -moz-appearance: textfield; padding: 0;
+  }
+  .b-qty::-webkit-outer-spin-button, .b-qty::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .b-qty:disabled { background: #f1f5f9; color: #94a3b8; }
+
+  .b-info-rate { color: #CA8A04; font-weight: 800; font-size: 0.75rem; }
+  .stock-badge { font-weight: 800; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stock-green { color: #16a34a; }
+  .stock-red { color: #dc2626; }
+
+  .b-delete {
+    width: 32px; height: 32px; border: none;
+    background: #fee2e2; color: #ef4444;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.18s, color 0.18s, transform 0.18s; flex-shrink: 0;
+    font-size: 0.9rem;
+  }
+  .b-delete:hover { background: #ef4444; color: #fff; transform: scale(1.05); }
+
+  /* add-row-btn removed — replaced by quick-pick color buttons */
+
+  /* --- RELATED & FOOTER --- */
+  .desc-box { margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
+  .desc-box h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 10px; }
+  .rte { font-size: 0.95rem; line-height: 1.6; color: #475569; }
+  .related-section { background: #f8fafc; padding: 60px 0; margin-top: 40px; border-top: 1px solid #e2e8f0; overflow: hidden; }
+  .related-title { text-align: center; font-weight: 800; margin-bottom: 30px; font-size: 1.5rem; }
+  .ticker-wrapper { width: 100%; overflow: hidden; }
+  .ticker-track { display: flex; gap: 20px; animation: scroll 30s linear infinite; width: max-content; padding-left: 20px; }
+  .ticker-track:hover { animation-play-state: paused; }
+  @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .related-card { width: 250px; flex-shrink: 0; text-decoration: none; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; transition: 0.3s; }
+  .related-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+  .related-img { height: 330px; overflow: hidden; position: relative; }
+  .related-img img { width: 100%; height: 100%; object-fit: cover; }
+  .related-badge { position: absolute; top: 10px; right: 10px; background: #CA8A04; color: #fff; font-size: 0.6rem; font-weight: 800; padding: 3px 8px; border-radius: 4px; }
+  .related-info { padding: 15px; }
+  .related-info h4 { margin: 0; font-size: 0.9rem; color: #0f172a; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .related-price { color: #CA8A04; font-weight: 800; font-size: 0.9rem; margin-top: 5px; display: block; }
+  /* ===== STICKY FOOTER — BRAND GOLD THEME ===== */
+  .sticky-footer-bar {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: #fffbeb;
+    border-top: 2px solid #fde68a;
+    box-shadow: 0 -4px 24px rgba(202,138,4,0.15);
+    padding: 12px 20px;
+    z-index: 1000;
+  }
+  .footer-content {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .footer-stats { display: flex; align-items: center; gap: 0; }
+  .stat-group { display: flex; flex-direction: column; padding: 0 16px; }
+  .stat-group:first-child { padding-left: 0; border-right: 1px solid #fde68a; }
+  .stat-divider { display: none; }
+  .stat-label {
+    font-size: 0.6rem; font-weight: 800; color: #92400e;
+    letter-spacing: 0.8px; text-transform: uppercase;
+  }
+  .stat-val {
+    font-size: 1.1rem; font-weight: 900; color: #78350f; line-height: 1.2;
+  }
+  .gold-text { color: #CA8A04; }
+
+  /* ===== ADD TO CART BUTTON — HIGHLIGHTED GOLD ===== */
+  .footer-add-btn {
+    background: linear-gradient(135deg, #CA8A04 0%, #b45309 100%);
+    color: #fff;
+    padding: 13px 30px; border-radius: 10px;
+    font-weight: 900; font-size: 0.85rem; border: none; cursor: pointer;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    position: relative; overflow: hidden;
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease, filter 0.2s ease;
+    box-shadow: 0 4px 20px rgba(202,138,4,0.5), 0 0 0 3px rgba(202,138,4,0.15);
+    white-space: nowrap; display: flex; align-items: center; gap: 9px;
+  }
+  /* Shimmer sweep */
+  .footer-add-btn::after {
+    content: '';
+    position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.55s ease;
+    pointer-events: none;
+  }
+  .footer-add-btn:hover::after { left: 160%; }
+  .footer-add-btn .cart-icon {
+    font-size: 0.9rem;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .footer-add-btn > * { position: relative; z-index: 1; }
+  .footer-add-btn:hover {
+    filter: brightness(1.08);
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 10px 28px rgba(202,138,4,0.55), 0 0 0 4px rgba(202,138,4,0.2);
+  }
+  .footer-add-btn:hover .cart-icon { transform: rotate(-12deg) scale(1.2); }
+  .footer-add-btn:active { transform: scale(0.97); filter: brightness(0.95); }
+  .footer-add-btn:disabled {
+    opacity: 0.75; cursor: not-allowed;
+    box-shadow: 0 2px 8px rgba(202,138,4,0.2);
+  }
+  .footer-add-btn .ripple {
+    position: absolute; border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+    transform: scale(0); animation: rippleAnim 0.55s linear;
+    pointer-events: none;
+  }
+  @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
+
+
+  /* --- SIZE CHART MODAL --- */
+  .size-chart-btn { background: none; border: 1px solid #cbd5e1; color: #0f172a; padding: 8px 15px; border-radius: 6px; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
+  .size-chart-btn:hover { border-color: #CA8A04; color: #CA8A04; background: #FFFBEB; }
+  
+  .size-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(3px); opacity: 0; transition: opacity 0.3s; }
+  .size-modal-overlay.show { display: flex; opacity: 1; }
+  .size-modal-content { background: #fff; width: 90%; max-width: 500px; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); transform: translateY(20px); transition: transform 0.3s; }
+  .size-modal-overlay.show .size-modal-content { transform: translateY(0); }
+  
+  .size-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
+  .size-modal-header h3 { margin: 0; font-weight: 800; font-size: 1.2rem; color: #0f172a; text-transform: uppercase; }
+  .close-modal { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b; transition: 0.2s; }
+  .close-modal:hover { color: #dc2626; }
+  
+  .size-tabs { display: flex; border-bottom: 1px solid #e2e8f0; }
+  .size-tab { flex: 1; background: #fff; border: none; padding: 15px; font-weight: 800; color: #64748b; cursor: pointer; transition: 0.2s; border-bottom: 3px solid transparent; font-size: 0.9rem; text-transform: uppercase; }
+  .size-tab:hover { background: #f8fafc; }
+  .size-tab.active { color: #CA8A04; border-bottom-color: #CA8A04; }
+  
+  .size-tab-content { display: none; padding: 20px; }
+  .size-tab-content.active { display: block; }
+  
+  .size-table { width: 100%; border-collapse: collapse; text-align: center; }
+  .size-table th { background: #f1f5f9; padding: 12px; font-size: 0.85rem; font-weight: 800; color: #0f172a; text-transform: uppercase; }
+  .size-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 0.95rem; color: #475569; font-weight: 600; }
+  .size-table tbody tr:hover { background: #f8fafc; }
+
+
+  /* ===== OFFERS — ORIGINAL CARD STYLE ===== */
+  .offers-section {
+    margin: 14px 0 16px;
+    border: 1px solid #fde68a;
+    border-radius: 10px;
+    background: #fffbeb;
+    overflow: hidden;
+  }
+  .offers-heading {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    background: {{ section.settings.offer_bg_color | default: '#fffbeb' }};
+    border-bottom: 1px dashed #fde68a;
+    font-size: 0.75rem; font-weight: 800;
+    color: {{ section.settings.offer_heading_color | default: '#92400e' }};
+    text-transform: uppercase; letter-spacing: 0.8px;
+  }
+  .offers-heading i { color: {{ section.settings.offer_icon_color | default: '#CA8A04' }}; font-size: 0.85rem; }
+  .offers-track {
+    display: flex; gap: 10px; overflow-x: auto;
+    scroll-snap-type: x mandatory; padding: 12px 14px;
+    scrollbar-width: none;
+  }
+  .offers-track::-webkit-scrollbar { display: none; }
+  .offer-card {
+    flex: 0 0 calc(50% - 5px);
+    scroll-snap-align: start;
+    background: #fff;
+    border: 1px dashed {{ section.settings.offer_border_color | default: '#fde68a' }};
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex; align-items: flex-start; gap: 9px;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .offer-card:hover {
+    box-shadow: 0 3px 12px rgba(202,138,4,0.15);
+    transform: translateY(-1px);
+  }
+  .offer-card-icon {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: #fef9c3;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .offer-card-icon i { color: #CA8A04; font-size: 0.9rem; }
+  .offer-card-body {
+    display: flex; flex-direction: column; gap: 2px;
+    min-width: 0;
+  }
+  .offer-card-body strong {
+    font-size: 0.78rem; font-weight: 800;
+    color: {{ section.settings.offer_heading_color | default: '#0f172a' }};
+    line-height: 1.3; display: block;
+  }
+  .offer-card-body span {
+    font-size: 0.7rem; color: {{ section.settings.offer_text_color | default: '#64748b' }};
+    line-height: 1.4; display: block;
+  }
+  @media (max-width: 480px) {
+    .offer-card { flex: 0 0 80%; }
+  }
+
+  /* ===== AVAILABLE COLORS ===== */
+  .available-colors-wrapper {
+    margin-bottom: 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: #f8fafc;
+  }
+  .colors-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .colors-label {
+    font-size: 0.7rem; font-weight: 800; color: #94a3b8;
+    text-transform: uppercase; letter-spacing: 0.8px;
+  }
+  .colors-count {
+    font-size: 0.68rem; font-weight: 700; color: #94a3b8;
+    background: #e2e8f0; padding: 1px 7px; border-radius: 20px;
+  }
+  .colors-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .color-swatch-item {
+    display: flex; align-items: center; gap: 5px;
+    padding: 3px 9px 3px 4px;
+    border-radius: 20px;
+    border: 1.5px solid #e2e8f0;
+    background: #fff;
+    cursor: default;
+    transition: border-color 0.2s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.18s ease;
+    animation: swatchPop 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  .color-swatch-item:hover {
+    border-color: var(--swatch-color, #CA8A04);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  }
+  @keyframes swatchPop {
+    from { opacity: 0; transform: scale(0.7); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  .color-swatch-dot { position: relative; width: 16px; height: 16px; flex-shrink: 0; }
+  .swatch-inner {
+    display: block; width: 16px; height: 16px;
+    border-radius: 50%; border: 1.5px solid rgba(0,0,0,0.12);
+    transition: transform 0.2s ease;
+  }
+  .color-swatch-item:hover .swatch-inner { transform: scale(1.2); }
+  .swatch-ring {
+    position: absolute; inset: -3px; border-radius: 50%;
+    border: 2px solid transparent; transition: border-color 0.2s;
+  }
+  .color-swatch-item:hover .swatch-ring {
+    border-color: var(--swatch-color, #CA8A04); opacity: 0.55;
+  }
+  .color-swatch-name {
+    font-size: 0.75rem; font-weight: 700; color: #334155; white-space: nowrap;
+  }
+
+  /* --- FIXED MOBILE OPTIMIZATION --- */
+  @media (max-width: 768px) {
+    .b2b-container { flex-direction: column; gap: 20px; padding: 20px 15px; }
+    .pro-title { font-size: 1.8rem; }
+    .b-row-bottom { flex-wrap: wrap; gap: 8px; }
+    .b-selectors { flex-direction: column; }
+    .footer-content { flex-direction: row; gap: 10px; }
+    .footer-stats { gap: 0; }
+    .stat-val { font-size: 0.95rem; }
+    .footer-add-btn { padding: 11px 14px; font-size: 0.75rem; }
+  }
+
+/* --- ESPON B2B DESCRIPTION & ACCORDION --- */
+.espon-b2b-box { background: #FFFBEB; border: 1px solid #CA8A04; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+.espon-b2b-box h4 { color: #CA8A04; margin: 0 0 10px 0; font-weight: 800; font-size: 1.1rem; text-transform: uppercase; }
+.espon-b2b-box p { margin: 0 0 8px 0; font-size: 0.9rem; color: #0f172a; font-weight: 600; }
+.espon-b2b-box p span { color: #64748b; font-weight: 500; display: inline-block; width: 120px; }
+
+/* Accordion Styling */
+.b2b-accordion-wrapper { border-top: 1px solid #e2e8f0; }
+.acc-item { border-bottom: 1px solid #e2e8f0; }
+.acc-header { 
+  width: 100%; display: flex; justify-content: space-between; align-items: center; 
+  padding: 20px 0; background: none; border: none; cursor: pointer; 
+  font-size: 1.05rem; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;
+  font-family: inherit; transition: 0.3s;
+}
+.acc-header:hover { color: #CA8A04; }
+.acc-icon { color: #94a3b8; font-size: 1.1rem; transition: 0.3s; }
+.acc-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-in-out; }
+.acc-body-inner { padding-bottom: 25px; font-size: 0.95rem; line-height: 1.6; color: #334155; }
+
+/* Active State */
+.acc-item.active .acc-icon { color: #CA8A04; }
+
+/* Grid Inside Accordion */
+.espon-spec-row { display: flex; align-items: flex-start; padding: 8px 0; border-bottom: 1px dashed #f1f5f9; }
+.espon-spec-row:last-child { border-bottom: none; }
+.espon-spec-name { width: 40%; color: #64748b; font-size: 0.9rem; font-weight: 500; }
+.espon-spec-val { width: 60%; color: #0f172a; font-size: 0.9rem; font-weight: 600; }
+.espon-spec-val ul { margin: 0; padding-left: 20px; }
+
+</style>
+
+<script>
+
+  /* --- RIPPLE EFFECT FOR ADD TO CART --- */
+  function addRipple(e, btn) {
+    const circle = document.createElement('span');
+    const diameter = Math.max(btn.clientWidth, btn.clientHeight);
+    const radius = diameter / 2;
+    const rect = btn.getBoundingClientRect();
+    circle.style.width = circle.style.height = diameter + 'px';
+    circle.style.left = (e.clientX - rect.left - radius) + 'px';
+    circle.style.top = (e.clientY - rect.top - radius) + 'px';
+    circle.classList.add('ripple');
+    const existing = btn.querySelector('.ripple');
+    if (existing) existing.remove();
+    btn.appendChild(circle);
+  }
+
+  /* --- GALLERY LOGIC --- */
+  let currentIndex = 0;
+  let autoSwipeInterval;
+
+  function startAutoSwipe() {
+    clearInterval(autoSwipeInterval); 
+    // Pulls swipe speed from theme editor, converts seconds to milliseconds
+    let swipeSpeed = {{ section.settings.gallery_swipe_speed | default: 3 }} * 1000;
+    
+    autoSwipeInterval = setInterval(() => {
+      currentIndex = (currentIndex + 1) % productImages.length;
+      updateMainImage(currentIndex);
+    }, swipeSpeed); 
+  }
+
+  function updateMainImage(index) {
+    const imgElement = document.getElementById('MainImg');
+    imgElement.style.opacity = 0; 
+    setTimeout(() => {
+      imgElement.src = productImages[index];
+      imgElement.style.opacity = 1; 
+    }, 300);
+  }
+
+  function manualChangeImage(src, index) {
+    currentIndex = index;
+    const imgElement = document.getElementById('MainImg');
+    imgElement.src = src; 
+    startAutoSwipe(); 
+  }
+
+  /* --- MOBILE SWIPE LOGIC --- */
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  // Grab the image frame container
+  const imageFrame = document.querySelector('.main-image-frame');
+  
+  if (imageFrame) {
+    // Record where the user puts their finger down
+    imageFrame.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+      clearInterval(autoSwipeInterval); // Pause auto-swipe while they are touching
+    }, {passive: true});
+
+    // Record where the user lifts their finger up
+    imageFrame.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, {passive: true});
+  }
+
+  function handleSwipe() {
+    const swipeThreshold = 40; // Minimum distance (in pixels) to trigger a swipe
+    
+    if (touchStartX - touchEndX > swipeThreshold) {
+      // Swiped Left <--- (Go to Next Image)
+      currentIndex = (currentIndex + 1) % productImages.length;
+      updateMainImage(currentIndex);
+      startAutoSwipe(); 
+    }
+    
+    if (touchEndX - touchStartX > swipeThreshold) {
+      // Swiped Right ---> (Go to Previous Image)
+      currentIndex = (currentIndex - 1 + productImages.length) % productImages.length;
+      updateMainImage(currentIndex);
+      startAutoSwipe(); 
+    }
+  }
+
+  /* --- DYNAMIC BUILDER LOGIC --- */
+  const setMultipliers = {
+    "M to XXL": 4, "M to XL": 3, "L to XXL": 3, "S to XXL": 5, "26-36": 6, "32-36": 3
+  };
+
+  function formatMoney(cents) {
+    return "₹" + (cents / 100).toFixed(2);
+  }
+
+  function getSetSize(title) {
+    for (const [key, multiplier] of Object.entries(setMultipliers)) {
+      if (title.includes(key)) return multiplier;
+    }
+    return 1; 
+  }
+
+  function getUniqueColors() {
+    let colors = new Set();
+    shopifyVariants.forEach(v => {
+      if (v[colorOptionKey]) colors.add(v[colorOptionKey]);
+    });
+    return Array.from(colors);
+  }
+
+  // --- FEATURE 3: CART-AWARE INVENTORY ---
+  let cartQuantities = {};
+
+  async function fetchCartInventory() {
+    try {
+      const res = await fetch('/cart.js');
+      const cart = await res.json();
+      cart.items.forEach(item => {
+        cartQuantities[item.variant_id] = (cartQuantities[item.variant_id] || 0) + item.quantity;
+      });
+    } catch (e) {
+      console.error("Error fetching cart data");
+    }
+  }
+
+  let rowCounter = 0;
+
+  function addAllColors() {
+    const colors = getUniqueColors();
+    colors.forEach(color => {
+      // Check if a row for this color already exists
+      const existing = [...document.querySelectorAll('.js-color-select')].find(s => s.value === color);
+      if (!existing) {
+        addBuilderRow(color);
+      }
+    });
+    // Smoothly scroll down so they can see the total amount
+    setTimeout(() => {
+      document.getElementById('js-dynamic-rows').lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+  }
+
+  function quickAddColor(colorName) {
+    // If a row for this color already exists, just highlight it
+    const existing = [...document.querySelectorAll('.js-color-select')]
+      .find(s => s.value === colorName);
+    if (existing) {
+      const row = existing.closest('.b-row');
+      row.classList.add('b-row-flash');
+      row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      setTimeout(() => row.classList.remove('b-row-flash'), 900);
+      return;
+    }
+    addBuilderRow(colorName);
+  }
+
+  function addBuilderRow(preselectedColor) {
+    const container = document.getElementById('js-dynamic-rows');
+    const emptyState = document.getElementById('js-empty-state');
+    if (emptyState) emptyState.style.display = 'none';
+
+    const rowId = 'row-' + rowCounter++;
+    const colors = getUniqueColors();
+    let colorOptionsHTML = colors.map(c =>
+      `<option value="${c}" ${c === preselectedColor ? 'selected' : ''}>${c}</option>`
+    ).join('');
+
+    const rowHTML = `
+      <div class="b-row" id="${rowId}" style="animation: rowSlideIn 0.28s cubic-bezier(0.34,1.56,0.64,1) both;">
+        <div class="b-row-top">
+          <div class="b-color-indicator js-color-indicator"></div>
+          <div class="b-selectors">
+            <select class="b-select js-color-select" onchange="handleColorChange('${rowId}')">
+              ${colorOptionsHTML}
+            </select>
+            <select class="b-select js-size-select" onchange="calculateRowTotals('${rowId}')"></select>
+          </div>
+          <button class="b-delete" onclick="deleteRow('${rowId}')" title="Remove">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
+        <div class="b-row-bottom">
+          <span class="b-info-rate js-row-rate">—</span>
+          <div class="b-row-right">
+            <div class="qty-wrapper">
+              <button type="button" class="qty-btn" onclick="adjustQty('${rowId}', -1)"><i class="fa-solid fa-minus"></i></button>
+              <input type="number" class="b-qty js-qty-input" value="1" min="1" onchange="calculateRowTotals('${rowId}')">
+              <button type="button" class="qty-btn" onclick="adjustQty('${rowId}', 1)"><i class="fa-solid fa-plus"></i></button>
+            </div>
+            <div class="b-info-right">
+              <span class="js-row-pcs b-pcs-label">— pcs</span>
+              <span class="stock-badge js-row-stock"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    container.insertAdjacentHTML('beforeend', rowHTML);
+    handleColorChange(rowId);
+  }
+
+  function adjustQty(rowId, change) {
+    const row = document.getElementById(rowId);
+    const input = row.querySelector('.js-qty-input');
+    let currentVal = parseInt(input.value) || 1;
+    let newVal = currentVal + change;
+    
+    if (newVal < 1) newVal = 1; 
+    input.value = newVal;
+    
+    calculateRowTotals(rowId);
+  }
+
+  function deleteRow(rowId) {
+    const row = document.getElementById(rowId);
+    if(row) {
+      row.remove();
+      syncGrandTotals();
+    }
+  }
+
+  function handleColorChange(rowId) {
+    const row = document.getElementById(rowId);
+    const colorSelect = row.querySelector('.js-color-select');
+    const sizeSelect = row.querySelector('.js-size-select');
+    const selectedColor = colorSelect.value;
+
+    // Paint the color indicator dot using the quick-pick button's CSS var
+    const indicator = row.querySelector('.js-color-indicator');
+    if (indicator) {
+      const qBtn = document.querySelector(`.quick-color-btn[onclick*="${CSS.escape(selectedColor)}"]`);
+      const dotColor = qBtn ? getComputedStyle(qBtn).getPropertyValue('--qc').trim() : selectedColor.toLowerCase();
+      indicator.style.background = dotColor;
+    }
+
+    // Mark the quick-pick button as active
+    document.querySelectorAll('.quick-color-btn').forEach(b => {
+      const name = b.getAttribute('onclick').match(/'([^']+)'/)?.[1];
+      b.classList.toggle('qcb-active', name === selectedColor);
+    });
+
+    let optionsHTML = '';
+    shopifyVariants.forEach(v => {
+      if (v[colorOptionKey] === selectedColor && v[sizeOptionKey]) {
+        let rawInventory = variantInventories[v.id].qty;
+        let policy = variantInventories[v.id].policy;
+        let inCart = cartQuantities[v.id] || 0;
+        let isOutOfStock = (policy !== 'continue' && (rawInventory - inCart) <= 0);
+        if (isOutOfStock) {
+           optionsHTML += `<option value="${v[sizeOptionKey]}" disabled>${v[sizeOptionKey]} (Out of Stock)</option>`;
+        } else {
+           optionsHTML += `<option value="${v[sizeOptionKey]}">${v[sizeOptionKey]}</option>`;
+        }
+      }
+    });
+    sizeSelect.innerHTML = optionsHTML;
+    const firstAvailable = sizeSelect.querySelector('option:not([disabled])');
+    if (firstAvailable) firstAvailable.selected = true;
+    calculateRowTotals(rowId);
+  }
+
+  function calculateRowTotals(rowId) {
+    const row = document.getElementById(rowId);
+    const selectedColor = row.querySelector('.js-color-select').value;
+    const selectedSize = row.querySelector('.js-size-select').value;
+    const qtyInput = row.querySelector('.js-qty-input');
+    
+    const matchedVariant = shopifyVariants.find(v => 
+      v[colorOptionKey] === selectedColor && v[sizeOptionKey] === selectedSize
+    );
+
+    if (matchedVariant) {
+      let multiplier = getSetSize(matchedVariant.title);
+      
+      // READ INVENTORY & DEDUCT CART AMOUNTS
+      let rawInventory = variantInventories[matchedVariant.id].qty;
+      let inventoryPolicy = variantInventories[matchedVariant.id].policy;
+      let inCart = cartQuantities[matchedVariant.id] || 0;
+      
+      let maxSets = Infinity;
+      if (inventoryPolicy !== 'continue') {
+        maxSets = rawInventory - inCart; // Subtract sets already in cart
+        if (maxSets < 0) maxSets = 0;
+      }
+
+      let sets = parseInt(qtyInput.value) || 0;
+      
+      // Block user from exceeding stock
+      if (sets > maxSets) {
+        sets = maxSets;
+        qtyInput.value = sets;
+      }
+
+      // Update Stock UI
+      const stockBadge = row.querySelector('.js-row-stock');
+      if (maxSets === 0) {
+        stockBadge.innerHTML = '<span class="stock-red">OUT OF STOCK</span>';
+        qtyInput.value = 0;
+        qtyInput.disabled = true;
+        row.querySelectorAll('.qty-btn').forEach(b => b.disabled = true);
+        sets = 0;
+      } else {
+        qtyInput.disabled = false;
+        row.querySelectorAll('.qty-btn').forEach(b => b.disabled = false);
+        if (sets === 0) { qtyInput.value = 1; sets = 1; } // reset to 1 if available
+        
+        if (maxSets === Infinity) {
+          stockBadge.innerHTML = '<span class="stock-green">IN STOCK</span>';
+        } else {
+          stockBadge.innerHTML = `<span class="stock-green">ONLY ${maxSets} SETS AVAILABLE</span>`;
+        }
+      }
+
+      let pcs = sets * multiplier;
+      qtyInput.dataset.vid = matchedVariant.id;
+      qtyInput.dataset.rowTotalAmount = sets * matchedVariant.price;
+      qtyInput.dataset.rowTotalPcs = pcs;
+
+      row.querySelector('.js-row-rate').innerText = `Rate: ${formatMoney(matchedVariant.price)} / Set`;
+      row.querySelector('.js-row-pcs').innerText = `${pcs} Pcs Total (1 Set = ${multiplier})`;
+    } else {
+      row.querySelector('.js-row-rate').innerText = "Unavailable";
+      qtyInput.dataset.vid = "";
+      qtyInput.dataset.rowTotalAmount = 0;
+      qtyInput.dataset.rowTotalPcs = 0;
+    }
+    
+    syncGrandTotals();
+  }
+
+  function syncGrandTotals() {
+    let grandPcs = 0;
+    let grandAmount = 0;
+    
+    document.querySelectorAll('.js-qty-input').forEach(input => {
+      grandPcs += parseInt(input.dataset.rowTotalPcs) || 0;
+      grandAmount += parseInt(input.dataset.rowTotalAmount) || 0;
+    });
+    
+    document.getElementById('js-grand-pcs').innerText = grandPcs;
+    document.getElementById('js-grand-amount').innerText = formatMoney(grandAmount);
+  }
+
+  async function pushBatchToShopify() {
+    const btn = document.getElementById('js-add-btn');
+    let items = [];
+    
+    document.querySelectorAll('.js-qty-input').forEach(input => {
+      let sets = parseInt(input.value) || 0;
+      let vid = input.dataset.vid;
+      if (sets > 0 && vid) { 
+        items.push({ id: vid, quantity: sets }); 
+      }
+    });
+    
+    if (items.length === 0) return alert("Please select at least 1 valid set.");
+    
+    btn.querySelector("span").innerText = "Adding..."; btn.disabled = true;
+    try {
+      await fetch('/cart/add.js', { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({ items: items }) 
+      });
+      
+      document.documentElement.dispatchEvent(new CustomEvent('cart:change', {bubbles: true}));
+      document.documentElement.dispatchEvent(new CustomEvent('cart:updated', {bubbles: true}));
+      
+      const cartIcon = document.querySelector('#cart-icon-bubble, .header__icon--cart, a[href="/cart"]');
+      if (cartIcon && !window.location.pathname.includes('/cart')) {
+        cartIcon.click();
+        btn.querySelector("span").innerText = "Add to Cart"; btn.disabled = false;
+      } else {
+        window.location.href = '/cart';
+      }
+    } catch (e) { 
+      alert("Error adding to cart"); 
+      btn.querySelector("span").innerText = "Add to Cart"; btn.disabled = false; 
+    }
+  }
+
+  // LIGHT SPEED FIX: Render instantly, fetch cart in the background
+  document.addEventListener("DOMContentLoaded", function() {
+    startAutoSwipe();
+    addBuilderRow(); // Renders the first row instantly!
+    
+    // Fetch cart inventory silently in the background
+    fetchCartInventory().then(() => {
+      // Once cart data loads, silently refresh the dropdowns to apply any cart limits
+      document.querySelectorAll('.b-row').forEach(row => {
+        handleColorChange(row.id);
+      });
+    });
+  });
+
+/* --- ACCORDION CLICK LOGIC --- */
+  function toggleAccordion(button) {
+    const item = button.parentElement;
+    const body = item.querySelector('.acc-body');
+    const icon = item.querySelector('.acc-icon');
+    const isActive = item.classList.contains('active');
+
+    // Close all accordions
+    document.querySelectorAll('.acc-item').forEach(el => {
+      el.classList.remove('active');
+      if (el.querySelector('.acc-body')) {
+        el.querySelector('.acc-body').style.maxHeight = null;
+      }
+      let icn = el.querySelector('.acc-icon');
+      if(icn) icn.classList.replace('fa-minus', 'fa-plus');
+    });
+
+    // Open clicked one
+  if (!isActive) {
+    item.classList.add('active');
+    // Added a 500px buffer to safely account for dynamic line breaks and margins
+    if (body) {
+      body.style.maxHeight = (body.scrollHeight + 500) + "px"; 
+    }
+    if(icon) icon.classList.replace('fa-plus', 'fa-minus');
+  }
+}
+
+  /* --- SIZE CHART MODAL LOGIC --- */
+  function openSizeChart() {
+    const modal = document.getElementById('sizeChartModal');
+    modal.style.display = 'flex';
+    setTimeout(() => modal.classList.add('show'), 10);
+  }
+
+  function closeSizeChart() {
+    const modal = document.getElementById('sizeChartModal');
+    modal.classList.remove('show');
+    setTimeout(() => modal.style.display = 'none', 300);
+  }
+
+  function switchSizeTab(tabId, btn) {
+    document.querySelectorAll('.size-tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.size-tab').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // Close modal when clicking on the dark background overlay
+  window.onclick = function(event) {
+    const modal = document.getElementById('sizeChartModal');
+    if (event.target === modal) {
+      closeSizeChart();
+    }
+  }
+
+/* --- OFFERS AUTO-SWIPE & MANUAL LOGIC --- */
+  document.addEventListener("DOMContentLoaded", function() {
+    const track = document.getElementById('offersTrack');
+    if (!track) return;
+
+    let offerIndex = 0;
+    // Pulls swipe speed from theme editor, converts seconds to milliseconds
+    const offerSwipeSpeed = {{ section.settings.offer_swipe_speed | default: 4 }} * 1000; 
+    let offerInterval;
+
+    function startOfferSwipe() {
+      clearInterval(offerInterval);
+      offerInterval = setInterval(() => {
+        const cards = track.querySelectorAll('.offer-card');
+        if (cards.length <= 1) return; // Don't swipe if there's only 1 offer
+        
+        // Find the card currently closest to the left edge to sync with manual scrolling
+        let closestIndex = 0;
+        let minDistance = Infinity;
+        cards.forEach((card, index) => {
+          let dist = Math.abs((card.offsetLeft - track.offsetLeft) - track.scrollLeft);
+          if (dist < minDistance) {
+             minDistance = dist;
+             closestIndex = index;
+          }
+        });
+        
+        // Move to the next index, loop back to 0 if at the end
+        offerIndex = (closestIndex + 1) % cards.length;
+        const scrollPosition = cards[offerIndex].offsetLeft - track.offsetLeft;
+        
+        // Smoothly scroll to the next card
+        track.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+      }, offerSwipeSpeed);
+    }
+
+    // Start immediately
+    startOfferSwipe();
+
+    // Pause auto-swipe while user is manually scrolling/touching
+    track.addEventListener('mouseenter', () => clearInterval(offerInterval));
+    track.addEventListener('mouseleave', startOfferSwipe);
+    track.addEventListener('touchstart', () => clearInterval(offerInterval), {passive: true});
+    track.addEventListener('touchend', () => {
+      setTimeout(startOfferSwipe, 2000); // Resume auto-swipe 2 seconds after user lets go
+    }, {passive: true});
+  });
+</script>
+
+<script>
+function toggleAccordion(btn) {
+  // 1. Find the parent item
+  const item = btn.parentElement;
+  const icon = btn.querySelector('.acc-icon');
+  const body = btn.nextElementSibling;
+
+  // 2. Toggle the "active" class on the item
+  const isActive = item.classList.contains('active');
+
+  // 3. Update the icon and height
+  if (isActive) {
+    item.classList.remove('active');
+    icon.classList.replace('fa-minus', 'fa-plus');
+    body.style.maxHeight = null;
+  } else {
+    item.classList.add('active');
+    icon.classList.replace('fa-plus', 'fa-minus');
+    body.style.maxHeight = body.scrollHeight + "px";
+  }
+}
+</script>
+
+{% schema %}
+{
+  "name": "B2B Product Page Builder",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Fresh From Factory Slider"
+    },
+    {
+      "type": "text",
+      "id": "ticker_title",
+      "label": "Section Title",
+      "default": "FRESH FROM FACTORY"
+    },
+    {
+      "type": "collection",
+      "id": "ticker_collection",
+      "label": "Select Collection to Show"
+    },
+    {
+      "type": "header",
+      "content": "Image Gallery Settings"
+    },
+    {
+      "type": "range",
+      "id": "gallery_swipe_speed",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "sec",
+      "label": "Auto-Swipe Speed",
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Offers Box Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_offers",
+      "label": "Show Offers Box",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "offer_swipe_speed",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "sec",
+      "label": "Offers Auto-Swipe Speed",
+      "default": 4
+    },
+    {
+      "type": "color",
+      "id": "offer_bg_color",
+      "label": "Background Color",
+      "default": "#fef2f2"
+    },
+    {
+      "type": "color",
+      "id": "offer_border_color",
+      "label": "Border Color",
+      "default": "#fca5a5"
+    },
+    {
+      "type": "color",
+      "id": "offer_heading_color",
+      "label": "Heading & Title Color",
+      "default": "#0f172a"
+    },
+    {
+      "type": "color",
+      "id": "offer_icon_color",
+      "label": "Main Heading Icon Color",
+      "default": "#dc2626"
+    },
+    {
+      "type": "color",
+      "id": "offer_check_color",
+      "label": "List Icon Color",
+      "default": "#dc2626"
+    },
+    {
+      "type": "color",
+      "id": "offer_text_color",
+      "label": "Description Text Color",
+      "default": "#475569"
+    },
+    {
+      "type": "range",
+      "id": "offer_heading_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading Font Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "offer_text_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Description Font Size",
+      "default": 13
+    },
+    {
+      "type": "text",
+      "id": "offer_heading_text",
+      "label": "Main Heading",
+      "default": "Available Offers"
+    },
+    {
+      "type": "text",
+      "id": "offer_main_icon",
+      "label": "Main Heading Icon (FontAwesome)",
+      "default": "fa-tags"
+    },
+    {
+      "type": "text",
+      "id": "offer_1_title",
+      "label": "Offer 1 Title",
+      "default": "Flat 50% Margin"
+    },
+    {
+      "type": "text",
+      "id": "offer_1_text",
+      "label": "Offer 1 Description",
+      "default": "Direct factory wholesale pricing automatically applied."
+    },
+    {
+      "type": "text",
+      "id": "offer_1_icon",
+      "label": "Offer 1 Icon",
+      "default": "fa-percent"
+    },
+    {
+      "type": "text",
+      "id": "offer_2_title",
+      "label": "Offer 2 Title",
+      "default": "5% Cashback"
+    },
+    {
+      "type": "text",
+      "id": "offer_2_text",
+      "label": "Offer 2 Description",
+      "default": "Earn store credit on every dispatch to use on your next order."
+    },
+    {
+      "type": "text",
+      "id": "offer_2_icon",
+      "label": "Offer 2 Icon",
+      "default": "fa-wallet"
+    },
+    {
+      "type": "text",
+      "id": "offer_3_title",
+      "label": "Offer 3 Title",
+      "default": "COD Available"
+    },
+    {
+      "type": "text",
+      "id": "offer_3_text",
+      "label": "Offer 3 Description",
+      "default": "Pay just 10% advance to book your shipment."
+    },
+    {
+      "type": "text",
+      "id": "offer_3_icon",
+      "label": "Offer 3 Icon",
+      "default": "fa-truck"
+    },
+    {
+      "type": "header",
+      "content": "Builder Button Settings"
+    },
+    {
+      "type": "color",
+      "id": "add_btn_bg",
+      "label": "Add Colors Button Background",
+      "default": "#CA8A04"
+    },
+    {
+      "type": "color",
+      "id": "add_btn_text",
+      "label": "Add Colors Button Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Trust Strip Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust",
+      "label": "Show Trust Strip",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "trust_icon_color",
+      "label": "Icon Color",
+      "default": "#0f172a"
+    },
+    {
+      "type": "color",
+      "id": "trust_text_color",
+      "label": "Text Color",
+      "default": "#0f172a"
+    },
+    {
+      "type": "color",
+      "id": "trust_border_color",
+      "label": "Divider Border Color",
+      "default": "#e2e8f0"
+    },
+    {
+      "type": "range",
+      "id": "trust_icon_size",
+      "min": 16,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Icon Size",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "trust_text_size",
+      "min": 8,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Text Font Size",
+      "default": 11
+    },
+    {
+      "type": "text",
+      "id": "trust_1_icon",
+      "label": "Icon 1 (FontAwesome)",
+      "default": "fa-truck-fast"
+    },
+    {
+      "type": "text",
+      "id": "trust_1_text",
+      "label": "Text 1",
+      "default": "24-48h Dispatch"
+    },
+    {
+      "type": "text",
+      "id": "trust_2_icon",
+      "label": "Icon 2 (FontAwesome)",
+      "default": "fa-arrow-right-arrow-left"
+    },
+    {
+      "type": "text",
+      "id": "trust_2_text",
+      "label": "Text 2",
+      "default": "7 Days Return"
+    },
+    {
+      "type": "text",
+      "id": "trust_3_icon",
+      "label": "Icon 3 (FontAwesome)",
+      "default": "fa-medal"
+    },
+    {
+      "type": "text",
+      "id": "trust_3_text",
+      "label": "Text 3",
+      "default": "Factory Quality"
+    }
+  ],
+  "blocks": [{ "type": "@app" }],
+  "presets": [{ "name": "B2B Product Page Builder" }]
+}
+{% endschema %}

@@ -1,0 +1,357 @@
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --navy: {{ section.settings.heading_color }};
+    --gold-main: {{ section.settings.star_color }};
+    --border: {{ section.settings.border_color }};
+    --bg-white: {{ section.settings.bg_color }};
+    --card-bg: {{ section.settings.card_bg_color }};
+    --text-quote: {{ section.settings.quote_color }};
+    --text-meta: {{ section.settings.meta_color }};
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  /* --- ANIMATION --- */
+  #shopify-section-{{ section.id }} .reveal-up {
+    opacity: 0;
+    transform: translateY(50px) translateZ(-50px) rotateX(-5deg);
+    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #shopify-section-{{ section.id }} .reveal-up.active {
+    opacity: 1;
+    transform: translateY(0) translateZ(0) rotateX(0deg);
+  }
+
+  /* --- TESTIMONIALS SECTION --- */
+  #shopify-section-{{ section.id }} .testimonial-section {
+    padding: {{ section.settings.padding_top }}px 5% {{ section.settings.padding_bottom }}px;
+    background: var(--bg-white);
+  }
+
+  #shopify-section-{{ section.id }} .testimonial-heading {
+    font-size: 2.5rem; 
+    font-weight: 800; 
+    text-align: center; 
+    margin: 0 0 60px 0; 
+    color: var(--navy);
+  }
+
+  #shopify-section-{{ section.id }} .testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    padding: 0;
+    margin-top: 0;
+  }
+
+  #shopify-section-{{ section.id }} .glass-card {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 30px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .stars-container {
+    color: var(--gold-main); 
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+  }
+
+  #shopify-section-{{ section.id }} .quote-text {
+    font-style: italic; 
+    font-size: 0.95rem; 
+    color: var(--text-quote);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  #shopify-section-{{ section.id }} .author-name {
+    margin: 20px 0 5px 0; 
+    font-weight: 800; 
+    color: var(--navy);
+    font-size: 1.1rem;
+  }
+
+  #shopify-section-{{ section.id }} .author-meta {
+    font-size: 0.8rem; 
+    color: var(--text-meta);
+    display: block;
+  }
+
+  /* --- MOBILE OPTIMIZATION --- */
+  @media (max-width: 900px) {
+    #shopify-section-{{ section.id }} .testimonial-section {
+      padding-top: {{ section.settings.padding_top_mobile }}px !important;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px !important;
+    }
+
+    #shopify-section-{{ section.id }} .testimonial-heading { 
+      margin: 15px 0 25px !important; 
+      font-size: 2rem;
+    }
+
+    #shopify-section-{{ section.id }} .testimonial-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    #shopify-section-{{ section.id }} .glass-card { 
+      padding: 15px; 
+    }
+
+    #shopify-section-{{ section.id }} .quote-text { 
+      font-size: 0.75rem !important; 
+      line-height: 1.4; 
+    }
+    
+    #shopify-section-{{ section.id }} .author-name { 
+      font-size: 0.85rem !important; 
+      margin-top: 15px;
+    }
+    
+    #shopify-section-{{ section.id }} .author-meta { 
+      font-size: 0.7rem !important; 
+    }
+    
+    #shopify-section-{{ section.id }} .stars-container {
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+  }
+</style>
+
+<section class="testimonial-section" id="testimonials-{{ section.id }}">
+  <h2 class="testimonial-heading">{{ section.settings.heading }}</h2>
+  
+  <div class="testimonial-grid">
+    {%- for block in section.blocks -%}
+      {%- assign delay = forloop.index0 | times: 0.2 -%}
+      <div class="glass-card reveal-up" style="transition-delay: {{ delay }}s;" {{ block.shopify_attributes }}>
+        
+        <div class="stars-container">
+          {%- for i in (1..block.settings.star_rating) -%}
+            <i class="fas fa-star"></i>
+          {%- endfor -%}
+        </div>
+        
+        <p class="quote-text">"{{ block.settings.quote }}"</p>
+        <h5 class="author-name">— {{ block.settings.author_name }}</h5>
+        <span class="author-meta">{{ block.settings.author_meta }}</span>
+        
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.2 });
+    
+    const elements = document.querySelectorAll('#testimonials-{{ section.id }} .reveal-up');
+    elements.forEach(el => observer.observe(el));
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Espon Testimonials",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Testimonials"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading & Author Name (Navy)",
+      "default": "#0f172a"
+    },
+    {
+      "type": "color",
+      "id": "quote_color",
+      "label": "Quote Text Color",
+      "default": "#64748b"
+    },
+    {
+      "type": "color",
+      "id": "meta_color",
+      "label": "Author Title Color",
+      "default": "#94a3b8"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star Color (Gold)",
+      "default": "#CA8A04"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Card Border Color",
+      "default": "#e2e8f0"
+    },
+    {
+      "type": "header",
+      "content": "Desktop Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 10,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Top Padding",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 10,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom Padding",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Mobile Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top Padding (Mobile)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom Padding (Mobile)",
+      "default": 40
+    }
+  ],
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "range",
+          "id": "star_rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "label": "Star Rating",
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "Your customer's amazing review goes here."
+        },
+        {
+          "type": "text",
+          "id": "author_name",
+          "label": "Author Name",
+          "default": "Rajesh Kumar"
+        },
+        {
+          "type": "text",
+          "id": "author_meta",
+          "label": "Author Role / Location",
+          "default": "Gym Owner, Jaipur"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Espon Testimonials",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "star_rating": 5,
+            "quote": "I was buying from Delhi Gandhi Nagar earlier, but quality was inconsistent. Espon's 4-Way Lycra is superior.",
+            "author_name": "Rajesh Kumar",
+            "author_meta": "Gym Owner, Jaipur"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "star_rating": 5,
+            "quote": "The COD option for samples gave me confidence. Now I order 200 pieces monthly. Delivery via TCI is always on time.",
+            "author_name": "Amit Singh",
+            "author_meta": "Wholesaler, Indore"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "star_rating": 5,
+            "quote": "Finally a manufacturer who understands trends. The 'Joggers Combo' flies off my shelves. Better margins.",
+            "author_name": "Vikas Gupta",
+            "author_meta": "Sports Store, Punjab"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "star_rating": 5,
+            "quote": "My customers love the fitting of the lower. Returns are almost zero. Best manufacturer for long-term business.",
+            "author_name": "Deepak Sharma",
+            "author_meta": "Retailer, Bangalore"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

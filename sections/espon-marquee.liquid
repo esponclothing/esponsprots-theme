@@ -1,0 +1,185 @@
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --gold-main: {{ section.settings.bg_color }};
+    --text-color: {{ section.settings.text_color }};
+    --icon-gap: {{ section.settings.icon_gap }}px;
+    --item-gap: {{ section.settings.item_gap }}px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  #shopify-section-{{ section.id }} .marquee-strip {
+    background: var(--gold-main); 
+    color: var(--text-color);
+    padding: 12px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+  
+  #shopify-section-{{ section.id }} .marquee-content {
+    display: inline-block;
+    animation: scrollText-{{ section.id }} {{ section.settings.animation_speed }}s linear infinite;
+  }
+  
+  #shopify-section-{{ section.id }} .marquee-content span {
+    display: inline-block;
+    font-weight: 800;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-color);
+  }
+  
+  #shopify-section-{{ section.id }} .marquee-content i { 
+    color: var(--text-color); 
+    margin-left: var(--icon-gap); 
+    margin-right: var(--item-gap);
+    opacity: 0.8; 
+  }
+  
+  @keyframes scrollText-{{ section.id }} {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+</style>
+
+<div class="marquee-strip">
+  <div class="marquee-content">
+    {% comment %} Looping twice to create a seamless infinite scrolling effect {% endcomment %}
+    {%- for i in (1..2) -%}
+      {%- for block in section.blocks -%}
+        <span {{ block.shopify_attributes }}>{{ block.settings.text }}</span><i class="{{ block.settings.icon_class }}"></i>
+      {%- endfor -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Espon Marquee",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#CA8A04"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Spacing & Animation"
+    },
+    {
+      "type": "range",
+      "id": "icon_gap",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Space between Text and Icon",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "item_gap",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Space between Items",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "animation_speed",
+      "min": 10,
+      "max": 60,
+      "step": 1,
+      "unit": "s",
+      "label": "Scroll Speed",
+      "default": 25
+    }
+  ],
+  "blocks": [
+    {
+      "type": "marquee_item",
+      "name": "Marquee Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "FREE SHIPPING ON ALL ORDERS"
+        },
+        {
+          "type": "text",
+          "id": "icon_class",
+          "label": "FontAwesome Icon Class",
+          "default": "fas fa-truck"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Espon Marquee",
+      "blocks": [
+        {
+          "type": "marquee_item",
+          "settings": {
+            "text": "FREE SHIPPING ON ALL ORDERS",
+            "icon_class": "fas fa-truck"
+          }
+        },
+        {
+          "type": "marquee_item",
+          "settings": {
+            "text": "FLAT 50% RETAIL MARGIN",
+            "icon_class": "fas fa-star"
+          }
+        },
+        {
+          "type": "marquee_item",
+          "settings": {
+            "text": "5% CASHBACK ON EVERY ORDER",
+            "icon_class": "fas fa-coins"
+          }
+        },
+        {
+          "type": "marquee_item",
+          "settings": {
+            "text": "EXPRESS DELIVERY",
+            "icon_class": "fas fa-truck-fast"
+          }
+        },
+        {
+          "type": "marquee_item",
+          "settings": {
+            "text": "COD AVAILABLE (10% ADVANCE)",
+            "icon_class": "fas fa-box-open"
+          }
+        },
+        {
+          "type": "marquee_item",
+          "settings": {
+            "text": "MOQ: 50 PCS",
+            "icon_class": "fas fa-check-circle"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

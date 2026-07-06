@@ -1,0 +1,240 @@
+<style>
+  .s2w-floating-widget {
+    position: fixed; 
+    top: 50%; /* Middle of screen */
+    transform: translateY(-50%); /* Perfectly center vertically */
+    right: 20px;
+    background: #0f172a; border: 2px solid #CA8A04;
+    border-radius: 16px; /* Squarer premium look */
+    padding: 15px;
+    display: none; flex-direction: column; align-items: center; gap: 8px;
+    cursor: pointer; z-index: 99998;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800;
+    transition: 0.3s;
+    width: 70px; text-align: center;
+  }
+  .s2w-floating-widget:hover { transform: translateY(-50%) scale(1.05); border-color: #fff; }
+  
+  .s2w-floating-icon { font-size: 1.5rem; color: #CA8A04; animation: s2wPulse 2s infinite; }
+  .s2w-clock-label { font-size: 11px; color: #94a3b8; font-weight: 500; margin-top: -3px; }
+  #s2wClock { font-size: 1.1rem; }
+  
+  @keyframes s2wPulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+
+  .s2w-widget-details {
+    position: absolute; top: 0; right: calc(100% + 20px); /* Opens to the LEFT */
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 25px;
+    width: 320px; display: none; box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    color: #0f172a; cursor: default; text-align: left;
+  }
+  .s2w-widget-details.show { display: block; animation: s2wSlideIn 0.3s cubic-bezier(0.165, 0.84, 0.44, 1); }
+  @keyframes s2wSlideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+  
+  .s2w-widget-details h4 { margin: 0 0 10px; font-weight: 900; font-size: 1.3rem; color: #16a34a; text-transform: uppercase; letter-spacing: -0.5px; }
+  .s2w-widget-details p { margin: 0 0 15px; font-size: 0.95rem; color: #475569; line-height: 1.5; font-weight: 500; }
+  .s2w-widget-details .won-highlight { font-size: 1.2rem; font-weight: 900; color: #CA8A04; display: block; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0; }
+
+  /* DYNAMIC CART STATUS BOXES */
+  .s2w-warning-box { background: #fee2e2; color: #dc2626; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; margin-bottom: 15px; border: 1px dashed #fca5a5; line-height: 1.4; }
+  .s2w-success-box { background: #dcfce7; color: #16a34a; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; margin-bottom: 15px; border: 1px dashed #86efac; }
+
+  /* DISCARD BUTTON */
+  .s2w-discard-btn { background: none; border: none; color: #dc2626; font-weight: 700; font-size: 0.85rem; margin-top: 15px; cursor: pointer; width: 100%; text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .s2w-floating-widget { right: 10px; width: 60px; padding: 10px; }
+    .s2w-floating-icon { font-size: 1.2rem; }
+    #s2wClock { font-size: 0.9rem; }
+    .s2w-widget-details { width: 280px; top: auto; bottom: -50px; right: calc(100% + 10px); }
+  }
+</style>
+
+<div class="s2w-floating-widget" id="s2wFloatingWidget" onclick="document.getElementById('s2wWidgetDetails').classList.toggle('show')">
+  <i class="fa-solid fa-gift s2w-floating-icon"></i>
+  <span id="s2wClock">30:00</span>
+  <span class="s2w-clock-label">LEFT</span>
+  
+  <div class="s2w-widget-details" id="s2wWidgetDetails" onclick="event.stopPropagation()">
+    <h4>Reward Unlocked!</h4>
+    <span class="won-highlight" id="s2wWidgetRewardText">Your Reward</span>
+    
+    <div id="s2wCartStatusArea"></div>
+
+    <p>Complete checkout within the time limit. Remove gift to checkout instantly.</p>
+    <a href="/cart" style="background:#CA8A04; color:#fff; padding:12px; border-radius:8px; text-decoration:none; display:block; text-align:center; font-weight:800; text-transform:uppercase; margin-top:15px; transition:0.3s;">GO TO CART</a>
+    
+    <button class="s2w-discard-btn" onclick="clearGlobalReward(true)">Discard Offer</button>
+  </div>
+</div>
+
+<script>
+  let globalTick;
+  window.s2wIsBlocked = false;
+  window.s2wShortfall = 0;
+
+  // OUTSIDE CLICK TO CLOSE WIDGET
+  document.addEventListener('click', function(event) {
+    const widgetDetails = document.getElementById('s2wWidgetDetails');
+    const widgetToggle = document.getElementById('s2wFloatingWidget');
+    if (widgetDetails && widgetToggle && !widgetToggle.contains(event.target)) {
+      widgetDetails.classList.remove('show');
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    checkGlobalSpinStatus();
+    document.documentElement.addEventListener('cart:updated', validateRewardThreshold);
+    document.documentElement.addEventListener('cart:change', validateRewardThreshold);
+  });
+
+  function checkGlobalSpinStatus() {
+    const expiry = localStorage.getItem('espon_spin_expiry');
+    const rewardName = localStorage.getItem('espon_spin_reward_name');
+    
+    if (expiry && rewardName) {
+      if (Date.now() < parseInt(expiry)) {
+        document.getElementById('s2wWidgetRewardText').innerText = rewardName;
+        document.getElementById('s2wFloatingWidget').style.display = 'flex';
+        startGlobalCountdownTick();
+        validateRewardThreshold(); 
+      } else { 
+        // If they return to the site after time expired, aggressively remove the item
+        clearGlobalReward(true); 
+      }
+    } else {
+      clearGlobalReward(false);
+    }
+  }
+
+  function validateRewardThreshold() {
+    fetch(window.Shopify.routes.root + 'cart.js').then(r => r.json()).then(cart => {
+        const rewardVid = localStorage.getItem('espon_spin_reward_vid');
+        
+        // AUTO-DETECT REMOVAL: If user deleted the item from their cart manually, kill the timer!
+        if (rewardVid) {
+            const itemInCart = cart.items.find(item => item.id.toString() === rewardVid);
+            if (!itemInCart) {
+                clearGlobalReward(false); 
+                return;
+            }
+        }
+
+        const minOrder = parseInt(localStorage.getItem('espon_spin_min_order')) || 0;
+        const statusDiv = document.getElementById('s2wCartStatusArea');
+        const cartTotal = cart.total_price / 100;
+        
+        if (minOrder > 0) {
+          if (cartTotal < minOrder) {
+            window.s2wShortfall = minOrder - cartTotal;
+            window.s2wIsBlocked = true;
+            statusDiv.innerHTML = `<div class="s2w-warning-box"><i class="fa-solid fa-exclamation-triangle me-2"></i>Add ₹${window.s2wShortfall.toLocaleString('en-IN')} more to claim this gift!</div>`;
+          } else {
+            window.s2wIsBlocked = false;
+            window.s2wShortfall = 0;
+            statusDiv.innerHTML = `<div class="s2w-success-box"><i class="fa-solid fa-check-circle me-2"></i>Cart target reached! Gift secured.</div>`;
+          }
+        }
+    });
+  }
+
+  // BULLETPROOF AGGRESSIVE BLOCKER - FASTER EXECUTION (50ms)
+  setInterval(() => {
+    if (!window.s2wIsBlocked) return; 
+
+    const cartForms = document.querySelectorAll('form[action="/cart"], form[action="/checkout"]');
+    cartForms.forEach(form => {
+        form.addEventListener('submit', handleCheckoutAttempt);
+    });
+
+    const expressSelectors = '[data-shopify-buttoncontainer], .shopify-payment-button, [name="checkout"], .checkout-button, .additional-checkout-buttons';
+    const allButtons = document.querySelectorAll(expressSelectors);
+    
+    allButtons.forEach(container => {
+        if (!container.querySelector('.s2w-blocker-overlay')) {
+            container.style.position = 'relative';
+            const overlay = document.createElement('div');
+            overlay.className = 's2w-blocker-overlay';
+            overlay.style = 'position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.7); z-index:9999; cursor:not-allowed; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#dc2626; font-weight:800; font-size:12px;';
+            overlay.innerText = 'LOCKED';
+            overlay.addEventListener('click', handleCheckoutAttempt);
+            container.appendChild(overlay);
+        }
+    });
+
+    const standardBtns = document.querySelectorAll('button[name="checkout"], input[name="checkout"]');
+    standardBtns.forEach(btn => {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+        btn.style.cursor = 'not-allowed';
+        btn.onclick = handleCheckoutAttempt;
+    });
+
+  }, 50);
+
+  setInterval(() => {
+    if (window.s2wIsBlocked) return;
+    document.querySelectorAll('.s2w-blocker-overlay').forEach(el => el.remove());
+    document.querySelectorAll('button[name="checkout"], input[name="checkout"]').forEach(btn => {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+        btn.onclick = null;
+    });
+  }, 1000);
+
+  function handleCheckoutAttempt(e) {
+    if (window.s2wIsBlocked) {
+        e.preventDefault();
+        e.stopPropagation();
+        alert(`⚠️ Wait! Minimum Order Required.\n\nYou must add ₹${window.s2wShortfall.toLocaleString('en-IN')} more to your cart to claim your Free Gift.\n\nPlease add more items, or click the Floating Timer and select 'Discard Offer'.`);
+        return false;
+    }
+  }
+
+  function startGlobalCountdownTick() {
+    clearInterval(globalTick);
+    globalTick = setInterval(() => {
+      const diff = parseInt(localStorage.getItem('espon_spin_expiry')) - Date.now();
+      if (diff <= 0) { 
+        clearInterval(globalTick); 
+        clearGlobalReward(true); 
+      } else {
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+        document.getElementById('s2wClock').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }
+    }, 1000);
+  }
+
+  function clearGlobalReward(updateCart = true) {
+    document.getElementById('s2wFloatingWidget').style.display = 'none';
+    const expiredVid = localStorage.getItem('espon_spin_reward_vid');
+    
+    // Release checkout lock immediately
+    window.s2wIsBlocked = false; 
+    
+    if (expiredVid && updateCart) {
+      fetch(window.Shopify.routes.root + 'cart/change.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: expiredVid, quantity: 0 })
+      }).then(() => {
+        // Clear storage only AFTER API request
+        localStorage.removeItem('espon_spin_expiry');
+        localStorage.removeItem('espon_spin_reward_name');
+        localStorage.removeItem('espon_spin_reward_vid');
+        
+        document.documentElement.dispatchEvent(new CustomEvent('cart:change', {bubbles: true}));
+        document.documentElement.dispatchEvent(new CustomEvent('cart:updated', {bubbles: true}));
+        
+        // Force an immediate reload to guarantee the cart drawer/page updates visually
+        window.location.reload();
+      });
+    } else {
+      localStorage.removeItem('espon_spin_expiry');
+      localStorage.removeItem('espon_spin_reward_name');
+      localStorage.removeItem('espon_spin_reward_vid');
+    }
+  }
+</script>

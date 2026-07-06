@@ -1,0 +1,518 @@
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --bg-white: {{ section.settings.bg_color }};
+    --navy: {{ section.settings.text_color_main }};
+    --gold-main: {{ section.settings.accent_color }};
+    --grid-bg: {{ section.settings.grid_bg_color }};
+    --grid-border: {{ section.settings.grid_border_color }};
+    --text-muted: {{ section.settings.text_color_muted }};
+    --marquee-bg: {{ section.settings.marquee_bg_color }};
+    --marquee-text: {{ section.settings.marquee_text_color }};
+    --marquee-dot: {{ section.settings.marquee_dot_color }};
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  /* --- CONTAINER --- */
+  #shopify-section-{{ section.id }} .network-section-clean {
+    position: relative;
+    background: var(--bg-white); 
+    color: var(--navy);      
+    padding: {{ section.settings.padding_top }}px 0 0 0; 
+    text-align: center;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .network-content-wrapper {
+    padding: 0 20px 60px 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  /* --- TEXT STYLES --- */
+  #shopify-section-{{ section.id }} .network-subtitle {
+    color: var(--gold-main); 
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+  }
+  
+  #shopify-section-{{ section.id }} .network-title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 50px;
+    line-height: 1.1;
+    color: var(--navy);
+  }
+
+  #shopify-section-{{ section.id }} .net-text, 
+  #shopify-section-{{ section.id }} .net-number { 
+    display: inline; 
+  }
+
+  /* --- STATS GRID --- */
+  #shopify-section-{{ section.id }} .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-bottom: 20px;
+  }
+  
+  #shopify-section-{{ section.id }} .stat-item {
+    background: var(--grid-bg); 
+    border: 1px solid var(--grid-border);
+    padding: 30px;
+    border-radius: 20px;
+    transition: transform 0.3s;
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  
+  #shopify-section-{{ section.id }} .stat-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+
+  #shopify-section-{{ section.id }} .stat-icon { 
+    font-size: 2.5rem; 
+    color: var(--gold-main); 
+    margin-bottom: 15px; 
+  }
+  
+  #shopify-section-{{ section.id }} .stat-num { 
+    font-size: 3rem; 
+    font-weight: 800; 
+    display: inline-block; 
+    color: var(--navy); 
+    line-height: 1; 
+    font-variant-numeric: tabular-nums; 
+    font-feature-settings: "tnum";
+    transform: translateZ(0); 
+    will-change: contents; 
+  }
+  
+  #shopify-section-{{ section.id }} .stat-label { 
+    font-size: 0.9rem; 
+    color: var(--text-muted); 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    margin-top: 5px; 
+  }
+
+  /* --- MARQUEE STRIP --- */
+  #shopify-section-{{ section.id }} .network-marquee-strip {
+    background: var(--marquee-bg); 
+    color: var(--marquee-text);
+    padding: 15px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    border-top: 4px solid var(--gold-main); 
+  }
+  
+  #shopify-section-{{ section.id }} .network-marquee-content {
+    display: inline-block;
+    animation: scrollNetwork-{{ section.id }} {{ section.settings.marquee_speed }}s linear infinite;
+    will-change: transform;
+    transform: translateZ(0);
+  }
+  
+  #shopify-section-{{ section.id }} .network-marquee-content span {
+    display: inline-block;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-right: 60px; 
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--marquee-text);
+  }
+
+  #shopify-section-{{ section.id }} .live-dot {
+    display: inline-block;
+    width: 8px; 
+    height: 8px;
+    background: var(--marquee-dot); 
+    border-radius: 50%;
+    margin-right: 5px;
+    margin-bottom: 1px;
+    box-shadow: 0 0 8px var(--marquee-dot);
+    animation: blink-{{ section.id }} 1.5s infinite;
+  }
+
+  @keyframes blink-{{ section.id }} { 
+    0% { opacity: 1; } 
+    50% { opacity: 0.4; } 
+    100% { opacity: 1; } 
+  }
+  
+  @keyframes scrollNetwork-{{ section.id }} {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* --- MOBILE FIXED --- */
+  @media (max-width: 768px) {
+    #shopify-section-{{ section.id }} .network-section-clean { 
+      padding-top: {{ section.settings.padding_top_mobile }}px !important; 
+    }
+    
+    #shopify-section-{{ section.id }} .network-title { 
+      font-size: 2rem; 
+      margin-bottom: 30px; 
+      display: flex;
+      flex-direction: column; 
+      gap: 5px; 
+      line-height: 1.2;
+    }
+
+    #shopify-section-{{ section.id }} .net-text {
+      display: block;
+      font-size: 1.8rem;
+    }
+
+    #shopify-section-{{ section.id }} .net-number {
+      display: block;
+      font-size: 4rem; 
+      color: var(--gold-main); 
+      font-weight: 900;
+      min-height: 80px; 
+    }
+    
+    #shopify-section-{{ section.id }} .stats-grid { 
+      grid-template-columns: repeat(3, 1fr) !important; 
+      gap: 10px !important; 
+    }
+    
+    #shopify-section-{{ section.id }} .stat-item { 
+      padding: 15px 5px !important; 
+      display: block !important; 
+      text-align: center !important; 
+    }
+    
+    #shopify-section-{{ section.id }} .stat-icon { 
+      font-size: 1.5rem !important; 
+      margin-bottom: 5px !important; 
+    }
+    
+    #shopify-section-{{ section.id }} .stat-num { 
+      font-size: 1.5rem !important; 
+    }
+    
+    #shopify-section-{{ section.id }} .stat-label { 
+      font-size: 0.7rem !important; 
+      line-height: 1.1; 
+    }
+    
+    #shopify-section-{{ section.id }} .network-marquee-content span { 
+      margin-right: 40px; 
+      font-size: 0.8rem; 
+    }
+  }
+</style>
+
+<div class="network-section-clean" id="network-{{ section.id }}">
+  <div class="network-content-wrapper">
+    <h5 class="network-subtitle">{{ section.settings.subtitle }}</h5>
+    
+    <h2 class="network-title">
+      <span class="net-text">{{ section.settings.title_part_1 }}</span>
+      <span class="net-number"><span class="counter" data-target="{{ section.settings.main_counter_target }}">0</span></span>
+      <span class="net-text">{{ section.settings.title_part_2 }}</span>
+    </h2>
+    
+    <div class="stats-grid">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'stat_item' -%}
+          <div class="stat-item" {{ block.shopify_attributes }}>
+            <div class="stat-icon"><i class="{{ block.settings.icon_class }}"></i></div>
+            <div class="stat-num counter" data-target="{{ block.settings.target_number }}">0</div>
+            <div class="stat-label">{{ block.settings.label }}</div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <div class="network-marquee-strip">
+    <div class="network-marquee-content">
+      {% comment %} Looping 3 times to ensure the marquee has enough width for a seamless infinite scroll {% endcomment %}
+      {%- for i in (1..3) -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'marquee_order' -%}
+            <span {{ block.shopify_attributes }}><span class="live-dot"></span> {{ block.settings.order_text }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Scope query selector to this specific section to prevent conflicts
+    const stats = document.querySelectorAll('#network-{{ section.id }} .counter');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const target = +entry.target.getAttribute('data-target');
+          
+          const duration = 2000; 
+          const increment = target / (duration / 16); 
+          
+          let current = 0;
+          
+          const updateCount = () => {
+            current += increment;
+            
+            if (current < target) {
+              entry.target.innerText = Math.ceil(current) + "+";
+              requestAnimationFrame(updateCount);
+            } else {
+              entry.target.innerText = target + "+";
+            }
+          };
+          
+          updateCount();
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    stats.forEach(stat => observer.observe(stat));
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Espon Network",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Main Text"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "INDIA'S FASTEST GROWING B2B NETWORK"
+    },
+    {
+      "type": "text",
+      "id": "title_part_1",
+      "label": "Title (Before Number)",
+      "default": "Trusted by"
+    },
+    {
+      "type": "number",
+      "id": "main_counter_target",
+      "label": "Main Counter Target Number",
+      "default": 5000
+    },
+    {
+      "type": "text",
+      "id": "title_part_2",
+      "label": "Title (After Number)",
+      "default": "Retailers & Wholesalers"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color_main",
+      "label": "Main Text Color (Navy)",
+      "default": "#0f172a"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color (Gold)",
+      "default": "#CA8A04"
+    },
+    {
+      "type": "color",
+      "id": "grid_bg_color",
+      "label": "Grid Item Background",
+      "default": "#f8fafc"
+    },
+    {
+      "type": "color",
+      "id": "grid_border_color",
+      "label": "Grid Item Border",
+      "default": "#e2e8f0"
+    },
+    {
+      "type": "color",
+      "id": "text_color_muted",
+      "label": "Muted Text Color",
+      "default": "#64748b"
+    },
+    {
+      "type": "color",
+      "id": "marquee_bg_color",
+      "label": "Marquee Background Color",
+      "default": "#0f172a"
+    },
+    {
+      "type": "color",
+      "id": "marquee_text_color",
+      "label": "Marquee Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "marquee_dot_color",
+      "label": "Live Dot Color",
+      "default": "#22c55e"
+    },
+    {
+      "type": "header",
+      "content": "Animation & Spacing"
+    },
+    {
+      "type": "range",
+      "id": "marquee_speed",
+      "min": 10,
+      "max": 60,
+      "step": 1,
+      "unit": "s",
+      "label": "Marquee Scroll Speed",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Top Padding (Desktop)",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top Padding (Mobile)",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat_item",
+      "name": "Stat Item",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon_class",
+          "label": "FontAwesome Icon Class",
+          "default": "fas fa-city"
+        },
+        {
+          "type": "number",
+          "id": "target_number",
+          "label": "Target Number",
+          "default": 200
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Cities Live"
+        }
+      ]
+    },
+    {
+      "type": "marquee_order",
+      "name": "Live Order Location",
+      "settings": [
+        {
+          "type": "text",
+          "id": "order_text",
+          "label": "Order Text",
+          "default": "LIVE ORDER: NEW DELHI"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Espon Network",
+      "blocks": [
+        {
+          "type": "stat_item",
+          "settings": {
+            "icon_class": "fas fa-city",
+            "target_number": 200,
+            "label": "Cities Live"
+          }
+        },
+        {
+          "type": "stat_item",
+          "settings": {
+            "icon_class": "fas fa-map",
+            "target_number": 25,
+            "label": "States"
+          }
+        },
+        {
+          "type": "stat_item",
+          "settings": {
+            "icon_class": "fas fa-globe-asia",
+            "target_number": 10,
+            "label": "Countries"
+          }
+        },
+        {
+          "type": "marquee_order",
+          "settings": { "order_text": "LIVE ORDER: NEW DELHI" }
+        },
+        {
+          "type": "marquee_order",
+          "settings": { "order_text": "LIVE ORDER: MUMBAI" }
+        },
+        {
+          "type": "marquee_order",
+          "settings": { "order_text": "LIVE ORDER: BANGALORE" }
+        },
+        {
+          "type": "marquee_order",
+          "settings": { "order_text": "LIVE ORDER: HYDERABAD" }
+        },
+        {
+          "type": "marquee_order",
+          "settings": { "order_text": "LIVE ORDER: AHMEDABAD" }
+        },
+        {
+          "type": "marquee_order",
+          "settings": { "order_text": "LIVE ORDER: CHENNAI" }
+        },
+        {
+          "type": "marquee_order",
+          "settings": { "order_text": "LIVE ORDER: KOLKATA" }
+        },
+        {
+          "type": "marquee_order",
+          "settings": { "order_text": "LIVE ORDER: SURAT" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

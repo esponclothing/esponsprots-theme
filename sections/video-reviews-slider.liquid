@@ -1,0 +1,361 @@
+<style>
+  .video-reviews-container { 
+    padding: 40px 20px; 
+    background: {{ section.settings.bg_color }}; 
+    overflow: hidden; 
+    font-family: 'Plus Jakarta Sans', sans-serif; 
+  }
+  .video-reviews-header { 
+    text-align: center; 
+    margin-bottom: 30px; 
+  }
+  .video-reviews-header h2 { 
+    font-size: {{ section.settings.title_size }}px; 
+    font-weight: 800; 
+    color: {{ section.settings.text_color }}; 
+    margin: 0; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+  }
+  
+  /* Swipeable Track */
+  .yt-swipe-track { 
+    display: flex; 
+    gap: 20px; 
+    overflow-x: auto; 
+    scroll-snap-type: x mandatory; 
+    padding-bottom: 20px; 
+    -ms-overflow-style: none; 
+    scrollbar-width: none; 
+    scroll-behavior: smooth; 
+  }
+  .yt-swipe-track::-webkit-scrollbar { display: none; }
+  
+  /* Individual Video Cards */
+  .yt-card { 
+    flex: 0 0 280px; 
+    height: 500px; 
+    scroll-snap-align: center; 
+    border-radius: 16px; 
+    overflow: hidden; 
+    position: relative; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+    background: #000; 
+    cursor: pointer; 
+    border: 1px solid rgba(255,255,255,0.1); 
+    transform: scale(0.98); 
+    transition: transform 0.3s ease; 
+  }
+  .yt-card:hover { 
+    transform: scale(1); 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.25); 
+  }
+  
+  /* Custom Thumbnail */
+  .yt-thumbnail { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    opacity: 0.85; 
+    transition: 0.4s; 
+  }
+  .yt-card:hover .yt-thumbnail { 
+    opacity: 0.6; 
+    transform: scale(1.05); 
+  }
+
+  /* CUSTOMER REVIEW BADGE (TOP LEFT) */
+  .yt-customer-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(15, 23, 42, 0.85); /* Deep slate semi-transparent */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 10px;
+    z-index: 3;
+    pointer-events: none; /* Let clicks pass through to play button */
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: opacity 0.3s ease;
+  }
+  .yt-badge-stars {
+    color: #fbbf24;
+    font-size: 11px;
+    margin-bottom: 3px;
+    letter-spacing: 1px;
+  }
+  .yt-badge-name {
+    display: block;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .yt-badge-loc {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: #cbd5e1;
+    margin-top: 2px;
+  }
+  
+  /* Attractive Play Button */
+  .yt-play-btn { 
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    width: 65px; 
+    height: 65px; 
+    background: rgba(220, 38, 38, 0.9); /* Espon Red */
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    z-index: 2; 
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.6); 
+    transition: 0.3s; 
+  }
+  .yt-play-btn i { font-size: 1.5rem; color: #fff; margin-left: 4px; }
+  .yt-card:hover .yt-play-btn { 
+    background: #dc2626; 
+    transform: translate(-50%, -50%) scale(1.1); 
+    box-shadow: 0 0 30px rgba(220, 38, 38, 0.8); 
+  }
+
+  /* Testimonial Text Overlay (BOTTOM) */
+  .yt-text-overlay { 
+    position: absolute; 
+    bottom: 0; 
+    left: 0; 
+    width: 100%; 
+    padding: 60px 20px 20px; 
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 60%, transparent 100%); 
+    color: #fff; 
+    z-index: 1; 
+    pointer-events: none; 
+    transition: opacity 0.3s ease; 
+  }
+  .yt-text-overlay p { 
+    margin: 0; 
+    font-size: 0.95rem; 
+    font-weight: 600; 
+    line-height: 1.4; 
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
+  }
+
+  /* Hidden Container for YouTube Iframe */
+  .yt-iframe-wrapper { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    z-index: 5; 
+    background: #000; 
+    display: none; 
+  }
+
+  /* WHEN VIDEO IS PLAYING - HIDE THE OVERLAYS */
+  .yt-card.is-playing .yt-iframe-wrapper { display: block; }
+  .yt-card.is-playing .yt-customer-badge { opacity: 0; }
+  .yt-card.is-playing .yt-play-btn { opacity: 0; }
+  .yt-card.is-playing .yt-text-overlay { opacity: 0; }
+
+  @media (max-width: 600px) {
+    .yt-card { flex: 0 0 82%; height: 450px; scroll-snap-align: start; }
+  }
+</style>
+
+<div class="video-reviews-container">
+  <div class="video-reviews-header">
+    <h2>{{ section.settings.title }}</h2>
+  </div>
+
+  <div class="yt-swipe-track" id="ytSwipeTrack-{{ section.id }}">
+    {% for block in section.blocks %}
+      {% if block.settings.youtube_url != blank %}
+        
+        <div class="yt-card" data-url="{{ block.settings.youtube_url }}">
+          
+          {% if block.settings.cover_image != blank %}
+            <img src="{{ block.settings.cover_image | img_url: '600x' }}" class="yt-thumbnail" loading="lazy">
+          {% else %}
+            <div style="width:100%; height:100%; background:#1e293b; display:flex; align-items:center; justify-content:center; color:#64748b;">No Cover Image</div>
+          {% endif %}
+
+          <div class="yt-customer-badge">
+            <div class="yt-badge-stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <span class="yt-badge-name">{{ block.settings.customer_name }}</span>
+            {% if block.settings.location != blank %}
+              <span class="yt-badge-loc"><i class="fa-solid fa-location-dot"></i> {{ block.settings.location }}</span>
+            {% endif %}
+          </div>
+          
+          <div class="yt-play-btn"><i class="fa-solid fa-play"></i></div>
+
+          <div class="yt-text-overlay">
+            <p>"{{ block.settings.quote }}"</p>
+          </div>
+
+          <div class="yt-iframe-wrapper"></div>
+          
+        </div>
+
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const track = document.getElementById('ytSwipeTrack-{{ section.id }}');
+  if (!track) return;
+
+  let autoSwipeEnabled = {{ section.settings.enable_auto_swipe }};
+  let swipeSpeed = {{ section.settings.swipe_speed }} * 1000;
+  let autoSwipeInterval;
+
+  // 1. YouTube ID Extractor Tool
+  function getYouTubeID(url) {
+    let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    let match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  }
+
+  // 2. Play Video on Click
+  const cards = track.querySelectorAll('.yt-card');
+  cards.forEach(card => {
+    card.addEventListener('click', function() {
+      // Pause auto-swipe so the video doesn't run away while they watch it!
+      clearInterval(autoSwipeInterval); 
+      
+      let url = this.dataset.url;
+      let ytId = getYouTubeID(url);
+      
+      if (ytId && !this.classList.contains('is-playing')) {
+        this.classList.add('is-playing');
+        let iframeContainer = this.querySelector('.yt-iframe-wrapper');
+        // Inject YouTube Player (Forces Autoplay)
+        iframeContainer.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${ytId}?autoplay=1&controls=1&rel=0&playsinline=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+      }
+    });
+  });
+
+  // 3. Auto Swipe Logic
+  if (autoSwipeEnabled && cards.length > 1) {
+    let currentIndex = 0;
+    autoSwipeInterval = setInterval(() => {
+      currentIndex = (currentIndex + 1) % cards.length;
+      let scrollPosition = cards[currentIndex].offsetLeft - track.offsetLeft;
+      track.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+    }, swipeSpeed);
+
+    // Pause swiping if they drag/touch the screen manually
+    track.addEventListener('touchstart', () => clearInterval(autoSwipeInterval), {passive: true});
+    track.addEventListener('mousedown', () => clearInterval(autoSwipeInterval));
+  }
+});
+</script>
+
+{% schema %}
+{
+  "name": "Espon Video Reviews",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "SEE IT IN ACTION"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 16,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Title Size",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#0f172a"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#f8fafc"
+    },
+    {
+      "type": "header",
+      "content": "Carousel Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_auto_swipe",
+      "label": "Enable Auto-Swipe",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "swipe_speed",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "sec",
+      "label": "Auto-Swipe Speed",
+      "default": 4
+    }
+  ],
+  "blocks": [
+    {
+      "type": "youtube_video",
+      "name": "YouTube Review",
+      "settings": [
+        {
+          "type": "text",
+          "id": "youtube_url",
+          "label": "YouTube Video URL",
+          "info": "Paste the full YouTube link or YouTube Shorts link."
+        },
+        {
+          "type": "image_picker",
+          "id": "cover_image",
+          "label": "Custom Cover Thumbnail",
+          "info": "Upload an attractive vertical image. This makes the page load 10x faster!"
+        },
+        {
+          "type": "text",
+          "id": "customer_name",
+          "label": "Customer Name",
+          "default": "Rahul Sharma"
+        },
+        {
+          "type": "text",
+          "id": "location",
+          "label": "Location / City",
+          "default": "Rohtak, Haryana"
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Review Quote",
+          "default": "Amazing fabric quality! Highly recommended for retail."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Espon Video Reviews"
+    }
+  ]
+}
+{% endschema %}

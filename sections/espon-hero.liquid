@@ -1,0 +1,488 @@
+{% comment %} espon-hero.liquid {% endcomment %}
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --hero-navy: {{ section.settings.color_navy }};
+    --hero-gold: {{ section.settings.color_gold }};
+    --hero-border: #e2e8f0;
+  }
+
+  #espon-hero-section {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  .hero-reveal {
+    opacity: 0;
+    transform: translateY(50px) translateZ(-50px) rotateX(-5deg);
+    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .hero-reveal.active {
+    opacity: 1;
+    transform: translateY(0) translateZ(0) rotateX(0deg);
+  }
+
+  .espon-hero {
+    min-height: {{ section.settings.hero_min_height }}vh;
+    display: flex;
+    align-items: center;
+    padding: 100px 5%;
+    background: radial-gradient(circle at 70% 30%, #FEFCE8 0%, #ffffff 70%);
+    position: relative;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+
+  .espon-hero-content { flex: 1.2; min-width: 280px; }
+
+  .espon-hero-badge {
+    background: #FFFBEB;
+    color: var(--hero-gold);
+    display: inline-block;
+    padding: 8px 25px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 0.75rem;
+    margin-bottom: 25px;
+    border: 1px solid var(--hero-gold);
+  }
+
+  .espon-hero-content h1 {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 25px;
+    background: linear-gradient(to right, #0f172a, #475569);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-h1-highlight {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: var(--hero-gold) !important;
+    background-clip: unset !important;
+    color: var(--hero-gold) !important;
+  }
+
+  .espon-hero-body {
+    font-size: 1.2rem;
+    color: #64748b;
+    max-width: 600px;
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+  .espon-hero-stats {
+    color: var(--hero-navy);
+    font-weight: 700;
+    display: block;
+    margin-top: 12px;
+  }
+
+  .espon-hero-buttons { display: flex; gap: 15px; flex-wrap: wrap; }
+  .espon-hero-btn-primary {
+    background: var(--hero-gold);
+    color: #fff;
+    padding: 20px 45px;
+    border-radius: 15px;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 20px 40px rgba(202, 138, 4, 0.2);
+    display: inline-block;
+  }
+  .espon-hero-btn-secondary {
+    border: 2px solid var(--hero-gold);
+    color: var(--hero-gold);
+    padding: 20px 45px;
+    border-radius: 15px;
+    font-weight: 800;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  /* ===== CAROUSEL ===== */
+  .espon-hero-image-col {
+    flex: 0.8;
+    min-width: 280px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .espon-tilt-box {
+    transform-style: preserve-3d;
+    width: 100%;
+    max-width: 550px;
+    position: relative;
+  }
+
+  /* THE KEY FIX: The wrapper clips to one slide width */
+  .espon-carousel-outer {
+    width: 100%;
+    border-radius: 40px;
+    box-shadow: 0 20px 60px rgba(202, 138, 4, 0.15);
+    border: 1px solid var(--hero-border);
+    background: #fff;
+    overflow: hidden;       /* ← clips all other slides */
+    position: relative;
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Track is wide enough for all slides side by side */
+  .espon-hero-track {
+    display: flex;
+    will-change: transform;
+    /* transition set by JS so drag doesn't animate */
+  }
+
+  /* Each slide = exactly 100% of the wrapper width */
+  .espon-slide-img {
+    flex-shrink: 0;
+    width: 100%;           /* ← always full wrapper width */
+    height: auto;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+    -webkit-user-drag: none;
+  }
+
+  /* Dots */
+  .espon-hero-dots {
+    position: absolute;
+    bottom: 16px;
+    left: 0; width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    z-index: 5;
+    pointer-events: none;
+  }
+  .espon-h-dot {
+    width: 10px; height: 10px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    pointer-events: all;
+  }
+  .espon-h-dot.active {
+    background: var(--hero-gold);
+    width: 25px;
+    border-radius: 10px;
+  }
+
+  /* Mobile */
+  @media (max-width: 900px) {
+    .espon-hero {
+      flex-direction: column;
+      text-align: center;
+      padding: 0 0 30px 0 !important;
+      gap: 0;
+    }
+    .espon-hero-content { padding: 0 20px; order: 2; }
+    .espon-hero-image-col { order: 1; width: 100%; min-width: unset; margin-bottom: 30px; }
+    .espon-carousel-outer {
+      border-radius: 0 !important;
+      border-left: none !important;
+      border-right: none !important;
+      box-shadow: none !important;
+    }
+    .espon-tilt-box { max-width: 100% !important; }
+    .espon-hero-buttons { justify-content: center; }
+    .espon-hero-content h1 { margin-bottom: 15px !important; }
+    .espon-hero-body { margin-bottom: 25px !important; }
+  }
+  @media (min-width: 901px) {
+    .espon-hero-buttons { justify-content: flex-start; }
+  }
+</style>
+
+<div id="espon-hero-section">
+  <section class="espon-hero">
+
+    <!-- TEXT COLUMN -->
+    <div class="espon-hero-content hero-reveal active">
+
+      {% if section.settings.badge_text != blank %}
+        <div class="espon-hero-badge">{{ section.settings.badge_text }}</div>
+      {% endif %}
+
+      <h1>
+        {{ section.settings.hero_line1 }}<br>
+        {{ section.settings.hero_line2 }}<br>
+        <span class="hero-h1-highlight">{{ section.settings.hero_line3_highlight }}</span>
+      </h1>
+
+      <p class="espon-hero-body">
+        {{ section.settings.hero_body_text }}
+        {% if section.settings.stat1_text != blank or section.settings.stat2_text != blank %}
+          <span class="espon-hero-stats">
+            {% if section.settings.stat1_text != blank %}★ {{ section.settings.stat1_text }}{% endif %}
+            {% if section.settings.stat1_text != blank and section.settings.stat2_text != blank %} &nbsp; {% endif %}
+            {% if section.settings.stat2_text != blank %}★ {{ section.settings.stat2_text }}{% endif %}
+          </span>
+        {% endif %}
+      </p>
+
+      <div class="espon-hero-buttons">
+        {% if section.settings.btn1_label != blank %}
+          <a href="{{ section.settings.btn1_link }}" class="espon-hero-btn-primary">{{ section.settings.btn1_label }}</a>
+        {% endif %}
+        {% if section.settings.btn2_label != blank %}
+          <a href="{{ section.settings.btn2_link }}" class="espon-hero-btn-secondary">{{ section.settings.btn2_label }}</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- CAROUSEL COLUMN -->
+    <div class="espon-hero-image-col hero-reveal active">
+      <div class="espon-tilt-box" id="esponHeroTilt">
+
+        <div class="espon-carousel-outer" id="esponCarouselOuter">
+          <div id="esponHeroTrack" class="espon-hero-track">
+
+            {% for block in section.blocks %}
+              {% if block.type == 'slide' and block.settings.slide_image != blank %}
+                <img
+                  src="{{ block.settings.slide_image | img_url: '1100x' }}"
+                  class="espon-slide-img"
+                  alt="{{ block.settings.slide_image.alt | default: 'Hero slide' }}"
+                  {{ block.shopify_attributes }}
+                >
+              {% endif %}
+            {% endfor %}
+
+          </div>
+        </div>
+
+        <div class="espon-hero-dots" id="esponHeroDots"></div>
+
+      </div>
+    </div>
+
+  </section>
+</div>
+
+<script>
+(function() {
+  document.addEventListener("DOMContentLoaded", function() {
+
+    const outer     = document.getElementById('esponCarouselOuter');
+    const track     = document.getElementById('esponHeroTrack');
+    const dotsWrap  = document.getElementById('esponHeroDots');
+    const tiltBox   = document.getElementById('esponHeroTilt');
+    const slides    = track ? Array.from(track.querySelectorAll('.espon-slide-img')) : [];
+    const total     = slides.length;
+
+    if (total === 0 || !track) return;
+
+    const autoSpeed       = {{ section.settings.carousel_autoplay_speed | times: 1000 }};
+    const transSpeed      = {{ section.settings.carousel_transition_speed }};
+    const tiltMax         = {{ section.settings.tilt_max_deg }};
+    const tiltReturnSpeed = {{ section.settings.tilt_speed }};
+    const carouselLink    = "{{ section.settings.carousel_link }}";
+
+    let current   = 0;
+    let autoTimer = null;
+    // Touch / drag state
+    let dragStartX  = 0;
+    let dragCurrX   = 0;
+    let isDragging  = false;
+    let dragMoved   = false;
+
+    /* ---- DOTS ---- */
+    const dots = [];
+    if (total > 1) {
+      for (let i = 0; i < total; i++) {
+        const d = document.createElement('div');
+        d.className = 'espon-h-dot' + (i === 0 ? ' active' : '');
+        d.addEventListener('click', (e) => { e.stopPropagation(); goTo(i); resetAuto(); });
+        dotsWrap.appendChild(d);
+        dots.push(d);
+      }
+    }
+
+    /* ---- GO TO SLIDE ---- */
+    function goTo(idx, animate) {
+      if (idx < 0) idx = total - 1;
+      if (idx >= total) idx = 0;
+      current = idx;
+      track.style.transition = (animate === false)
+        ? 'none'
+        : `transform ${transSpeed}ms ease-in-out`;
+      track.style.transform = `translateX(-${current * 100}%)`;
+      dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+
+    /* ---- AUTO PLAY ---- */
+    function startAuto() {
+      if (total <= 1 || autoSpeed <= 0) return;
+      autoTimer = setInterval(() => goTo(current + 1), autoSpeed);
+    }
+    function resetAuto() {
+      clearInterval(autoTimer);
+      startAuto();
+    }
+
+    startAuto();
+
+    /* ---- TOUCH / MOUSE DRAG ---- */
+    function onDragStart(clientX) {
+      isDragging = true;
+      dragMoved  = false;
+      dragStartX = clientX;
+      dragCurrX  = clientX;
+      track.style.transition = 'none';
+      clearInterval(autoTimer);
+    }
+    function onDragMove(clientX) {
+      if (!isDragging) return;
+      dragCurrX = clientX;
+      const diff = dragCurrX - dragStartX;
+      if (Math.abs(diff) > 5) dragMoved = true;
+      const base = -(current * outer.offsetWidth);
+      track.style.transform = `translateX(${base + diff}px)`;
+    }
+    function onDragEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      const diff = dragCurrX - dragStartX;
+      const threshold = outer.offsetWidth * 0.2;
+      if (Math.abs(diff) > threshold) {
+        goTo(diff < 0 ? current + 1 : current - 1);
+      } else {
+        goTo(current); // snap back
+      }
+      resetAuto();
+    }
+
+    // Touch events
+    outer.addEventListener('touchstart',  (e) => onDragStart(e.touches[0].clientX), { passive: true });
+    outer.addEventListener('touchmove',   (e) => onDragMove(e.touches[0].clientX),  { passive: true });
+    outer.addEventListener('touchend',    () => onDragEnd());
+
+    // Mouse drag
+    outer.addEventListener('mousedown',   (e) => { e.preventDefault(); onDragStart(e.clientX); });
+    window.addEventListener('mousemove',  (e) => { if (isDragging) onDragMove(e.clientX); });
+    window.addEventListener('mouseup',    () => { if (isDragging) { onDragEnd(); } });
+
+    // Click = navigate link only if NOT dragged
+    outer.addEventListener('click', (e) => {
+      if (dragMoved) { e.preventDefault(); return; }
+      if (carouselLink && carouselLink !== '') {
+        window.location.href = carouselLink;
+      }
+    });
+
+    /* ---- 3D TILT ---- */
+    if (tiltBox && tiltMax > 0) {
+      tiltBox.style.transition = `transform ${tiltReturnSpeed}ms`;
+      tiltBox.addEventListener('mousemove', function(e) {
+        const rect = tiltBox.getBoundingClientRect();
+        const x = (e.clientX - rect.left)  / rect.width  - 0.5;
+        const y = (e.clientY - rect.top)   / rect.height - 0.5;
+        tiltBox.style.transform = `perspective(2000px) rotateY(${x * tiltMax}deg) rotateX(${-y * tiltMax}deg)`;
+      });
+      tiltBox.addEventListener('mouseleave', function() {
+        tiltBox.style.transform = 'perspective(2000px) rotateY(0deg) rotateX(0deg)';
+      });
+    }
+
+    /* Initial render (no animation) */
+    goTo(0, false);
+
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Espon Hero",
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "slide_image",
+          "label": "Slide Image",
+          "info": "Recommended width: 1100px. Use full banners, not icons."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 10,
+  "settings": [
+    { "type": "header", "content": "🎨 Brand Colors" },
+    { "type": "color", "id": "color_navy", "label": "Navy / Dark Color",   "default": "#0f172a" },
+    { "type": "color", "id": "color_gold", "label": "Gold / Accent Color", "default": "#CA8A04" },
+
+    { "type": "header", "content": "📐 Layout" },
+    { "type": "range", "id": "hero_min_height", "min": 50, "max": 100, "step": 5, "label": "Hero Min Height (vh)", "default": 85 },
+
+    { "type": "header", "content": "🏷️ Badge" },
+    { "type": "text", "id": "badge_text", "label": "Badge Text", "default": "INDIA'S PREMIUM B2B FACTORY" },
+
+    { "type": "header", "content": "✍️ Headline" },
+    { "type": "text", "id": "hero_line1",           "label": "Headline Line 1",       "default": "LET'S GROW" },
+    { "type": "text", "id": "hero_line2",           "label": "Headline Line 2",       "default": "YOUR" },
+    { "type": "text", "id": "hero_line3_highlight", "label": "Headline Line 3 (Gold)","default": "BUSINESS." },
+
+    { "type": "header", "content": "📝 Body Text" },
+    { "type": "textarea", "id": "hero_body_text", "label": "Body Paragraph", "default": "Join the Espon Partner Network. We manufacture premium sportswear & activewear in Rohtak." },
+    { "type": "text", "id": "stat1_text", "label": "Stat 1 (after ★)", "default": "5,000+ Retailers and Wholesalers" },
+    { "type": "text", "id": "stat2_text", "label": "Stat 2 (after ★)",  "default": "Flat 50% Margin" },
+
+    { "type": "header", "content": "🔘 Button 1 (Primary / Gold)" },
+    { "type": "text", "id": "btn1_label", "label": "Button 1 Label", "default": "SHOP NOW" },
+    { "type": "url",  "id": "btn1_link",  "label": "Button 1 Link" },
+
+    { "type": "header", "content": "🔘 Button 2 (Outline)" },
+    { "type": "text", "id": "btn2_label", "label": "Button 2 Label", "default": "CHECK REWARDS" },
+    { "type": "url",  "id": "btn2_link",  "label": "Button 2 Link" },
+
+    { "type": "header", "content": "🔗 Carousel Click Link" },
+    { "type": "url", "id": "carousel_link", "label": "Where carousel click goes", "info": "Leave blank to disable click navigation" },
+
+    { "type": "header", "content": "⚡ Carousel Speed" },
+    {
+      "type": "range",
+      "id": "carousel_autoplay_speed",
+      "min": 2, "max": 15, "step": 1,
+      "label": "Auto-Swipe Every (seconds)",
+      "default": 4,
+      "info": "Set to 0 in custom CSS to disable"
+    },
+    {
+      "type": "range",
+      "id": "carousel_transition_speed",
+      "min": 200, "max": 1200, "step": 100,
+      "label": "Slide Transition Duration (ms)",
+      "default": 500
+    },
+
+    { "type": "header", "content": "🖱️ 3D Tilt on Hover (Desktop)" },
+    {
+      "type": "range",
+      "id": "tilt_max_deg",
+      "min": 0, "max": 20, "step": 1,
+      "label": "Max Tilt Angle (0 = disabled)",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "tilt_speed",
+      "min": 50, "max": 500, "step": 50,
+      "label": "Tilt Return Speed (ms)",
+      "default": 100
+    }
+  ],
+  "presets": [{ "name": "Espon Hero" }]
+}
+{% endschema %}

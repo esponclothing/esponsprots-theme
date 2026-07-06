@@ -1,0 +1,269 @@
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --gold-main: {{ section.settings.accent_color }};
+    --navy: {{ section.settings.heading_color }};
+    --text-muted: {{ section.settings.text_color }};
+    --bg-start: {{ section.settings.bg_gradient_start }};
+    --bg-end: {{ section.settings.bg_gradient_end }};
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  /* --- ANIMATION --- */
+  #shopify-section-{{ section.id }} .reveal-up {
+    opacity: 0;
+    transform: translateY(50px) translateZ(-50px) rotateX(-5deg);
+    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #shopify-section-{{ section.id }} .reveal-up.active {
+    opacity: 1;
+    transform: translateY(0) translateZ(0) rotateX(0deg);
+  }
+
+  /* --- WEALTH SYSTEM --- */
+  #shopify-section-{{ section.id }} .wealth-vault {
+    margin: {{ section.settings.margin_y }}px 5%;
+    padding: 80px 50px;
+    background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
+    border: 2px solid var(--gold-main);
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    /* Keeping exact original shadow specs */
+    box-shadow: 0 20px 60px rgba(194, 134, 8, 0.15);
+  }
+
+  #shopify-section-{{ section.id }} .vault-content {
+    flex: 1.5;
+  }
+
+  #shopify-section-{{ section.id }} .vault-subheading {
+    color: var(--gold-main);
+    font-weight: 800; 
+    letter-spacing: 2px;
+    margin: 0;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+
+  #shopify-section-{{ section.id }} .vault-heading {
+    font-size: 3.5rem; 
+    font-weight: 900; 
+    margin: 15px 0;
+    color: var(--navy);
+    line-height: 1.1;
+  }
+
+  #shopify-section-{{ section.id }} .vault-desc {
+    font-size: 1.2rem; 
+    color: var(--text-muted);
+    margin-bottom: 30px;
+    line-height: 1.5;
+  }
+
+  #shopify-section-{{ section.id }} .vault-desc strong {
+    color: var(--navy);
+  }
+  
+  #shopify-section-{{ section.id }} .vault-desc .highlight-text {
+    color: var(--gold-main);
+    font-weight: 800;
+  }
+
+  #shopify-section-{{ section.id }} .vault-btn {
+    background: var(--gold-main);
+    color: #fff; 
+    padding: 18px 40px; 
+    border-radius: 50px; 
+    font-weight: 800; 
+    text-decoration: none;
+    display: inline-block;
+    transition: 0.3s;
+  }
+
+  #shopify-section-{{ section.id }} .vault-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(202, 138, 4, 0.3);
+  }
+
+  #shopify-section-{{ section.id }} .vault-icon-container {
+    flex: 1;
+    text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .coin-3d {
+    font-size: 10rem;
+    color: var(--gold-main); 
+    animation: spinCoin-{{ section.id }} 6s ease-in-out infinite;
+    filter: drop-shadow(0 10px 20px rgba(194, 134, 8, 0.2));
+  }
+
+  @keyframes spinCoin-{{ section.id }} { 
+    0%, 100% { transform: translateY(0) rotateY(0deg); } 
+    50% { transform: translateY(-30px) rotateY(180deg); } 
+  }
+
+  /* --- MOBILE OPTIMIZATION --- */
+  @media (max-width: 900px) {
+    #shopify-section-{{ section.id }} .wealth-vault { 
+      flex-direction: column; 
+      text-align: center; 
+      margin: {{ section.settings.margin_y_mobile }}px 5% !important;
+      padding: 30px 20px !important; 
+    }
+    #shopify-section-{{ section.id }} .vault-heading {
+      font-size: 2.2rem;
+    }
+    #shopify-section-{{ section.id }} .vault-desc {
+      font-size: 1rem;
+    }
+    #shopify-section-{{ section.id }} .coin-3d { 
+      font-size: 6rem; 
+    }
+  }
+</style>
+
+<section id="wealth-{{ section.id }}" class="wealth-vault reveal-up">
+  <div class="vault-content">
+    <h6 class="vault-subheading">{{ section.settings.subheading }}</h6>
+    <h2 class="vault-heading">{{ section.settings.heading }}</h2>
+    <div class="vault-desc">
+      {{ section.settings.description }}
+    </div>
+    <a href="{{ section.settings.button_link }}" class="vault-btn">{{ section.settings.button_text }}</a>
+  </div>
+  <div class="vault-icon-container">
+    <i class="{{ section.settings.icon_class }} coin-3d"></i>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.3 });
+    
+    const element = document.getElementById('wealth-{{ section.id }}');
+    if (element) {
+      observer.observe(element);
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Espon Wealth",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text Content"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "DEALER WEALTH SYSTEM"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Get Flat 5% Cashback."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Every order earns you <strong>5% Store Credit</strong> automatically.<br/><br/><span class=\"highlight-text\">★ 100% Usable:</span> Use your full wallet balance on your very next order. No limits.",
+      "info": "Use HTML tags like <strong> or <span class=\"highlight-text\"> for styling."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "ACTIVATE WALLET"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "text",
+      "id": "icon_class",
+      "label": "FontAwesome Icon Class",
+      "default": "fas fa-coins"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color (Gold)",
+      "default": "#CA8A04"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color (Navy)",
+      "default": "#0f172a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Paragraph Text Color",
+      "default": "#64748b"
+    },
+    {
+      "type": "color",
+      "id": "bg_gradient_start",
+      "label": "Gradient Background Start",
+      "default": "#FFFBEB"
+    },
+    {
+      "type": "color",
+      "id": "bg_gradient_end",
+      "label": "Gradient Background End",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "margin_y",
+      "min": 10,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Top & Bottom Margin (Desktop)",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "margin_y_mobile",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top & Bottom Margin (Mobile)",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "Espon Wealth"
+    }
+  ]
+}
+{% endschema %}
