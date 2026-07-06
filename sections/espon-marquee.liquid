@@ -2,59 +2,94 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-  #shopify-section-{{ section.id }} {
-    --gold-main: {{ section.settings.bg_color }};
-    --text-color: {{ section.settings.text_color }};
-    --icon-gap: {{ section.settings.icon_gap }}px;
-    --item-gap: {{ section.settings.item_gap }}px;
+  .uk-marquee-container-{{ section.id }} {
+    /* Dynamic Theme Editor Variables */
+    --bg-color: {{ section.settings.bg_color | default: '#CA8A04' }};
+    --text-color: {{ section.settings.text_color | default: '#ffffff' }};
+    --speed: {{ section.settings.animation_speed | default: 25 }}s;
+    --direction: normal;
+    --padding-y: 10px;
+    --font-size-desktop: 14px;
+    --font-size-mobile: 12px;
+    
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: var(--padding-y) 0;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    z-index: 1;
     font-family: 'Plus Jakarta Sans', sans-serif;
   }
 
-  #shopify-section-{{ section.id }} .marquee-strip {
-    background: var(--gold-main); 
-    color: var(--text-color);
-    padding: 12px 0;
-    overflow: hidden;
+  .uk-marquee-track {
+    display: flex;
     white-space: nowrap;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    animation: uk-marquee-scroll var(--speed) linear infinite var(--direction);
   }
-  
-  #shopify-section-{{ section.id }} .marquee-content {
-    display: inline-block;
-    animation: scrollText-{{ section.id }} {{ section.settings.animation_speed }}s linear infinite;
+
+  .uk-marquee-container-{{ section.id }}:hover .uk-marquee-track {
+    animation-play-state: paused;
   }
-  
-  #shopify-section-{{ section.id }} .marquee-content span {
-    display: inline-block;
+
+  .uk-marquee-content {
+    display: flex;
+    align-items: center;
+    padding-right: 50px;
+  }
+
+  .uk-marquee-item {
+    display: inline-flex;
+    align-items: center;
+    gap: {{ section.settings.icon_gap | default: 10 }}px;
+    margin-right: {{ section.settings.item_gap | default: 40 }}px;
+    font-size: var(--font-size-desktop);
     font-weight: 800;
-    font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: var(--text-color);
   }
-  
-  #shopify-section-{{ section.id }} .marquee-content i { 
-    color: var(--text-color); 
-    margin-left: var(--icon-gap); 
-    margin-right: var(--item-gap);
-    opacity: 0.8; 
+
+  .uk-marquee-item i {
+    font-size: calc(var(--font-size-desktop) + 2px);
+    opacity: 0.8;
   }
-  
-  @keyframes scrollText-{{ section.id }} {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+
+  @keyframes uk-marquee-scroll {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  @media screen and (max-width: 768px) {
+    .uk-marquee-item {
+      font-size: var(--font-size-mobile);
+      margin-right: 25px;
+    }
+    .uk-marquee-item i {
+      font-size: calc(var(--font-size-mobile) + 2px);
+    }
+    .uk-marquee-content {
+      padding-right: 25px;
+    }
   }
 </style>
 
-<div class="marquee-strip">
-  <div class="marquee-content">
-    {% comment %} Looping twice to create a seamless infinite scrolling effect {% endcomment %}
-    {%- for i in (1..2) -%}
-      {%- for block in section.blocks -%}
-        <span {{ block.shopify_attributes }}>{{ block.settings.text }}</span><i class="{{ block.settings.icon_class }}"></i>
-      {%- endfor -%}
-    {%- endfor -%}
-  </div>
+<div class="uk-marquee-container-{{ section.id }}">
+  {% for track_loop in (1..4) %}
+    <div class="uk-marquee-track" {% if track_loop > 1 %}aria-hidden="true"{% endif %}>
+      <div class="uk-marquee-content">
+        {%- for block in section.blocks -%}
+          <div class="uk-marquee-item" {{ block.shopify_attributes }}>
+            <span>{{ block.settings.text }}</span>
+            {% if block.settings.icon_class != blank %}
+              <i class="{{ block.settings.icon_class }}"></i>
+            {% endif %}
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  {% endfor %}
 </div>
 
 {% schema %}
