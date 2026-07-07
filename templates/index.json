@@ -215,15 +215,41 @@
     },
     "espon_categories_Xn4mFJ": {
       "type": "espon-categories",
+      "blocks": {
+        "cat_0": {
+          "type": "category_card",
+          "settings": {
+            "collection": "track-pants"
+          }
+        },
+        "cat_1": {
+          "type": "category_card",
+          "settings": {
+            "collection": "shorts"
+          }
+        },
+        "cat_2": {
+          "type": "category_card",
+          "settings": {
+            "collection": "joggers"
+          }
+        },
+        "cat_3": {
+          "type": "category_card",
+          "settings": {
+            "collection": "co-ord-sets"
+          }
+        }
+      },
+      "block_order": [
+        "cat_0",
+        "cat_1",
+        "cat_2",
+        "cat_3"
+      ],
       "name": "Espon Categories",
       "settings": {
         "heading_text": "EXPLORE CATEGORIES",
-        "collection_list": [
-          "shopify://collections/track-pants",
-          "shopify://collections/shorts",
-          "shopify://collections/joggers",
-          "shopify://collections/co-ord-sets"
-        ],
         "heading_color": "#0f172a",
         "border_color": "#e2e8f0",
         "padding_top": 100,
@@ -731,15 +757,41 @@
     },
     "espon_fabrics_section": {
       "type": "espon-categories",
+      "blocks": {
+        "cat_0": {
+          "type": "category_card",
+          "settings": {
+            "collection": "ns-lycra"
+          }
+        },
+        "cat_1": {
+          "type": "category_card",
+          "settings": {
+            "collection": "4-way-lycra"
+          }
+        },
+        "cat_2": {
+          "type": "category_card",
+          "settings": {
+            "collection": "terry-lycra"
+          }
+        },
+        "cat_3": {
+          "type": "category_card",
+          "settings": {
+            "collection": "crush-lycra"
+          }
+        }
+      },
+      "block_order": [
+        "cat_0",
+        "cat_1",
+        "cat_2",
+        "cat_3"
+      ],
       "name": "Espon Categories",
       "settings": {
         "heading_text": "EXPLORE FABRICS",
-        "collection_list": [
-          "shopify://collections/ns-lycra",
-          "shopify://collections/4-way-lycra",
-          "shopify://collections/terry-lycra",
-          "shopify://collections/crush-lycra"
-        ],
         "heading_color": "#0f172a",
         "border_color": "#e2e8f0",
         "padding_top": 100,
