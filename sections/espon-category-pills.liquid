@@ -53,12 +53,21 @@
 }
 {%- endstyle -%}
 
-{%- assign has_subcategories = false -%}
+{%- assign has_active_subcategories = false -%}
 {%- if collection.metafields.price_editor.subcategories.value != blank -%}
-  {%- assign has_subcategories = true -%}
+  {%- assign subcategories = collection.metafields.price_editor.subcategories.value -%}
+  {%- for sub in subcategories -%}
+    {%- assign suffix = sub.suffix | strip -%}
+    {%- if suffix == blank %}{% continue %}{% endif -%}
+    {%- assign sub_tag = "Sub: " | append: suffix -%}
+    {%- if collection.all_tags contains sub_tag -%}
+      {%- assign has_active_subcategories = true -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
 {%- endif -%}
 
-{%- if has_subcategories -%}
+{%- if has_active_subcategories -%}
   <div class="collection-subcategories page-width">
     <ul class="subcategories-list">
       <li class="subcategory-item">
@@ -66,19 +75,19 @@
           <span class="subcategory-text">All</span>
         </a>
       </li>
-      {%- assign subcategories = collection.metafields.price_editor.subcategories.value -%}
       {%- for sub in subcategories -%}
         {%- assign suffix = sub.suffix | strip -%}
         {%- if suffix == blank %}{% continue %}{% endif -%}
         
         {%- assign sub_tag = "Sub: " | append: suffix -%}
-        {%- assign sub_tag_handle = sub_tag | handleize -%}
-        
-        <li class="subcategory-item">
-          <a href="{{ collection.url }}/{{ sub_tag_handle }}" class="subcategory-link {% if current_tags contains sub_tag %}active{% endif %}">
-            <span class="subcategory-text">{{ suffix }}</span>
-          </a>
-        </li>
+        {%- if collection.all_tags contains sub_tag -%}
+          {%- assign sub_tag_handle = sub_tag | handleize -%}
+          <li class="subcategory-item">
+            <a href="{{ collection.url }}/{{ sub_tag_handle }}" class="subcategory-link {% if current_tags contains sub_tag %}active{% endif %}">
+              <span class="subcategory-text">{{ suffix }}</span>
+            </a>
+          </li>
+        {%- endif -%}
       {%- endfor -%}
     </ul>
   </div>
