@@ -239,10 +239,10 @@
       "settings": {
         "heading_text": "EXPLORE FABRICS",
         "collection_list": [
-          "shopify://collections/ns-lycra",
-          "shopify://collections/4-way-lycra",
-          "shopify://collections/terry-lycra",
-          "shopify://collections/crush-lycra"
+          "4-way-lycra",
+          "crush-lycra",
+          "ns-lycra",
+          "terry-lycra"
         ],
         "heading_color": "#0f172a",
         "border_color": "#e2e8f0",
