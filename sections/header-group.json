@@ -85,7 +85,7 @@
       "settings": {
         "bg_color": "#000000",
         "text_color": "#ffffff",
-        "speed": 10,
+        "speed": 15,
         "make_sticky": true,
         "icon_color": "#ca8a04"
       },

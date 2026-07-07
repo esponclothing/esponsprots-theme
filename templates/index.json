@@ -743,7 +743,7 @@
         "bg_color": "#fef08a",
         "text_color": "#0f172a",
         "icon_color": "#0f172a",
-        "speed": 10,
+        "speed": 15,
         "make_sticky": false
       },
       "blocks": {
