@@ -106,9 +106,9 @@
                 style="--menu-drawer-animation-index: {{ animation_index }};"
                 class="{%- if block_settings.drawer_accordion -%}menu-drawer__list-item--deep{%- else -%}menu-drawer__list-item--flat{%- endif -%}{% if block_settings.drawer_dividers %} menu-drawer__list-item--divider{% endif %}"
               >
-                {% if block_settings.drawer_accordion and link.links != blank %}
+                {% if link.links != blank %}
                   {%- comment -%}
-                    Accordion for links with children, in menus with fewer than 3 levels of links
+                    Always use Accordion for links with children (Beyoung style fix)
                   {%- endcomment -%}
                   {% liquid
                     assign accordion_state = ''
@@ -124,8 +124,12 @@
                       <summary
                         id="HeaderDrawer-{{ link.handle }}"
                         class="menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset"
+                        style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; text-transform: uppercase;"
                       >
-                        <span class="menu-drawer__menu-item-text wrap-text">{{ link.title | escape }}</span>
+                        <span class="menu-drawer__menu-item-text wrap-text" style="display:flex; align-items:center;">
+                          {% render 'menu-icon', title: link.title %}
+                          {{ link.title | escape }}
+                        </span>
                         <span class="svg-wrapper icon-plus">
                           {{- 'icon-plus.svg' | inline_asset_content -}}
                         </span>
@@ -173,56 +177,6 @@
                       </ul>
                     </details>
                   </accordion-custom>
-                {% elsif block_settings.drawer_accordion == false and link.links != blank %}
-                  {%- comment -%}
-                    Flat menus for links with children, in menus with fewer than 3 levels of links
-                  {%- endcomment -%}
-                  <a
-                    id="HeaderDrawer-{{ link.handle }}"
-                    href="{{ link.url }}"
-                    class="menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}"
-                    {% if link.current %}
-                      aria-current="page"
-                    {% endif %}
-                  >
-                    <span class="menu-drawer__menu-item-text wrap-text">{{ link.title | escape }}</span>
-                  </a>
-                  {% liquid
-                    assign render_link_image = false
-                    if block_settings.menu_style == 'collection_images'
-                      assign catalog_links = link.links | where: 'type', 'catalog_link'
-                      assign collection_list_links = link.links | where: 'type', 'collections_link'
-                      assign collection_links = link.links | where: 'type', 'collection_link'
-                      if catalog_links.size > 0 or collection_list_links.size > 0 or collection_links.size > 0
-                        assign render_link_image = true
-                      endif
-                    endif
-                  %}
-                  <ul
-                    class="menu-drawer__menu menu-drawer__menu--childlist{% if render_link_image %} menu-drawer__menu--grid{% endif %}"
-                    role="list"
-                    tabindex="-1"
-                  >
-                    {%- for childlink in link.links -%}
-                      <li
-                        class="menu-drawer__list-item"
-                        style="--menu-drawer-animation-index: {{ animation_index }};"
-                      >
-                        <a
-                          href="{{ childlink.url }}"
-                          class="menu-drawer__menu-item menu-drawer__menu-item--child menu-drawer__animated-element focus-inset{% if childlink.current %} menu-drawer__menu-item--active{% endif %}"
-                        >
-                          {% if render_link_image %}
-                            {% render 'link-featured-image',
-                              link: childlink,
-                              class: 'menu-drawer__link-image',
-                              sizes: 'auto, 400px'
-                            %}
-                          {% endif %}
-                          <span class="menu-drawer__menu-item-text wrap-text">{{ childlink.title | escape }}</span>
-                        </a>
-                      </li>
-                    {%- endfor -%}
                   </ul>
                 {% else %}
                   {%- comment -%}
@@ -236,7 +190,10 @@
                       aria-current="page"
                     {% endif %}
                   >
-                    <span class="menu-drawer__menu-item-text wrap-text">{{ link.title | escape }}</span>
+                    <span class="menu-drawer__menu-item-text wrap-text" style="display:flex; align-items:center; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; text-transform: uppercase;">
+                      {% render 'menu-icon', title: link.title %}
+                      {{ link.title | escape }}
+                    </span>
                   </a>
                 {% endif %}
               </li>
@@ -266,9 +223,12 @@
                     <summary
                       id="HeaderDrawer-{{ link.handle }}"
                       class="menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset{% if link.child_active %} menu-drawer__menu-item--active{% endif %}"
-                      {% unless block_settings.drawer_accordion %}on:click="header-drawer/open/submenu"{% endunless %}
+                      style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; text-transform: uppercase;"
                     >
-                      <span class="menu-drawer__menu-item-text wrap-text">{{ link.title | escape }}</span>
+                      <span class="menu-drawer__menu-item-text wrap-text" style="display:flex; align-items:center;">
+                        {% render 'menu-icon', title: link.title %}
+                        {{ link.title | escape }}
+                      </span>
                       <span class="svg-wrapper icon-caret icon-caret--forward">
                         {% if block_settings.drawer_accordion %}
                           {{- 'icon-plus.svg' | inline_asset_content -}}
@@ -356,7 +316,7 @@
                                       sizes: 'auto, 400px'
                                     %}
                                   {% endif %}
-                                  <span class="menu-drawer__menu-item-text wrap-text">
+                                  <span class="menu-drawer__menu-item-text wrap-text" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600;">
                                     {{- childlink.title | escape -}}
                                   </span>
                                 </a>
@@ -380,7 +340,7 @@
                                         id="HeaderDrawer-{{ link.handle }}-{{ childlink.handle }}"
                                         class="menu-drawer__menu-item menu-drawer__menu-item--parent focus-inset"
                                       >
-                                        <span class="menu-drawer__menu-item-text wrap-text">
+                                        <span class="menu-drawer__menu-item-text wrap-text" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600;">
                                           {{- childlink.title | escape -}}
                                         </span>
                                         <span class="svg-wrapper icon-plus">

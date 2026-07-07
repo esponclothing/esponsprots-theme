@@ -98,7 +98,10 @@
             {%- endif -%}
             ref="menuitem"
           >
-            <span class="menu-list__link-title">{{- link.title -}}</span>
+            <span class="menu-list__link-title" style="display:flex; align-items:center; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; text-transform: uppercase;">
+              {% render 'menu-icon', title: link.title %}
+              {{- link.title -}}
+            </span>
           </a>
           {%- if link.links != blank -%}
             <div class="menu-list__submenu{{ color_scheme_classes }}" ref="submenu[]">
@@ -178,6 +181,16 @@
 {% endcase %}
 
 {% stylesheet %}
+  /* ---- Beyoung Style Hover Fixes ---- */
+  .menu-list__list-item:hover .menu-list__submenu {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translateY(0) !important;
+  }
+  .menu-list__submenu {
+    transition: all 0.2s ease-in-out;
+  }
   .menu-list--mobile {
     &.menu-list {
       display: grid;
