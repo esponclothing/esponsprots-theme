@@ -181,16 +181,97 @@
 {% endcase %}
 
 {% stylesheet %}
-  /* ---- Beyoung Style Hover Fixes ---- */
-  .menu-list__list-item:hover .menu-list__submenu {
+  /* ========================================
+     BEYOUNG-STYLE DESKTOP MENU
+     Source: beyoung.in/desktop/css/main.css
+     ======================================== */
+
+  /* Force Beyoung font everywhere in menu */
+  @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;500;600;700;900&display=swap');
+
+  /* Desktop top-level links — exact Beyoung .strapi-navigation-link values */
+  .menu-list__link {
+    font-family: 'Lato', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px !important;
+    text-transform: uppercase !important;
+    color: #212121 !important;
+    padding: 10px 0 !important;
+    gap: 6px;
+    white-space: nowrap;
+    transition: color 0.2s ease-out !important;
+  }
+
+  .menu-list__link:hover,
+  .menu-list__link:focus {
+    color: #212121 !important;
+  }
+
+  .menu-list__link-title {
+    font-family: 'Lato', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px !important;
+    text-transform: uppercase !important;
+    color: #212121 !important;
+  }
+
+  /* Beyoung submenu dropdown — exact .strapi-navigation-dropdown-menu values */
+  .menu-list__submenu {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 6px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+    background: #ffffff !important;
+    transition: all 0.2s ease-out !important;
+  }
+
+  /* Beyoung hover open effect — instant show on li:hover */
+  .menu-list__list-item:hover .menu-list__submenu,
+  .menu-list__list-item:focus-within .menu-list__submenu {
     opacity: 1 !important;
     visibility: visible !important;
     pointer-events: auto !important;
     transform: translateY(0) !important;
   }
-  .menu-list__submenu {
-    transition: all 0.2s ease-in-out;
+
+  /* Submenu column headings — exact .strapi-navigation-column-title */
+  .mega-menu [class*="title"],
+  .mega-menu [class*="heading"],
+  .menu-list__submenu h3,
+  .menu-list__submenu h4 {
+    font-family: 'Lato', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #212121 !important;
+    margin-bottom: 16px !important;
+    text-decoration: none !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
   }
+
+  /* Submenu sub-links — exact .strapi-navigation-sub-item-link */
+  .menu-list__submenu a,
+  .mega-menu a {
+    font-family: 'Lato', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    color: #6b7280 !important;
+    line-height: 1.5 !important;
+    transition: color 0.2s ease !important;
+    text-decoration: none !important;
+  }
+
+  .menu-list__submenu a:hover,
+  .mega-menu a:hover {
+    color: #212121 !important;
+  }
+
+  /* Espon menu icon */
+  .espon-menu-icon {
+    color: #212121;
+  }
+
   .menu-list--mobile {
     &.menu-list {
       display: grid;
