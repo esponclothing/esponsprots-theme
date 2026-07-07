@@ -43,6 +43,17 @@
   fetchpriority="low"
 ></script>
 
+<style>
+  /* Fix: Decrease size of parent links in mobile drawer to match regular links */
+  .menu-drawer__menu-item.menu-drawer__menu-item--mainlist .menu-drawer__menu-item-text,
+  .menu-drawer__menu-item.menu-drawer__menu-item--parent .menu-drawer__menu-item-text,
+  summary.menu-drawer__menu-item .menu-drawer__menu-item-text {
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    text-transform: none !important;
+  }
+</style>
+
 
 <header-drawer
   class="header-drawer {{ class }}"
