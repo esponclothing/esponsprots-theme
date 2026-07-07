@@ -219,13 +219,34 @@
       "settings": {
         "heading_text": "EXPLORE CATEGORIES",
         "collection_list": [
-          "shopify://collections/track-pants",
-          "shopify://collections/shorts",
-          "shopify://collections/joggers",
-          "shopify://collections/co-ord-sets"
+          "shorts",
+          "track-pants",
+          "co-ord-sets",
+          "crush-lycra"
         ],
         "heading_color": "#0f172a",
         "border_color": "#e2e8f0",
+        "subtitle_color": "#ca8a04",
+        "padding_top": 100,
+        "padding_bottom": 50,
+        "padding_top_mobile": 50,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "espon_fabrics_section": {
+      "type": "espon-categories",
+      "name": "Espon Categories",
+      "settings": {
+        "heading_text": "EXPLORE FABRICS",
+        "collection_list": [
+          "shopify://collections/ns-lycra",
+          "shopify://collections/4-way-lycra",
+          "shopify://collections/terry-lycra",
+          "shopify://collections/crush-lycra"
+        ],
+        "heading_color": "#0f172a",
+        "border_color": "#e2e8f0",
+        "subtitle_color": "#ca8a04",
         "padding_top": 100,
         "padding_bottom": 50,
         "padding_top_mobile": 50,
@@ -726,25 +747,6 @@
         "padding_top": 60,
         "padding_bottom": 60,
         "padding_top_mobile": 40,
-        "padding_bottom_mobile": 40
-      }
-    },
-    "espon_fabrics_section": {
-      "type": "espon-categories",
-      "name": "Espon Categories",
-      "settings": {
-        "heading_text": "EXPLORE FABRICS",
-        "collection_list": [
-          "shopify://collections/ns-lycra",
-          "shopify://collections/4-way-lycra",
-          "shopify://collections/terry-lycra",
-          "shopify://collections/crush-lycra"
-        ],
-        "heading_color": "#0f172a",
-        "border_color": "#e2e8f0",
-        "padding_top": 100,
-        "padding_bottom": 50,
-        "padding_top_mobile": 50,
         "padding_bottom_mobile": 40
       }
     }
