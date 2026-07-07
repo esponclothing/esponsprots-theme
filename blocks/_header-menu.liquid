@@ -129,7 +129,7 @@
             {% liquid
               assign is_mega_menu = false
               for child in link.links
-                if child.links != blank
+                if child.links.size > 0
                   assign is_mega_menu = true
                   break
                 endif
