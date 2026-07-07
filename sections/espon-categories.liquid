@@ -137,23 +137,26 @@
 </div>
 
 <section class="collection-grid" id="cat-grid-{{ section.id }}">
-  {%- if section.settings.collection_list != blank -%}
-    {%- for collection in section.settings.collection_list -%}
-      {%- assign delay = forloop.index0 | times: 0.2 -%}
-      <a href="{{ collection.url }}" class="glass-card reveal-up" style="transition-delay: {{ delay }}s;">
-        <div class="cat-img-wrapper">
-          {%- assign col_image = collection.image | default: collection.products.first.featured_image -%}
-          {% if col_image != blank %}
-            <img src="{{ col_image | img_url: '800x1000', crop: 'center' }}" alt="{{ collection.title | escape }}" loading="lazy">
-          {% else %}
-            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #94a3b8;">No Image</div>
-          {% endif %}
-        </div>
-        <div class="cat-overlay">
-          <h3>{{ collection.title }}</h3>
-          <span style="color: {{ section.settings.subtitle_color }};">Explore &rarr;</span>
-        </div>
-      </a>
+  {%- if section.blocks.size > 0 -%}
+    {%- for block in section.blocks -%}
+      {%- assign collection = block.settings.collection -%}
+      {%- if collection != blank -%}
+        {%- assign delay = forloop.index0 | times: 0.2 -%}
+        <a href="{{ collection.url }}" class="glass-card reveal-up" style="transition-delay: {{ delay }}s;" {{ block.shopify_attributes }}>
+          <div class="cat-img-wrapper">
+            {%- assign col_image = collection.image | default: collection.products.first.featured_image -%}
+            {% if col_image != blank %}
+              <img src="{{ col_image | img_url: '800x1000', crop: 'center' }}" alt="{{ collection.title | escape }}" loading="lazy">
+            {% else %}
+              <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #94a3b8;">No Image</div>
+            {% endif %}
+          </div>
+          <div class="cat-overlay">
+            <h3>{{ collection.title }}</h3>
+            <span style="color: {{ section.settings.subtitle_color }};">Explore &rarr;</span>
+          </div>
+        </a>
+      {%- endif -%}
     {%- endfor -%}
   {%- else -%}
     <!-- Fallback or Placeholder -->
@@ -199,12 +202,6 @@
       "id": "heading_text",
       "label": "Heading",
       "default": "EXPLORE CATEGORIES"
-    },
-    {
-      "type": "collection_list",
-      "id": "collection_list",
-      "label": "Collections to Display",
-      "limit": 8
     },
     {
       "type": "header",
@@ -275,6 +272,19 @@
       "unit": "px",
       "label": "Bottom Padding (Mobile)",
       "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category_card",
+      "name": "Category Card",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
     }
   ],
   "presets": [
