@@ -1,0 +1,138 @@
+{%- style -%}
+.collection-subcategories {
+  margin-bottom: 2rem;
+  margin-top: 1rem;
+}
+.subcategories-list {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1rem;
+  list-style: none;
+  padding: 0 1.5rem;
+  margin: 0;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+.subcategories-list::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+.subcategory-item {
+  flex-shrink: 0;
+}
+.subcategory-link {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border: 1px solid rgba(var(--color-foreground), 0.15);
+  border-radius: 30px;
+  text-decoration: none;
+  color: rgb(var(--color-foreground));
+  background-color: rgb(var(--color-background));
+  font-size: 1.4rem;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.subcategory-link:hover,
+.subcategory-link.active {
+  background-color: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+  border-color: rgb(var(--color-foreground));
+}
+{%- endstyle -%}
+
+{%- assign current_handle = collection.handle -%}
+{%- assign parent_handle = current_handle -%}
+{%- assign is_all_page = false -%}
+
+{%- if current_handle == 'all' -%}
+  {%- assign is_all_page = true -%}
+{%- endif -%}
+
+{%- comment -%}
+  Find the parent handle dynamically by checking against the list of known parent handles
+{%- endcomment -%}
+{%- assign main_handles_str = "t-shirts,trackpants,swimwear,shorts,joggers,accessories" -%}
+{%- assign main_handles = main_handles_str | split: "," -%}
+
+{%- unless is_all_page -%}
+  {%- for main_handle in main_handles -%}
+    {%- assign handle_prefix = main_handle | append: "-" -%}
+    {%- if current_handle == main_handle -%}
+      {%- assign parent_handle = main_handle -%}
+      {%- break -%}
+    {%- elsif current_handle contains handle_prefix -%}
+      {%- assign parent_handle = main_handle -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endunless -%}
+
+{%- assign parent_col = collections[parent_handle] -%}
+
+{%- capture subcategories_html -%}
+  {%- assign subcategories = parent_col.metafields.price_editor.subcategories.value -%}
+  {%- for sub in subcategories -%}
+    {%- assign suffix = sub.suffix | downcase | replace: " ", "-" -%}
+    {%- if suffix == blank %}{% continue %}{% endif -%}
+    
+    {%- assign sub_handle = parent_handle | append: "-" | append: suffix -%}
+    {%- assign sub_col = collections[sub_handle] -%}
+    
+    {%- if sub_col and sub_col.title != blank -%}
+      {%- assign display_title = sub_col.title | split: "-" | last | strip -%}
+      <li class="subcategory-item">
+        <a href="{{ sub_col.url }}" class="subcategory-link {% if current_handle == sub_handle %}active{% endif %}">
+          <span class="subcategory-text">{{ display_title }}</span>
+        </a>
+      </li>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if is_all_page -%}
+  <div class="collection-subcategories page-width">
+    <ul class="subcategories-list">
+      <li class="subcategory-item">
+        <a href="/collections/all" class="subcategory-link active">
+          <span class="subcategory-text">All</span>
+        </a>
+      </li>
+      {%- for handle in main_handles -%}
+        {%- assign main_col = collections[handle] -%}
+        {%- if main_col and main_col.title != blank -%}
+          <li class="subcategory-item">
+            <a href="{{ main_col.url }}" class="subcategory-link">
+              <span class="subcategory-text">{{ main_col.title }}</span>
+            </a>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+{%- elsif parent_col -%}
+  <div class="collection-subcategories page-width">
+    <ul class="subcategories-list">
+      <li class="subcategory-item">
+        <a href="{{ parent_col.url }}" class="subcategory-link {% if current_handle == parent_handle %}active{% endif %}">
+          <span class="subcategory-text">All</span>
+        </a>
+      </li>
+      {{ subcategories_html }}
+    </ul>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Espon Category Pills",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Espon Category Pills",
+      "category": "Collection"
+    }
+  ]
+}
+{% endschema %}
