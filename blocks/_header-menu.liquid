@@ -226,6 +226,19 @@
     transition: all 0.2s ease-out !important;
   }
 
+  /* Add proper inner spacing to the mega menu */
+  .menu-list__submenu-inner {
+    padding: 24px 32px !important;
+  }
+
+  .mega-menu__grid {
+    gap: 32px !important;
+  }
+
+  .mega-menu {
+    padding: 8px 0 !important;
+  }
+
   /* Beyoung hover open effect — instant show on li:hover */
   .menu-list__list-item:hover .menu-list__submenu,
   .menu-list__list-item:focus-within .menu-list__submenu {
@@ -235,19 +248,44 @@
     transform: translateY(0) !important;
   }
 
-  /* Submenu column headings — exact .strapi-navigation-column-title */
-  .mega-menu [class*="title"],
-  .mega-menu [class*="heading"],
-  .menu-list__submenu h3,
-  .menu-list__submenu h4 {
+  /* Submenu column headings — mega-menu__link--parent (the real class from mega-menu-list.liquid) */
+  .mega-menu__link--parent {
     font-family: 'Lato', sans-serif !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    color: #212121 !important;
-    margin-bottom: 16px !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    color: #111111 !important;
+    margin-bottom: 14px !important;
+    padding-bottom: 10px !important;
+    border-bottom: 2px solid #e5e7eb !important;
     text-decoration: none !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.3px !important;
+    letter-spacing: 1px !important;
+    display: block !important;
+    line-height: 1.4 !important;
+  }
+
+  .mega-menu__link--parent .wrap-text {
+    font-weight: 800 !important;
+    color: #111111 !important;
+  }
+
+  /* Submenu child links — mega-menu__link */
+  .mega-menu__link:not(.mega-menu__link--parent) {
+    font-family: 'Lato', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    color: #6b7280 !important;
+    line-height: 2 !important;
+    transition: color 0.15s ease !important;
+    text-decoration: none !important;
+    text-transform: capitalize !important;
+    letter-spacing: 0 !important;
+    display: block !important;
+  }
+
+  .mega-menu__link:not(.mega-menu__link--parent):hover {
+    color: #111111 !important;
+    font-weight: 500 !important;
   }
 
   /* Submenu sub-links — exact .strapi-navigation-sub-item-link */
