@@ -1,1 +1,743 @@
-{"sections":{"hero_jVaWmY":{"type":"hero","blocks":{"text_YLPk4p":{"type":"text","name":"t:names.heading","settings":{"text":"<p>Browse our latest products<\/p>","width":"fit-content","max_width":"normal","alignment":"left","type_preset":"h2","font":"var(--font-body--family)","font_size":"1rem","line_height":"normal","letter_spacing":"normal","case":"none","wrap":"pretty","color":"var(--color-foreground-heading)","background":false,"background_color":"#00000026","corner_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}},"button_H9gpTf":{"type":"button","name":"t:names.button","settings":{"label":"Shop all","link":"shopify:\/\/collections\/all","open_in_new_tab":false,"style_class":"button-secondary","width":"fit-content","custom_width":100,"width_mobile":"fit-content","custom_width_mobile":100},"blocks":{}}},"block_order":["text_YLPk4p","button_H9gpTf"],"disabled":true,"name":"t:names.hero","settings":{"media_type_1":"image","media_type_2":"image","stack_media_on_mobile":false,"custom_mobile_media":false,"media_type_1_mobile":"image","media_type_2_mobile":"image","link":"","open_in_new_tab":false,"content_direction":"column","vertical_on_mobile":true,"horizontal_alignment":"space-between","vertical_alignment":"flex-end","align_baseline":true,"horizontal_alignment_flex_direction_column":"center","vertical_alignment_flex_direction_column":"flex-end","gap":24,"section_width":"page-width","section_height":"medium","section_height_custom":50,"color_scheme":"scheme-6","toggle_overlay":true,"overlay_color":"#12121266","overlay_style":"solid","gradient_direction":"to bottom","blurred_reflection":false,"reflection_opacity":75,"padding-block-start":100,"padding-block-end":72}},"espon_hero_9wzmtE":{"type":"espon-hero","blocks":{"slide_kDrfmL":{"type":"slide","settings":{"slide_image":"shopify:\/\/shop_images\/Untitled_design_45.jpg"}},"slide_DbDtUH":{"type":"slide","settings":{"slide_image":"shopify:\/\/shop_images\/hero_banner_b2b.gif"}}},"block_order":["slide_kDrfmL","slide_DbDtUH"],"name":"Espon Hero","settings":{"color_navy":"#0f172a","color_gold":"#ca8a04","hero_min_height":85,"badge_text":"INDIA'S PREMIUM B2B FACTORY","hero_line1":"LET'S GROW","hero_line2":"YOUR","hero_line3_highlight":"BUSINESS.","hero_body_text":"","stat1_text":"5,000+ Retailers and Wholesalers","stat2_text":"Flat 50% Margin","btn1_label":"SHOP NOW","btn1_link":"shopify:\/\/pages\/catalog","btn2_label":"CHECK REWARDS","btn2_link":"https:\/\/account.esponsports.com\/profile","carousel_link":"shopify:\/\/pages\/catalog","carousel_autoplay_speed":2,"carousel_transition_speed":500,"tilt_max_deg":20,"tilt_speed":100}},"espon_marquee_czcNQC":{"type":"espon-marquee","blocks":{"marquee_item_cBfDme":{"type":"marquee_item","settings":{"text":"FREE SHIPPING ON ALL ORDERS","icon_class":"fas fa-truck"}},"marquee_item_VtnjMi":{"type":"marquee_item","settings":{"text":"FLAT 50% RETAIL MARGIN","icon_class":"fas fa-star"}},"marquee_item_J4gAMP":{"type":"marquee_item","settings":{"text":"5% CASHBACK ON EVERY ORDER","icon_class":"fas fa-coins"}},"marquee_item_QbPizB":{"type":"marquee_item","settings":{"text":"EXPRESS DELIVERY","icon_class":"fas fa-truck-fast"}},"marquee_item_Br7Amm":{"type":"marquee_item","settings":{"text":"COD AVAILABLE (10% ADVANCE)","icon_class":"fas fa-box-open"}},"marquee_item_XLNAgq":{"type":"marquee_item","settings":{"text":"MOQ: 50 PCS","icon_class":"fas fa-check-circle"}}},"block_order":["marquee_item_cBfDme","marquee_item_VtnjMi","marquee_item_J4gAMP","marquee_item_QbPizB","marquee_item_Br7Amm","marquee_item_XLNAgq"],"name":"Espon Marquee","settings":{"bg_color":"#ca8a04","text_color":"#ffffff","icon_gap":10,"item_gap":40,"animation_speed":25}},"espon_spin_wheel_fiUB9b":{"type":"espon-spin-wheel","name":"Espon Spin Wheel","settings":{"min_order_amount":10000,"daily_spin_limit":1,"mega_image":"shopify:\/\/shop_images\/1_d7de06b0-5498-4706-b444-46c7a326f3cd.png","mega_name":"iPhone 17 Pro","mega_value":"1,34,900","r1_product":"power-bank","r2_product":"ear-buds","r3_product":"massage-gun","r4_product":"mist-cooler","r5_product":"smart-watch"}},"espon_categories_Xn4mFJ":{"type":"espon-categories","blocks":{"category_card_aEjirB":{"type":"category_card","name":"Track pants","settings":{"card_image":"shopify:\/\/shop_images\/3_0ea1fb5c-f74e-429a-a0ba-cd4ad50fba47.jpg","card_link":"\/pages\/track-pants","title":"Track Pants","subtitle":"4-WAY LYCRA SERIES","subtitle_color":"#ca8a04"}},"category_card_pPYjYT":{"type":"category_card","name":"Shorts","settings":{"card_image":"shopify:\/\/shop_images\/008.jpg","card_link":"\/pages\/shorts","title":"Shorts","subtitle":"DRY-FIT & TERRY","subtitle_color":"#ca8a04"}},"category_card_3iG7rV":{"type":"category_card","name":"Sample kit","settings":{"card_image":"shopify:\/\/shop_images\/ESPON_SPORTS_SAMPLE_KIT_YOUR_COMPLETE_ACTIVEWEAR_SOLUTION_1.jpg","card_link":"shopify:\/\/collections\/sample-kit","title":"Sample kit","subtitle":"Espon sports samples kit","subtitle_color":"#ca8a04"}},"category_card_qiaUDW":{"type":"category_card","name":"JOGGERS","settings":{"card_image":"shopify:\/\/shop_images\/1_f9e10698-037f-4ee2-bd47-06ca764111da.jpg","card_link":"shopify:\/\/collections\/joggers","title":"Joggers","subtitle":"CARGO","subtitle_color":"#ca8a04"}}},"block_order":["category_card_aEjirB","category_card_pPYjYT","category_card_3iG7rV","category_card_qiaUDW"],"name":"Espon Categories","settings":{"heading_text":"EXPLORE CATEGORIES","heading_color":"#0f172a","border_color":"#e2e8f0","padding_top":100,"padding_bottom":50,"padding_top_mobile":50,"padding_bottom_mobile":40}},"espon_trust_strip_PGjbnp":{"type":"espon-trust-strip","blocks":{"trust_badge_eLzWVX":{"type":"trust_badge","settings":{"icon_class":"fas fa-handshake","title":"Direct Factory","description":"No Commissions"}},"trust_badge_TJn88m":{"type":"trust_badge","settings":{"icon_class":"fas fa-file-invoice-dollar","title":"GST Invoice","description":"Input Credit Available"}},"trust_badge_KUVrnM":{"type":"trust_badge","settings":{"icon_class":"fas fa-truck-fast","title":"Express Delivery","description":"VRL, TCI, BlueDart"}},"trust_badge_iXJjNb":{"type":"trust_badge","settings":{"icon_class":"fas fa-video","title":"Live Stock Check","description":"Video Call Facility"}}},"block_order":["trust_badge_eLzWVX","trust_badge_TJn88m","trust_badge_KUVrnM","trust_badge_iXJjNb"],"name":"Espon Trust Strip","settings":{"bg_color":"#ffffff","border_color":"#e2e8f0","heading_color":"#0f172a","desc_color":"#64748b","icon_color":"#ca8a04","padding_top":40,"padding_bottom":40,"padding_top_mobile":25,"padding_bottom_mobile":25}},"espon_process_wxhAC4":{"type":"espon-process","blocks":{"process_step_Ad743E":{"type":"process_step","settings":{"step_number":"01","title":"Select Stock","description":"Choose from our wide range of Trackpants, Shorts, and Tees."}},"process_step_9rPTk8":{"type":"process_step","settings":{"step_number":"02","title":"Confirm","description":"Pay just <strong>10% Advance<\/strong> to book your shipment. Rest on COD."}},"process_step_naUw8i":{"type":"process_step","settings":{"step_number":"03","title":"Dispatch","description":"We pack and ship via VRL \/ TCI \/ Blue Dart within 24-48 hours."}},"process_step_Wm9Pdq":{"type":"process_step","settings":{"step_number":"04","title":"Sell & Profit","description":"Receive goods, sell at retail MRP, and enjoy <strong>50% margins.<\/strong>"}}},"block_order":["process_step_Ad743E","process_step_9rPTk8","process_step_naUw8i","process_step_Wm9Pdq"],"name":"Espon Process","settings":{"bg_color":"#ffffff","accent_color":"#ca8a04","heading_color":"#0f172a","text_color":"#64748b","border_color":"#e2e8f0","padding_top":80,"padding_bottom":80,"padding_top_mobile":40,"padding_bottom_mobile":40}},"espon_fabric_N8mi4B":{"type":"espon-fabric","blocks":{"spec_item_Y9wyqe":{"type":"spec_item","settings":{"icon_class":"fas fa-layer-group","title":"Premium Stitch Quality","description":"Heavy-duty industrial machines for double-lock stitching."}},"spec_item_pLQFR7":{"type":"spec_item","settings":{"icon_class":"fas fa-arrows-alt","title":"Advanced Fabrics","description":"Specializing in <strong>Imported 4-Way Lycra<\/strong> and NS."}},"spec_item_pTBXiQ":{"type":"spec_item","settings":{"icon_class":"fas fa-check-double","title":"100% QC Checked","description":"3-stage quality check before dispatch."}}},"block_order":["spec_item_Y9wyqe","spec_item_pLQFR7","spec_item_pTBXiQ"],"name":"Espon Fabric","settings":{"subheading":"TECHNICAL SUPERIORITY","heading":"Engineered for Athletes.<br>Designed for Retail.","main_image":"shopify:\/\/shop_images\/image-optimizer-preview-origin.png","accent_color":"#ca8a04","heading_color":"#0f172a","text_color":"#64748b","icon_bg_color":"#fffbeb","icon_border_color":"#fef08a","padding_top":100,"padding_bottom":100,"padding_top_mobile":10,"padding_bottom_mobile":10}},"espon_wealth_rGfMFG":{"type":"espon-wealth","name":"Espon Wealth","settings":{"subheading":"DEALER WEALTH SYSTEM","heading":"Get Flat 5% Cashback.","description":"Every order earns you <strong>5% Store Credit<\/strong> automatically.<br><br><span class=\"highlight-text\">★ 100% Usable:<\/span> Use your full wallet balance on your very next order. No limits.","button_text":"ACTIVATE WALLET","button_link":"","icon_class":"fas fa-coins","accent_color":"#ca8a04","heading_color":"#0f172a","text_color":"#64748b","bg_gradient_start":"#fffbeb","bg_gradient_end":"#ffffff","margin_y":10,"margin_y_mobile":10}},"espon_inventory_WabxBH":{"type":"espon-inventory","name":"Espon Inventory","settings":{"heading":"LIVE FACTORY STOCK","subheading":"Direct wholesale pricing per piece.","view_all_text":"VIEW ALL →","view_all_link":"shopify:\/\/collections\/all","badge_text":"B2B","wholesale_text":"WHOLESALE:","per_piece_text":"\/ pc","collection":"lycra-track-pants","product_limit":8,"skip_tag":"hidden-gift","bg_color":"#ffffff","card_bg_color":"#ffffff","accent_color":"#ca8a04","heading_color":"#0f172a","text_color":"#64748b","border_color":"#e2e8f0","padding_top":35,"padding_bottom":50,"padding_top_mobile":30,"padding_bottom_mobile":30}},"espon_payment_FfBQwF":{"type":"espon-payment","blocks":{"payment_card_VLNKc7":{"type":"payment_card","settings":{"icon_class":"fas fa-money-bill-wave","title":"Cash on Delivery (COD)","description":"Pay just 10% Advance. Balance on delivery."}},"payment_card_nXiPC9":{"type":"payment_card","settings":{"icon_class":"fas fa-credit-card","title":"Credit Card","description":"Up to 50 days interest-free credit period."}},"payment_card_ex3PiA":{"type":"payment_card","settings":{"icon_class":"fas fa-university","title":"Prepaid Options","description":"Bank Transfer, NEFT\/RTGS."}},"payment_card_WWFFDz":{"type":"payment_card","settings":{"icon_class":"fas fa-file-invoice","title":"GST Invoice","description":"GST @ 5% applicable. Input credit available."}}},"block_order":["payment_card_VLNKc7","payment_card_nXiPC9","payment_card_ex3PiA","payment_card_WWFFDz"],"name":"Espon Payment","settings":{"subheading":"FLEXIBLE B2B PAYMENTS","heading":"PAYMENT TERMS","bg_color":"#ffffff","card_bg_color":"#ffffff","accent_color":"#ca8a04","heading_color":"#0f172a","text_color":"#64748b","border_color":"#e2e8f0","padding_top":80,"padding_bottom":80,"padding_top_mobile":10,"padding_bottom_mobile":10}},"espon_testimonials_mbtNbU":{"type":"espon-testimonials","blocks":{"testimonial_qrJrqa":{"type":"testimonial","settings":{"star_rating":5,"quote":"I was buying from Delhi Gandhi Nagar earlier, but quality was inconsistent. Espon's 4-Way Lycra is superior.","author_name":"Rajesh Kumar","author_meta":"Gym Owner, Jaipur"}},"testimonial_LQChJQ":{"type":"testimonial","settings":{"star_rating":5,"quote":"The COD option for samples gave me confidence. Now I order 200 pieces monthly. Delivery via TCI is always on time.","author_name":"Amit Singh","author_meta":"Wholesaler, Indore"}},"testimonial_kdcNWB":{"type":"testimonial","settings":{"star_rating":5,"quote":"Finally a manufacturer who understands trends. The 'Joggers Combo' flies off my shelves. Better margins.","author_name":"Vikas Gupta","author_meta":"Sports Store, Punjab"}},"testimonial_KYHkqx":{"type":"testimonial","settings":{"star_rating":5,"quote":"My customers love the fitting of the lower. Returns are almost zero. Best manufacturer for long-term business.","author_name":"Deepak Sharma","author_meta":"Retailer, Bangalore"}}},"block_order":["testimonial_qrJrqa","testimonial_LQChJQ","testimonial_kdcNWB","testimonial_KYHkqx"],"name":"Espon Testimonials","settings":{"heading":"Testimonials","bg_color":"#ffffff","card_bg_color":"#ffffff","heading_color":"#0f172a","quote_color":"#64748b","meta_color":"#94a3b8","star_color":"#ca8a04","border_color":"#e2e8f0","padding_top":100,"padding_bottom":100,"padding_top_mobile":10,"padding_bottom_mobile":10}},"espon_network_JAdk7K":{"type":"espon-network","blocks":{"stat_item_mWwNAJ":{"type":"stat_item","settings":{"icon_class":"fas fa-city","target_number":200,"label":"Cities Live"}},"stat_item_idGVAd":{"type":"stat_item","settings":{"icon_class":"fas fa-map","target_number":25,"label":"States"}},"stat_item_kDUtar":{"type":"stat_item","settings":{"icon_class":"fas fa-globe-asia","target_number":10,"label":"Countries"}},"marquee_order_zJ9irf":{"type":"marquee_order","settings":{"order_text":"LIVE ORDER: NEW DELHI"}},"marquee_order_yLhKbP":{"type":"marquee_order","settings":{"order_text":"LIVE ORDER: MUMBAI"}},"marquee_order_dWC3nt":{"type":"marquee_order","settings":{"order_text":"LIVE ORDER: BANGALORE"}},"marquee_order_Na7dLx":{"type":"marquee_order","settings":{"order_text":"LIVE ORDER: HYDERABAD"}},"marquee_order_NiBxNz":{"type":"marquee_order","settings":{"order_text":"LIVE ORDER: AHMEDABAD"}},"marquee_order_aPmihj":{"type":"marquee_order","settings":{"order_text":"LIVE ORDER: CHENNAI"}},"marquee_order_B3DEnA":{"type":"marquee_order","settings":{"order_text":"LIVE ORDER: KOLKATA"}},"marquee_order_hyhREJ":{"type":"marquee_order","settings":{"order_text":"LIVE ORDER: SURAT"}}},"block_order":["stat_item_mWwNAJ","stat_item_idGVAd","stat_item_kDUtar","marquee_order_zJ9irf","marquee_order_yLhKbP","marquee_order_dWC3nt","marquee_order_Na7dLx","marquee_order_NiBxNz","marquee_order_aPmihj","marquee_order_B3DEnA","marquee_order_hyhREJ"],"name":"Espon Network","settings":{"subtitle":"INDIA'S FASTEST GROWING B2B NETWORK","title_part_1":"Trusted by","main_counter_target":5000,"title_part_2":"Retailers & Wholesalers","bg_color":"#ffffff","text_color_main":"#0f172a","accent_color":"#ca8a04","grid_bg_color":"#f8fafc","grid_border_color":"#e2e8f0","text_color_muted":"#64748b","marquee_bg_color":"#0f172a","marquee_text_color":"#ffffff","marquee_dot_color":"#22c55e","marquee_speed":30,"padding_top":80,"padding_top_mobile":40}},"espon_logistics_MeEkXP":{"type":"espon-logistics","blocks":{"partner_badge_CMPGHq":{"type":"partner_badge","settings":{"title":"Blue Dart"}},"partner_badge_LVKpyr":{"type":"partner_badge","settings":{"title":"Delhivery"}},"partner_badge_9TmwGT":{"type":"partner_badge","settings":{"title":"VRL Logistics"}},"partner_badge_TrGeyH":{"type":"partner_badge","settings":{"title":"TCI Express"}},"partner_badge_RUi4VX":{"type":"partner_badge","settings":{"title":"DTDC"}},"partner_badge_Qm9eVY":{"type":"partner_badge","settings":{"title":"Om Logistics"}}},"block_order":["partner_badge_CMPGHq","partner_badge_LVKpyr","partner_badge_9TmwGT","partner_badge_TrGeyH","partner_badge_RUi4VX","partner_badge_Qm9eVY"],"name":"Espon Logistics","settings":{"heading":"FAST DELIVERY PARTNERS","description":"We ensure your stock reaches you safely and on time.","bg_color":"#ffffff","border_color":"#e2e8f0","heading_color":"#0f172a","text_color":"#64748b","badge_border_color":"#cbd5e1","badge_text_color":"#475569","padding_top":60,"padding_bottom":60,"padding_top_mobile":40,"padding_bottom_mobile":40}}},"order":["hero_jVaWmY","espon_hero_9wzmtE","espon_marquee_czcNQC","espon_spin_wheel_fiUB9b","espon_categories_Xn4mFJ","espon_trust_strip_PGjbnp","espon_process_wxhAC4","espon_fabric_N8mi4B","espon_wealth_rGfMFG","espon_inventory_WabxBH","espon_payment_FfBQwF","espon_testimonials_mbtNbU","espon_network_JAdk7K","espon_logistics_MeEkXP"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero_jVaWmY": {
+      "type": "hero",
+      "blocks": {
+        "text_YLPk4p": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<p>Browse our latest products</p>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h2",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground-heading)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "button_H9gpTf": {
+          "type": "button",
+          "name": "t:names.button",
+          "settings": {
+            "label": "Shop all",
+            "link": "shopify://collections/all",
+            "open_in_new_tab": false,
+            "style_class": "button-secondary",
+            "width": "fit-content",
+            "custom_width": 100,
+            "width_mobile": "fit-content",
+            "custom_width_mobile": 100
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_YLPk4p",
+        "button_H9gpTf"
+      ],
+      "disabled": true,
+      "name": "t:names.hero",
+      "settings": {
+        "media_type_1": "image",
+        "media_type_2": "image",
+        "stack_media_on_mobile": false,
+        "custom_mobile_media": false,
+        "media_type_1_mobile": "image",
+        "media_type_2_mobile": "image",
+        "link": "",
+        "open_in_new_tab": false,
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "space-between",
+        "vertical_alignment": "flex-end",
+        "align_baseline": true,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "flex-end",
+        "gap": 24,
+        "section_width": "page-width",
+        "section_height": "medium",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-6",
+        "toggle_overlay": true,
+        "overlay_color": "#12121266",
+        "overlay_style": "solid",
+        "gradient_direction": "to bottom",
+        "blurred_reflection": false,
+        "reflection_opacity": 75,
+        "padding-block-start": 100,
+        "padding-block-end": 72
+      }
+    },
+    "espon_hero_9wzmtE": {
+      "type": "espon-hero",
+      "blocks": {
+        "slide_kDrfmL": {
+          "type": "slide",
+          "settings": {
+            "slide_image": "shopify://shop_images/Untitled_design_45.jpg"
+          }
+        },
+        "slide_DbDtUH": {
+          "type": "slide",
+          "settings": {
+            "slide_image": "shopify://shop_images/hero_banner_b2b.gif"
+          }
+        }
+      },
+      "block_order": [
+        "slide_kDrfmL",
+        "slide_DbDtUH"
+      ],
+      "name": "Espon Hero",
+      "settings": {
+        "color_navy": "#0f172a",
+        "color_gold": "#ca8a04",
+        "hero_min_height": 85,
+        "badge_text": "INDIA'S PREMIUM B2B FACTORY",
+        "hero_line1": "LET'S GROW",
+        "hero_line2": "YOUR",
+        "hero_line3_highlight": "BUSINESS.",
+        "hero_body_text": "",
+        "stat1_text": "5,000+ Retailers and Wholesalers",
+        "stat2_text": "Flat 50% Margin",
+        "btn1_label": "SHOP NOW",
+        "btn1_link": "shopify://collections/all",
+        "btn2_label": "CHECK REWARDS",
+        "btn2_link": "https://account.esponsports.com/profile",
+        "carousel_link": "shopify://collections/all",
+        "carousel_autoplay_speed": 2,
+        "carousel_transition_speed": 500,
+        "tilt_max_deg": 20,
+        "tilt_speed": 100
+      }
+    },
+    "espon_marquee_czcNQC": {
+      "type": "espon-marquee",
+      "blocks": {
+        "marquee_item_cBfDme": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "FREE SHIPPING ON ALL ORDERS",
+            "icon_class": "fas fa-truck"
+          }
+        },
+        "marquee_item_VtnjMi": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "FLAT 50% RETAIL MARGIN",
+            "icon_class": "fas fa-star"
+          }
+        },
+        "marquee_item_J4gAMP": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "5% CASHBACK ON EVERY ORDER",
+            "icon_class": "fas fa-coins"
+          }
+        },
+        "marquee_item_QbPizB": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "EXPRESS DELIVERY",
+            "icon_class": "fas fa-truck-fast"
+          }
+        },
+        "marquee_item_Br7Amm": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "COD AVAILABLE (10% ADVANCE)",
+            "icon_class": "fas fa-box-open"
+          }
+        },
+        "marquee_item_XLNAgq": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "MOQ: 50 PCS",
+            "icon_class": "fas fa-check-circle"
+          }
+        }
+      },
+      "block_order": [
+        "marquee_item_cBfDme",
+        "marquee_item_VtnjMi",
+        "marquee_item_J4gAMP",
+        "marquee_item_QbPizB",
+        "marquee_item_Br7Amm",
+        "marquee_item_XLNAgq"
+      ],
+      "name": "Espon Marquee",
+      "settings": {
+        "bg_color": "#ca8a04",
+        "text_color": "#ffffff",
+        "icon_gap": 10,
+        "item_gap": 40,
+        "animation_speed": 25
+      }
+    },
+    "espon_spin_wheel_fiUB9b": {
+      "type": "espon-spin-wheel",
+      "name": "Espon Spin Wheel",
+      "settings": {
+        "min_order_amount": 10000,
+        "daily_spin_limit": 1,
+        "mega_image": "shopify://shop_images/1_d7de06b0-5498-4706-b444-46c7a326f3cd.png",
+        "mega_name": "iPhone 17 Pro",
+        "mega_value": "1,34,900",
+        "r1_product": "power-bank",
+        "r2_product": "ear-buds",
+        "r3_product": "massage-gun",
+        "r4_product": "mist-cooler",
+        "r5_product": "smart-watch"
+      }
+    },
+    "espon_categories_Xn4mFJ": {
+      "type": "espon-categories",
+      "name": "Espon Categories",
+      "settings": {
+        "heading_text": "EXPLORE CATEGORIES",
+        "heading_color": "#0f172a",
+        "border_color": "#e2e8f0",
+        "padding_top": 100,
+        "padding_bottom": 50,
+        "padding_top_mobile": 50,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "espon_trust_strip_PGjbnp": {
+      "type": "espon-trust-strip",
+      "blocks": {
+        "trust_badge_eLzWVX": {
+          "type": "trust_badge",
+          "settings": {
+            "icon_class": "fas fa-handshake",
+            "title": "Direct Factory",
+            "description": "No Commissions"
+          }
+        },
+        "trust_badge_TJn88m": {
+          "type": "trust_badge",
+          "settings": {
+            "icon_class": "fas fa-file-invoice-dollar",
+            "title": "GST Invoice",
+            "description": "Input Credit Available"
+          }
+        },
+        "trust_badge_KUVrnM": {
+          "type": "trust_badge",
+          "settings": {
+            "icon_class": "fas fa-truck-fast",
+            "title": "Express Delivery",
+            "description": "VRL, TCI, BlueDart"
+          }
+        },
+        "trust_badge_iXJjNb": {
+          "type": "trust_badge",
+          "settings": {
+            "icon_class": "fas fa-video",
+            "title": "Live Stock Check",
+            "description": "Video Call Facility"
+          }
+        }
+      },
+      "block_order": [
+        "trust_badge_eLzWVX",
+        "trust_badge_TJn88m",
+        "trust_badge_KUVrnM",
+        "trust_badge_iXJjNb"
+      ],
+      "name": "Espon Trust Strip",
+      "settings": {
+        "bg_color": "#ffffff",
+        "border_color": "#e2e8f0",
+        "heading_color": "#0f172a",
+        "desc_color": "#64748b",
+        "icon_color": "#ca8a04",
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "padding_top_mobile": 25,
+        "padding_bottom_mobile": 25
+      }
+    },
+    "espon_process_wxhAC4": {
+      "type": "espon-process",
+      "blocks": {
+        "process_step_Ad743E": {
+          "type": "process_step",
+          "settings": {
+            "step_number": "01",
+            "title": "Select Stock",
+            "description": "Choose from our wide range of Trackpants, Shorts, and Tees."
+          }
+        },
+        "process_step_9rPTk8": {
+          "type": "process_step",
+          "settings": {
+            "step_number": "02",
+            "title": "Confirm",
+            "description": "Pay just <strong>10% Advance</strong> to book your shipment. Rest on COD."
+          }
+        },
+        "process_step_naUw8i": {
+          "type": "process_step",
+          "settings": {
+            "step_number": "03",
+            "title": "Dispatch",
+            "description": "We pack and ship via VRL / TCI / Blue Dart within 24-48 hours."
+          }
+        },
+        "process_step_Wm9Pdq": {
+          "type": "process_step",
+          "settings": {
+            "step_number": "04",
+            "title": "Sell & Profit",
+            "description": "Receive goods, sell at retail MRP, and enjoy <strong>50% margins.</strong>"
+          }
+        }
+      },
+      "block_order": [
+        "process_step_Ad743E",
+        "process_step_9rPTk8",
+        "process_step_naUw8i",
+        "process_step_Wm9Pdq"
+      ],
+      "name": "Espon Process",
+      "settings": {
+        "bg_color": "#ffffff",
+        "accent_color": "#ca8a04",
+        "heading_color": "#0f172a",
+        "text_color": "#64748b",
+        "border_color": "#e2e8f0",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "espon_fabric_N8mi4B": {
+      "type": "espon-fabric",
+      "blocks": {
+        "spec_item_Y9wyqe": {
+          "type": "spec_item",
+          "settings": {
+            "icon_class": "fas fa-layer-group",
+            "title": "Premium Stitch Quality",
+            "description": "Heavy-duty industrial machines for double-lock stitching."
+          }
+        },
+        "spec_item_pLQFR7": {
+          "type": "spec_item",
+          "settings": {
+            "icon_class": "fas fa-arrows-alt",
+            "title": "Advanced Fabrics",
+            "description": "Specializing in <strong>Imported 4-Way Lycra</strong> and NS."
+          }
+        },
+        "spec_item_pTBXiQ": {
+          "type": "spec_item",
+          "settings": {
+            "icon_class": "fas fa-check-double",
+            "title": "100% QC Checked",
+            "description": "3-stage quality check before dispatch."
+          }
+        }
+      },
+      "block_order": [
+        "spec_item_Y9wyqe",
+        "spec_item_pLQFR7",
+        "spec_item_pTBXiQ"
+      ],
+      "name": "Espon Fabric",
+      "settings": {
+        "subheading": "TECHNICAL SUPERIORITY",
+        "heading": "Engineered for Athletes.<br>Designed for Retail.",
+        "main_image": "shopify://shop_images/image-optimizer-preview-origin.png",
+        "accent_color": "#ca8a04",
+        "heading_color": "#0f172a",
+        "text_color": "#64748b",
+        "icon_bg_color": "#fffbeb",
+        "icon_border_color": "#fef08a",
+        "padding_top": 100,
+        "padding_bottom": 100,
+        "padding_top_mobile": 10,
+        "padding_bottom_mobile": 10
+      }
+    },
+    "espon_wealth_rGfMFG": {
+      "type": "espon-wealth",
+      "name": "Espon Wealth",
+      "settings": {
+        "subheading": "DEALER WEALTH SYSTEM",
+        "heading": "Get Flat 5% Cashback.",
+        "description": "Every order earns you <strong>5% Store Credit</strong> automatically.<br><br><span class=\"highlight-text\">★ 100% Usable:</span> Use your full wallet balance on your very next order. No limits.",
+        "button_text": "ACTIVATE WALLET",
+        "button_link": "",
+        "icon_class": "fas fa-coins",
+        "accent_color": "#ca8a04",
+        "heading_color": "#0f172a",
+        "text_color": "#64748b",
+        "bg_gradient_start": "#fffbeb",
+        "bg_gradient_end": "#ffffff",
+        "margin_y": 10,
+        "margin_y_mobile": 10
+      }
+    },
+    "espon_inventory_WabxBH": {
+      "type": "espon-inventory",
+      "name": "Espon Inventory",
+      "settings": {
+        "heading": "LIVE FACTORY STOCK",
+        "subheading": "Direct wholesale pricing per piece.",
+        "view_all_text": "VIEW ALL →",
+        "view_all_link": "shopify://collections/all",
+        "badge_text": "B2B",
+        "wholesale_text": "WHOLESALE:",
+        "per_piece_text": "/ pc",
+        "collection": "lycra-track-pants",
+        "product_limit": 8,
+        "skip_tag": "hidden-gift",
+        "bg_color": "#ffffff",
+        "card_bg_color": "#ffffff",
+        "accent_color": "#ca8a04",
+        "heading_color": "#0f172a",
+        "text_color": "#64748b",
+        "border_color": "#e2e8f0",
+        "padding_top": 35,
+        "padding_bottom": 50,
+        "padding_top_mobile": 30,
+        "padding_bottom_mobile": 30
+      }
+    },
+    "espon_payment_FfBQwF": {
+      "type": "espon-payment",
+      "blocks": {
+        "payment_card_VLNKc7": {
+          "type": "payment_card",
+          "settings": {
+            "icon_class": "fas fa-money-bill-wave",
+            "title": "Cash on Delivery (COD)",
+            "description": "Pay just 10% Advance. Balance on delivery."
+          }
+        },
+        "payment_card_nXiPC9": {
+          "type": "payment_card",
+          "settings": {
+            "icon_class": "fas fa-credit-card",
+            "title": "Credit Card",
+            "description": "Up to 50 days interest-free credit period."
+          }
+        },
+        "payment_card_ex3PiA": {
+          "type": "payment_card",
+          "settings": {
+            "icon_class": "fas fa-university",
+            "title": "Prepaid Options",
+            "description": "Bank Transfer, NEFT/RTGS."
+          }
+        },
+        "payment_card_WWFFDz": {
+          "type": "payment_card",
+          "settings": {
+            "icon_class": "fas fa-file-invoice",
+            "title": "GST Invoice",
+            "description": "GST @ 5% applicable. Input credit available."
+          }
+        }
+      },
+      "block_order": [
+        "payment_card_VLNKc7",
+        "payment_card_nXiPC9",
+        "payment_card_ex3PiA",
+        "payment_card_WWFFDz"
+      ],
+      "name": "Espon Payment",
+      "settings": {
+        "subheading": "FLEXIBLE B2B PAYMENTS",
+        "heading": "PAYMENT TERMS",
+        "bg_color": "#ffffff",
+        "card_bg_color": "#ffffff",
+        "accent_color": "#ca8a04",
+        "heading_color": "#0f172a",
+        "text_color": "#64748b",
+        "border_color": "#e2e8f0",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mobile": 10,
+        "padding_bottom_mobile": 10
+      }
+    },
+    "espon_testimonials_mbtNbU": {
+      "type": "espon-testimonials",
+      "blocks": {
+        "testimonial_qrJrqa": {
+          "type": "testimonial",
+          "settings": {
+            "star_rating": 5,
+            "quote": "I was buying from Delhi Gandhi Nagar earlier, but quality was inconsistent. Espon's 4-Way Lycra is superior.",
+            "author_name": "Rajesh Kumar",
+            "author_meta": "Gym Owner, Jaipur"
+          }
+        },
+        "testimonial_LQChJQ": {
+          "type": "testimonial",
+          "settings": {
+            "star_rating": 5,
+            "quote": "The COD option for samples gave me confidence. Now I order 200 pieces monthly. Delivery via TCI is always on time.",
+            "author_name": "Amit Singh",
+            "author_meta": "Wholesaler, Indore"
+          }
+        },
+        "testimonial_kdcNWB": {
+          "type": "testimonial",
+          "settings": {
+            "star_rating": 5,
+            "quote": "Finally a manufacturer who understands trends. The 'Joggers Combo' flies off my shelves. Better margins.",
+            "author_name": "Vikas Gupta",
+            "author_meta": "Sports Store, Punjab"
+          }
+        },
+        "testimonial_KYHkqx": {
+          "type": "testimonial",
+          "settings": {
+            "star_rating": 5,
+            "quote": "My customers love the fitting of the lower. Returns are almost zero. Best manufacturer for long-term business.",
+            "author_name": "Deepak Sharma",
+            "author_meta": "Retailer, Bangalore"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_qrJrqa",
+        "testimonial_LQChJQ",
+        "testimonial_kdcNWB",
+        "testimonial_KYHkqx"
+      ],
+      "name": "Espon Testimonials",
+      "settings": {
+        "heading": "Testimonials",
+        "bg_color": "#ffffff",
+        "card_bg_color": "#ffffff",
+        "heading_color": "#0f172a",
+        "quote_color": "#64748b",
+        "meta_color": "#94a3b8",
+        "star_color": "#ca8a04",
+        "border_color": "#e2e8f0",
+        "padding_top": 100,
+        "padding_bottom": 100,
+        "padding_top_mobile": 10,
+        "padding_bottom_mobile": 10
+      }
+    },
+    "espon_network_JAdk7K": {
+      "type": "espon-network",
+      "blocks": {
+        "stat_item_mWwNAJ": {
+          "type": "stat_item",
+          "settings": {
+            "icon_class": "fas fa-city",
+            "target_number": 200,
+            "label": "Cities Live"
+          }
+        },
+        "stat_item_idGVAd": {
+          "type": "stat_item",
+          "settings": {
+            "icon_class": "fas fa-map",
+            "target_number": 25,
+            "label": "States"
+          }
+        },
+        "stat_item_kDUtar": {
+          "type": "stat_item",
+          "settings": {
+            "icon_class": "fas fa-globe-asia",
+            "target_number": 10,
+            "label": "Countries"
+          }
+        },
+        "marquee_order_zJ9irf": {
+          "type": "marquee_order",
+          "settings": {
+            "order_text": "LIVE ORDER: NEW DELHI"
+          }
+        },
+        "marquee_order_yLhKbP": {
+          "type": "marquee_order",
+          "settings": {
+            "order_text": "LIVE ORDER: MUMBAI"
+          }
+        },
+        "marquee_order_dWC3nt": {
+          "type": "marquee_order",
+          "settings": {
+            "order_text": "LIVE ORDER: BANGALORE"
+          }
+        },
+        "marquee_order_Na7dLx": {
+          "type": "marquee_order",
+          "settings": {
+            "order_text": "LIVE ORDER: HYDERABAD"
+          }
+        },
+        "marquee_order_NiBxNz": {
+          "type": "marquee_order",
+          "settings": {
+            "order_text": "LIVE ORDER: AHMEDABAD"
+          }
+        },
+        "marquee_order_aPmihj": {
+          "type": "marquee_order",
+          "settings": {
+            "order_text": "LIVE ORDER: CHENNAI"
+          }
+        },
+        "marquee_order_B3DEnA": {
+          "type": "marquee_order",
+          "settings": {
+            "order_text": "LIVE ORDER: KOLKATA"
+          }
+        },
+        "marquee_order_hyhREJ": {
+          "type": "marquee_order",
+          "settings": {
+            "order_text": "LIVE ORDER: SURAT"
+          }
+        }
+      },
+      "block_order": [
+        "stat_item_mWwNAJ",
+        "stat_item_idGVAd",
+        "stat_item_kDUtar",
+        "marquee_order_zJ9irf",
+        "marquee_order_yLhKbP",
+        "marquee_order_dWC3nt",
+        "marquee_order_Na7dLx",
+        "marquee_order_NiBxNz",
+        "marquee_order_aPmihj",
+        "marquee_order_B3DEnA",
+        "marquee_order_hyhREJ"
+      ],
+      "name": "Espon Network",
+      "settings": {
+        "subtitle": "INDIA'S FASTEST GROWING B2B NETWORK",
+        "title_part_1": "Trusted by",
+        "main_counter_target": 5000,
+        "title_part_2": "Retailers & Wholesalers",
+        "bg_color": "#ffffff",
+        "text_color_main": "#0f172a",
+        "accent_color": "#ca8a04",
+        "grid_bg_color": "#f8fafc",
+        "grid_border_color": "#e2e8f0",
+        "text_color_muted": "#64748b",
+        "marquee_bg_color": "#0f172a",
+        "marquee_text_color": "#ffffff",
+        "marquee_dot_color": "#22c55e",
+        "marquee_speed": 30,
+        "padding_top": 80,
+        "padding_top_mobile": 40
+      }
+    },
+    "espon_logistics_MeEkXP": {
+      "type": "espon-logistics",
+      "blocks": {
+        "partner_badge_CMPGHq": {
+          "type": "partner_badge",
+          "settings": {
+            "title": "Blue Dart"
+          }
+        },
+        "partner_badge_LVKpyr": {
+          "type": "partner_badge",
+          "settings": {
+            "title": "Delhivery"
+          }
+        },
+        "partner_badge_9TmwGT": {
+          "type": "partner_badge",
+          "settings": {
+            "title": "VRL Logistics"
+          }
+        },
+        "partner_badge_TrGeyH": {
+          "type": "partner_badge",
+          "settings": {
+            "title": "TCI Express"
+          }
+        },
+        "partner_badge_RUi4VX": {
+          "type": "partner_badge",
+          "settings": {
+            "title": "DTDC"
+          }
+        },
+        "partner_badge_Qm9eVY": {
+          "type": "partner_badge",
+          "settings": {
+            "title": "Om Logistics"
+          }
+        }
+      },
+      "block_order": [
+        "partner_badge_CMPGHq",
+        "partner_badge_LVKpyr",
+        "partner_badge_9TmwGT",
+        "partner_badge_TrGeyH",
+        "partner_badge_RUi4VX",
+        "partner_badge_Qm9eVY"
+      ],
+      "name": "Espon Logistics",
+      "settings": {
+        "heading": "FAST DELIVERY PARTNERS",
+        "description": "We ensure your stock reaches you safely and on time.",
+        "bg_color": "#ffffff",
+        "border_color": "#e2e8f0",
+        "heading_color": "#0f172a",
+        "text_color": "#64748b",
+        "badge_border_color": "#cbd5e1",
+        "badge_text_color": "#475569",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40
+      }
+    }
+  },
+  "order": [
+    "hero_jVaWmY",
+    "espon_hero_9wzmtE",
+    "espon_marquee_czcNQC",
+    "espon_spin_wheel_fiUB9b",
+    "espon_categories_Xn4mFJ",
+    "espon_trust_strip_PGjbnp",
+    "espon_process_wxhAC4",
+    "espon_fabric_N8mi4B",
+    "espon_wealth_rGfMFG",
+    "espon_inventory_WabxBH",
+    "espon_payment_FfBQwF",
+    "espon_testimonials_mbtNbU",
+    "espon_network_JAdk7K",
+    "espon_logistics_MeEkXP"
+  ]
+}

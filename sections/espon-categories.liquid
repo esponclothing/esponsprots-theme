@@ -35,7 +35,7 @@
 
   #shopify-section-{{ section.id }} .collection-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 15px;
     padding: 0 5% {{ section.settings.padding_bottom }}px;
     align-items: start; 
@@ -53,7 +53,7 @@
     text-decoration: none;
   }
 
-  /* Fixed 4:5 Aspect Ratio */
+  /* Fixed Aspect Ratio */
   #shopify-section-{{ section.id }} .cat-img-wrapper {
     width: 100%;
     aspect-ratio: 4 / 5;
@@ -64,7 +64,7 @@
   #shopify-section-{{ section.id }} .collection-grid .glass-card img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Guarantees no white space if uploaded image ratio varies slightly */
+    object-fit: cover;
     background-color: #fff;
     display: block;
     transition: 0.5s;
@@ -84,7 +84,7 @@
   }
 
   #shopify-section-{{ section.id }} .cat-overlay h3 {
-    font-size: 2.5rem; 
+    font-size: 2.2rem; 
     font-weight: 900; 
     margin: 0; 
     color: white;
@@ -118,12 +118,12 @@
     }
 
     #shopify-section-{{ section.id }} .cat-overlay h3 {
-      font-size: 0.75rem !important;
+      font-size: 1.2rem !important;
       margin-bottom: 5px;
     }
 
     #shopify-section-{{ section.id }} .cat-overlay span {
-      font-size: 0.65rem !important;
+      font-size: 0.85rem !important;
       line-height: 1.2;
     }
   }
@@ -134,22 +134,38 @@
 </div>
 
 <section class="collection-grid" id="cat-grid-{{ section.id }}">
-  {%- for block in section.blocks -%}
-    {%- assign delay = forloop.index0 | times: 0.2 -%}
-    <a href="{{ block.settings.card_link }}" class="glass-card reveal-up" style="transition-delay: {{ delay }}s;" {{ block.shopify_attributes }}>
-      <div class="cat-img-wrapper">
-        {% if block.settings.card_image != blank %}
-          <img src="{{ block.settings.card_image | img_url: '1200x1500', crop: 'center' }}" alt="{{ block.settings.title | escape }}" loading="lazy">
-        {% else %}
-          <div style="width: 100%; height: 100%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #94a3b8;">No Image</div>
-        {% endif %}
+  {%- if section.settings.collection_list != blank -%}
+    {%- for collection in section.settings.collection_list -%}
+      {%- assign delay = forloop.index0 | times: 0.2 -%}
+      <a href="{{ collection.url }}" class="glass-card reveal-up" style="transition-delay: {{ delay }}s;">
+        <div class="cat-img-wrapper">
+          {%- assign col_image = collection.image | default: collection.products.first.featured_image -%}
+          {% if col_image != blank %}
+            <img src="{{ col_image | img_url: '800x1000', crop: 'center' }}" alt="{{ collection.title | escape }}" loading="lazy">
+          {% else %}
+            <div style="width: 100%; height: 100%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #94a3b8;">No Image</div>
+          {% endif %}
+        </div>
+        <div class="cat-overlay">
+          <h3>{{ collection.title }}</h3>
+          <span style="color: {{ section.settings.subtitle_color }};">Explore &rarr;</span>
+        </div>
+      </a>
+    {%- endfor -%}
+  {%- else -%}
+    <!-- Fallback or Placeholder -->
+    {%- for i in (1..4) -%}
+      <div class="glass-card reveal-up">
+        <div class="cat-img-wrapper">
+          <div style="width: 100%; height: 100%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #94a3b8;">Select Collection</div>
+        </div>
+        <div class="cat-overlay">
+          <h3>Collection {{ i }}</h3>
+          <span style="color: {{ section.settings.subtitle_color }};">Explore &rarr;</span>
+        </div>
       </div>
-      <div class="cat-overlay">
-        <h3>{{ block.settings.title }}</h3>
-        <span style="color: {{ block.settings.subtitle_color }};">{{ block.settings.subtitle }} &rarr;</span>
-      </div>
-    </a>
-  {%- endfor -%}
+    {%- endfor -%}
+  {%- endif -%}
 </section>
 
 <script>
@@ -182,6 +198,12 @@
       "default": "EXPLORE CATEGORIES"
     },
     {
+      "type": "collection_list",
+      "id": "collection_list",
+      "label": "Collections to Display",
+      "limit": 8
+    },
+    {
       "type": "header",
       "content": "Colors"
     },
@@ -196,6 +218,12 @@
       "id": "border_color",
       "label": "Card Border Color",
       "default": "#e2e8f0"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle Color",
+      "default": "#CA8A04"
     },
     {
       "type": "header",
@@ -246,66 +274,9 @@
       "default": 40
     }
   ],
-  "max_blocks": 4,
-  "blocks": [
-    {
-      "type": "category_card",
-      "name": "Category Card",
-      "settings": [
-        {
-          "type": "image_picker",
-          "id": "card_image",
-          "label": "Card Image"
-        },
-        {
-          "type": "url",
-          "id": "card_link",
-          "label": "Card Link"
-        },
-        {
-          "type": "text",
-          "id": "title",
-          "label": "Title",
-          "default": "CATEGORY NAME"
-        },
-        {
-          "type": "text",
-          "id": "subtitle",
-          "label": "Subtitle",
-          "default": "SERIES OR MATERIAL"
-        },
-        {
-          "type": "color",
-          "id": "subtitle_color",
-          "label": "Subtitle Color",
-          "default": "#CA8A04"
-        }
-      ]
-    }
-  ],
   "presets": [
     {
-      "name": "Espon Categories",
-      "blocks": [
-        {
-          "type": "category_card",
-          "settings": {
-            "title": "TRACKPANTS",
-            "subtitle": "4-WAY LYCRA SERIES",
-            "subtitle_color": "#CA8A04",
-            "card_link": "/pages/track-pants"
-          }
-        },
-        {
-          "type": "category_card",
-          "settings": {
-            "title": "SHORTS",
-            "subtitle": "DRY-FIT & TERRY",
-            "subtitle_color": "#CA8A04",
-            "card_link": "/pages/shorts"
-          }
-        }
-      ]
+      "name": "Espon Categories Dynamic"
     }
   ]
 }
