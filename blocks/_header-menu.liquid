@@ -1032,11 +1032,14 @@
   overflow-list,
   .overflow-menu,
   overflow-list::part(overflow),
-  .overflow-menu::part(overflow) {
+  .overflow-menu::part(overflow),
+  overflow-list::after,
+  .overflow-menu::after {
     background-color: transparent !important;
     background: transparent !important;
     box-shadow: none !important;
     border: none !important;
+    display: none !important; /* Hide the background animator element completely */
   }
 
 {% endstylesheet %}
