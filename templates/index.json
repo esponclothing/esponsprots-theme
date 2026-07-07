@@ -134,69 +134,6 @@
         "tilt_speed": 100
       }
     },
-    "espon_marquee_czcNQC": {
-      "type": "espon-marquee",
-      "blocks": {
-        "marquee_item_cBfDme": {
-          "type": "marquee_item",
-          "settings": {
-            "text": "FREE SHIPPING ON ALL ORDERS",
-            "icon_class": "fas fa-truck"
-          }
-        },
-        "marquee_item_VtnjMi": {
-          "type": "marquee_item",
-          "settings": {
-            "text": "FLAT 50% RETAIL MARGIN",
-            "icon_class": "fas fa-star"
-          }
-        },
-        "marquee_item_J4gAMP": {
-          "type": "marquee_item",
-          "settings": {
-            "text": "5% CASHBACK ON EVERY ORDER",
-            "icon_class": "fas fa-coins"
-          }
-        },
-        "marquee_item_QbPizB": {
-          "type": "marquee_item",
-          "settings": {
-            "text": "EXPRESS DELIVERY",
-            "icon_class": "fas fa-truck-fast"
-          }
-        },
-        "marquee_item_Br7Amm": {
-          "type": "marquee_item",
-          "settings": {
-            "text": "COD AVAILABLE (10% ADVANCE)",
-            "icon_class": "fas fa-box-open"
-          }
-        },
-        "marquee_item_XLNAgq": {
-          "type": "marquee_item",
-          "settings": {
-            "text": "MOQ: 50 PCS",
-            "icon_class": "fas fa-check-circle"
-          }
-        }
-      },
-      "block_order": [
-        "marquee_item_cBfDme",
-        "marquee_item_VtnjMi",
-        "marquee_item_J4gAMP",
-        "marquee_item_QbPizB",
-        "marquee_item_Br7Amm",
-        "marquee_item_XLNAgq"
-      ],
-      "name": "Espon Marquee",
-      "settings": {
-        "bg_color": "#ca8a04",
-        "text_color": "#ffffff",
-        "icon_gap": 10,
-        "item_gap": 40,
-        "animation_speed": 25
-      }
-    },
     "espon_spin_wheel_fiUB9b": {
       "type": "espon-spin-wheel",
       "name": "Espon Spin Wheel",
@@ -804,7 +741,6 @@
   "order": [
     "hero_jVaWmY",
     "espon_hero_9wzmtE",
-    "espon_marquee_czcNQC",
     "espon_spin_wheel_fiUB9b",
     "espon_categories_Xn4mFJ",
     "espon_fabrics_section",

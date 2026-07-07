@@ -1,113 +1,113 @@
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<style>
-  .uk-marquee-container-{{ section.id }} {
-    /* Dynamic Theme Editor Variables */
-    --bg-color: {{ section.settings.bg_color | default: '#CA8A04' }};
-    --text-color: {{ section.settings.text_color | default: '#ffffff' }};
-    --speed: {{ section.settings.animation_speed | default: 25 }}s;
-    --direction: normal;
-    --padding-y: 5px;
-    --font-size-desktop: 12px;
-    --font-size-mobile: 11px;
-    
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    padding: var(--padding-y) 0;
+{%- style -%}
+  .espon-marquee-section {
+    background-color: {{ section.settings.bg_color }};
+    color: {{ section.settings.text_color }};
     overflow: hidden;
     position: relative;
+    z-index: 1000;
+    padding: 6px 0;
     display: flex;
     align-items: center;
-    width: 100%;
-    height: 30px;
-    z-index: 1;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    line-height: 1;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
   }
 
-  .uk-marquee-track {
+  /* Make it sticky if the user wants it fixed */
+  {% if section.settings.make_sticky %}
+  .espon-marquee-section {
+    position: sticky;
+    top: 0;
+    width: 100%;
+  }
+  {% endif %}
+
+  .espon-marquee-track {
     display: flex;
     white-space: nowrap;
-    animation: uk-marquee-scroll var(--speed) linear infinite var(--direction);
+    animation: esponMarqueeScroll {{ section.settings.speed }}s linear infinite;
+    /* Hardware acceleration for ultra-smooth rendering */
+    transform: translateZ(0);
+    will-change: transform;
   }
 
-  .uk-marquee-container-{{ section.id }}:hover .uk-marquee-track {
+  .espon-marquee-track:hover {
     animation-play-state: paused;
   }
 
-  .uk-marquee-content {
+  .espon-marquee-content {
     display: flex;
     align-items: center;
-    padding-right: 50px;
+    flex-shrink: 0;
   }
 
-  .uk-marquee-item {
+  .espon-marquee-item {
     display: inline-flex;
     align-items: center;
-    gap: {{ section.settings.icon_gap | default: 10 }}px;
-    margin-right: {{ section.settings.item_gap | default: 40 }}px;
-    font-size: var(--font-size-desktop);
-    font-weight: 800;
-    text-transform: uppercase;
+    padding: 0 20px;
+    font-size: 11px;
+    font-weight: 700;
     letter-spacing: 1px;
-    line-height: 1;
+    text-transform: uppercase;
+    font-family: 'Inter', sans-serif; /* Clean modern font like 11fit */
   }
 
-  .uk-marquee-item i {
-    font-size: calc(var(--font-size-desktop) + 2px);
-    opacity: 0.8;
+  .espon-marquee-item svg, .espon-marquee-item i {
+    margin-left: 8px;
+    font-size: 12px;
   }
 
-  @keyframes uk-marquee-scroll {
-    0% { transform: translateX(0%); }
-    100% { transform: translateX(-100%); }
+  @keyframes esponMarqueeScroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
   }
 
   @media screen and (max-width: 768px) {
-    .uk-marquee-item {
-      font-size: var(--font-size-mobile);
-      margin-right: 25px;
-    }
-    .uk-marquee-item i {
-      font-size: calc(var(--font-size-mobile) + 2px);
-    }
-    .uk-marquee-content {
-      padding-right: 25px;
+    .espon-marquee-item {
+      font-size: 10px; /* Slight scale down for mobile, but fixed */
+      padding: 0 15px;
     }
   }
-</style>
+{%- endstyle -%}
 
-<div class="uk-marquee-container-{{ section.id }}">
-  {% for track_loop in (1..4) %}
-    <div class="uk-marquee-track" {% if track_loop > 1 %}aria-hidden="true"{% endif %}>
-      <div class="uk-marquee-content">
-        {%- for block in section.blocks -%}
-          <div class="uk-marquee-item" {{ block.shopify_attributes }}>
-            <span>{{ block.settings.text }}</span>
-            {% if block.settings.icon_class != blank %}
-              <i class="{{ block.settings.icon_class }}"></i>
-            {% endif %}
-          </div>
-        {%- endfor -%}
-      </div>
+<div class="espon-marquee-section">
+  <div class="espon-marquee-track">
+    <!-- First Set -->
+    <div class="espon-marquee-content">
+      {%- for block in section.blocks -%}
+        <div class="espon-marquee-item" {{ block.shopify_attributes }}>
+          {{ block.settings.text }}
+          {%- if block.settings.icon != blank -%}
+            <i class="{{ block.settings.icon }}"></i>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
     </div>
-  {% endfor %}
+    <!-- Duplicated Set for Seamless Loop -->
+    <div class="espon-marquee-content" aria-hidden="true">
+      {%- for block in section.blocks -%}
+        <div class="espon-marquee-item">
+          {{ block.settings.text }}
+          {%- if block.settings.icon != blank -%}
+            <i class="{{ block.settings.icon }}"></i>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
 </div>
 
 {% schema %}
 {
-  "name": "Espon Marquee",
+  "name": "11fit Marquee",
   "settings": [
-    {
-      "type": "header",
-      "content": "Colors"
-    },
     {
       "type": "color",
       "id": "bg_color",
       "label": "Background Color",
-      "default": "#CA8A04"
+      "default": "#000000"
     },
     {
       "type": "color",
@@ -116,106 +116,52 @@
       "default": "#ffffff"
     },
     {
-      "type": "header",
-      "content": "Spacing & Animation"
-    },
-    {
       "type": "range",
-      "id": "icon_gap",
+      "id": "speed",
       "min": 5,
-      "max": 50,
-      "step": 1,
-      "unit": "px",
-      "label": "Space between Text and Icon",
-      "default": 10
-    },
-    {
-      "type": "range",
-      "id": "item_gap",
-      "min": 10,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "label": "Space between Items",
-      "default": 40
-    },
-    {
-      "type": "range",
-      "id": "animation_speed",
-      "min": 10,
       "max": 60,
       "step": 1,
       "unit": "s",
-      "label": "Scroll Speed",
-      "default": 25
+      "label": "Animation Speed",
+      "default": 20
+    },
+    {
+      "type": "checkbox",
+      "id": "make_sticky",
+      "label": "Make Sticky (Fixed at Top)",
+      "default": true
     }
   ],
   "blocks": [
     {
-      "type": "marquee_item",
-      "name": "Marquee Item",
+      "type": "text",
+      "name": "Announcement",
       "settings": [
         {
           "type": "text",
           "id": "text",
           "label": "Text",
-          "default": "FREE SHIPPING ON ALL ORDERS"
+          "default": "PREMIUM SPORTSWEAR"
         },
         {
           "type": "text",
-          "id": "icon_class",
-          "label": "FontAwesome Icon Class",
-          "default": "fas fa-truck"
+          "id": "icon",
+          "label": "Icon Class (e.g. fas fa-bolt)",
+          "default": "fas fa-bolt"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Espon Marquee",
+      "name": "11fit Marquee",
       "blocks": [
-        {
-          "type": "marquee_item",
-          "settings": {
-            "text": "FREE SHIPPING ON ALL ORDERS",
-            "icon_class": "fas fa-truck"
-          }
-        },
-        {
-          "type": "marquee_item",
-          "settings": {
-            "text": "FLAT 50% RETAIL MARGIN",
-            "icon_class": "fas fa-star"
-          }
-        },
-        {
-          "type": "marquee_item",
-          "settings": {
-            "text": "5% CASHBACK ON EVERY ORDER",
-            "icon_class": "fas fa-coins"
-          }
-        },
-        {
-          "type": "marquee_item",
-          "settings": {
-            "text": "EXPRESS DELIVERY",
-            "icon_class": "fas fa-truck-fast"
-          }
-        },
-        {
-          "type": "marquee_item",
-          "settings": {
-            "text": "COD AVAILABLE (10% ADVANCE)",
-            "icon_class": "fas fa-box-open"
-          }
-        },
-        {
-          "type": "marquee_item",
-          "settings": {
-            "text": "MOQ: 50 PCS",
-            "icon_class": "fas fa-check-circle"
-          }
-        }
+        { "type": "text", "settings": { "text": "FREE SHIPPING ON PREPAID ORDERS", "icon": "fas fa-truck-fast" } },
+        { "type": "text", "settings": { "text": "CASH ON DELIVERY AVAILABLE", "icon": "fas fa-wallet" } },
+        { "type": "text", "settings": { "text": "PREMIUM QUALITY FABRICS", "icon": "fas fa-star" } },
+        { "type": "text", "settings": { "text": "FREE SHIPPING ON PREPAID ORDERS", "icon": "fas fa-truck-fast" } },
+        { "type": "text", "settings": { "text": "CASH ON DELIVERY AVAILABLE", "icon": "fas fa-wallet" } },
+        { "type": "text", "settings": { "text": "PREMIUM QUALITY FABRICS", "icon": "fas fa-star" } }
       ]
     }
   ]
