@@ -549,6 +549,12 @@
           "settings": {
             "collection": "t-shirts"
           }
+        },
+        "cat_sample_sets": {
+          "type": "collection",
+          "settings": {
+            "collection": "sample-sets"
+          }
         }
       },
       "block_order": [
@@ -556,7 +562,8 @@
         "cat_2",
         "cat_3",
         "cat_4",
-        "cat_5"
+        "cat_5",
+        "cat_sample_sets"
       ],
       "settings": {}
     }
