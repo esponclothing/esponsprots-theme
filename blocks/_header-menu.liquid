@@ -191,6 +191,20 @@
       {{ block.shopify_attributes }}
       data-hydration-key="header-menu"
     >
+      <style>
+        /* DIRECT INLINE OVERRIDES - BYPASSES SHOPIFY CDN CACHE */
+        overflow-list::after,
+        .overflow-menu::after {
+          content: none !important;
+          display: none !important;
+          background-color: transparent !important;
+          background: transparent !important;
+          box-shadow: none !important;
+          border: none !important;
+          width: 0 !important;
+          height: 0 !important;
+        }
+      </style>
       <div class="header-menu__inner">
         <nav
           class="menu-list"
@@ -1026,23 +1040,6 @@
       font-size: 16px !important; /* Adjust this value to make it smaller */
       font-family: var(--font-body-family) !important; /* Changes font to your theme's body font */
     }
-  }
-
-  /* 3. Nuke full-width white background wrapper bar from overflow list */
-  overflow-list::part(overflow),
-  .overflow-menu::part(overflow) {
-    background-color: transparent !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    border: none !important;
-  }
-  overflow-list::after,
-  .overflow-menu::after {
-    background-color: transparent !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    border: none !important;
-    display: none !important; /* Hide the background animator element completely */
   }
 
 {% endstylesheet %}
