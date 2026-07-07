@@ -126,7 +126,21 @@
             </span>
           </a>
           {%- if link.links != blank -%}
-            <div class="menu-list__submenu{{ color_scheme_classes }}" ref="submenu[]">
+            {% liquid
+              assign is_mega_menu = false
+              for child in link.links
+                if child.links != blank
+                  assign is_mega_menu = true
+                  break
+                endif
+              endfor
+
+              assign submenu_layout_class = 'simple-dropdown'
+              if is_mega_menu
+                assign submenu_layout_class = 'mega-dropdown'
+              endif
+            %}
+            <div class="menu-list__submenu {{ submenu_layout_class }}{{ color_scheme_classes }}" ref="submenu[]">
               <div
                 id="submenu-{{ forloop.index }}"
                 class="menu-list__submenu-inner"
@@ -306,6 +320,34 @@
     height: auto !important;
     max-height: none !important;
     overflow: visible !important;
+  }
+
+  /* Simple Dropdown (Narrow Single-Column Layout) */
+  .menu-list__submenu.simple-dropdown {
+    min-width: 180px !important;
+  }
+  .menu-list__submenu.simple-dropdown .menu-list__submenu-inner {
+    padding: 12px 16px !important;
+  }
+  .menu-list__submenu.simple-dropdown .mega-menu__list {
+    flex-direction: column !important;
+    gap: 0 !important;
+  }
+  .menu-list__submenu.simple-dropdown .mega-menu__column {
+    min-width: 0 !important;
+  }
+  .menu-list__submenu.simple-dropdown .mega-menu__link--parent {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #555555 !important;
+    margin: 0 !important;
+    padding: 6px 0 !important;
+    text-transform: none !important;
+    border-bottom: none !important;
+  }
+  .menu-list__submenu.simple-dropdown .mega-menu__link--parent:hover {
+    color: #d48a04 !important;
+    transform: translateX(4px) !important;
   }
 
   /* Instantly show dropdown on hover, bypassing any JS lag and preventing animation latency */
