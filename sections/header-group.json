@@ -82,12 +82,6 @@
     },
     "espon_marquee": {
       "type": "espon-marquee",
-      "settings": {
-        "bg_color": "#000000",
-        "text_color": "#ffffff",
-        "speed": 20,
-        "make_sticky": true
-      },
       "blocks": {
         "block_1": {
           "type": "text",
@@ -107,7 +101,13 @@
       "block_order": [
         "block_1",
         "block_2"
-      ]
+      ],
+      "settings": {
+        "bg_color": "#000000",
+        "text_color": "#ffffff",
+        "speed": 10,
+        "make_sticky": true
+      }
     }
   },
   "order": [

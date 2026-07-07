@@ -53,7 +53,7 @@
   .espon-marquee-item svg, .espon-marquee-item i {
     margin-left: 8px;
     font-size: 13px;
-    color: #CA8A04;
+    color: {{ section.settings.icon_color }};
   }
 
   @keyframes esponMarqueeScroll {
@@ -115,6 +115,12 @@
       "id": "text_color",
       "label": "Text Color",
       "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon Color",
+      "default": "#ca8a04"
     },
     {
       "type": "range",

@@ -736,11 +736,42 @@
         "padding_top_mobile": 50,
         "padding_bottom_mobile": 40
       }
+    },
+    "espon_marquee_home": {
+      "type": "espon-marquee",
+      "settings": {
+        "bg_color": "#ca8a04",
+        "text_color": "#000000",
+        "icon_color": "#000000",
+        "speed": 10,
+        "make_sticky": false
+      },
+      "blocks": {
+        "block_1": {
+          "type": "text",
+          "settings": {
+            "text": "FREE SHIPPING ON ALL ORDERS",
+            "icon": "fas fa-truck"
+          }
+        },
+        "block_2": {
+          "type": "text",
+          "settings": {
+            "text": "GET 5% CASHBACK (WALLET)",
+            "icon": "fas fa-coins"
+          }
+        }
+      },
+      "block_order": [
+        "block_1",
+        "block_2"
+      ]
     }
   },
   "order": [
     "hero_jVaWmY",
     "espon_hero_9wzmtE",
+    "espon_marquee_home",
     "espon_spin_wheel_fiUB9b",
     "espon_categories_Xn4mFJ",
     "espon_fabrics_section",
