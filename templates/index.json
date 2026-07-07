@@ -222,10 +222,15 @@
           "shopify://collections/track-pants",
           "shopify://collections/shorts",
           "shopify://collections/joggers",
-          "shopify://collections/co-ord-sets"
+          "shopify://collections/co-ord-sets",
+          "track-pants",
+          "shorts",
+          "joggers",
+          "co-ord-sets"
         ],
         "heading_color": "#0f172a",
         "border_color": "#e2e8f0",
+        "subtitle_color": "#ca8a04",
         "padding_top": 100,
         "padding_bottom": 50,
         "padding_top_mobile": 50,
