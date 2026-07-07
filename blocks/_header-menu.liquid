@@ -72,12 +72,12 @@
     %}
 
     {% capture children %}
-      <!-- Load Lato font for Beyoung-style nav -->
+      <!-- Load Plus Jakarta Sans font to match mobile drawer -->
       <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         /* Top nav links */
         .menu-list__link, .menu-list__link-title {
-          font-family: 'Lato', sans-serif !important;
+          font-family: 'Plus Jakarta Sans', sans-serif !important;
           font-size: 14px !important;
           font-weight: 600 !important;
           letter-spacing: 0.5px !important;
@@ -209,17 +209,17 @@
      Fix: Override the CSS vars + force via all selectors
      ======================================== */
 
-  /* 1. Override Lato Google Font */
-  @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,400&display=swap');
+  /* 1. Override Plus Jakarta Sans Google Font */
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
   /* 2. Override the CSS variables the theme injects via inline style="" */
   .header-menu,
   .menu-list,
   .menu-list__submenu,
   .menu-drawer__navigation {
-    --menu-top-level-font-family: 'Lato', sans-serif;
-    --menu-parent-font-family: 'Lato', sans-serif;
-    --menu-child-font-family: 'Lato', sans-serif;
+    --menu-top-level-font-family: 'Plus Jakarta Sans', sans-serif;
+    --menu-parent-font-family: 'Plus Jakarta Sans', sans-serif;
+    --menu-child-font-family: 'Plus Jakarta Sans', sans-serif;
     --menu-top-level-font-weight: 600;
     --menu-top-level-font-case: uppercase;
     --menu-top-level-font-size: 14px;
