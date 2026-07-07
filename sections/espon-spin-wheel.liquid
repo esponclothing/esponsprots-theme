@@ -9,20 +9,20 @@
 
 .eiws-section {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  background: radial-gradient(circle at 30% 50%, #FEFCE8 0%, #ffffff 70%);
+  background: radial-gradient(circle at 30% 50%, #1e1b12 0%, #0a0a0a 70%);
   padding: 80px 5%;
   position: relative;
   overflow: hidden;
-  --eiws-bg:          #ffffff;
-  --eiws-card-bg:     #ffffff;
-  --eiws-card-bg2:    #FFFBEB;
-  --eiws-border:      #e2e8f0;
-  --eiws-text:        #0f172a;
-  --eiws-subtext:     #64748b;
-  --eiws-muted:       #94a3b8;
-  --eiws-wheel-a:     #f1f5f9;
-  --eiws-wheel-b:     #e2e8f0;
-  --eiws-wheel-border:#e2e8f0;
+  --eiws-bg:          #0a0a0a;
+  --eiws-card-bg:     rgba(30, 30, 30, 0.6);
+  --eiws-card-bg2:    rgba(40, 35, 20, 0.7);
+  --eiws-border:      rgba(255, 255, 255, 0.1);
+  --eiws-text:        #f8fafc;
+  --eiws-subtext:     #cbd5e1;
+  --eiws-muted:       #64748b;
+  --eiws-wheel-a:     #1e1b12;
+  --eiws-wheel-b:     #2a2416;
+  --eiws-wheel-border:#3a301c;
   --eiws-slice-highlight: rgba(202,138,4,0.15);
 }
 
@@ -77,13 +77,13 @@
 .eiws-header h2 {
   font-size: clamp(2rem, 5vw, 3.2rem);
   font-weight: 900;
-  color: #0f172a;
+  color: var(--eiws-text);
   margin: 0 0 12px;
   line-height: 1.1;
 }
 .eiws-header h2 span { color: #CA8A04; }
 .eiws-header p {
-  color: #64748b;
+  color: var(--eiws-subtext);
   font-size: 1rem;
   max-width: 500px;
   margin: 0 auto;
@@ -103,14 +103,16 @@
 
 /* ---- LEFT PANEL — iPhone Jackpot ---- */
 .eiws-jackpot-panel {
-  background: linear-gradient(135deg, #FFFBEB 0%, #ffffff 100%);
+  background: var(--eiws-card-bg2);
   border: 1px solid rgba(202,138,4,0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: 24px;
   padding: 35px 30px;
   text-align: center;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(202,138,4,0.08);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
   /* Added Flexbox to strictly center everything top-to-bottom */
   display: flex;
   flex-direction: column;
@@ -201,13 +203,13 @@
 .eiws-jackpot-name {
   font-size: 1.3rem;
   font-weight: 900;
-  color: #0f172a;
+  color: var(--eiws-text);
   margin: 8px 0 4px;
   line-height: 1.2;
 }
 .eiws-jackpot-sub {
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: var(--eiws-subtext);
   margin-bottom: 16px;
 }
 
@@ -459,21 +461,23 @@
 
 /* ---- RIGHT PANEL — Prizes + Login ---- */
 .eiws-prizes-panel {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--eiws-card-bg);
+  border: 1px solid var(--eiws-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: 24px;
   padding: 30px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
 }
 
 .eiws-panel-title {
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 2px;
-  color: #0f172a;
+  color: var(--eiws-subtext);
   text-transform: uppercase;
   margin-bottom: 4px;
 }
@@ -482,7 +486,7 @@
 .eiws-prizes-toggle-btn {
   background: rgba(202,138,4,0.08);
   border: 1px solid rgba(202,138,4,0.3);
-  color: #0f172a;
+  color: var(--eiws-text);
   padding: 10px 15px;
   border-radius: 12px;
   font-weight: 700;
@@ -596,12 +600,11 @@
   display: block;
   margin-top: 10px;
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--eiws-subtext);
+  text-decoration: underline;
 }
-.eiws-register-link a {
-  color: #CA8A04;
-  font-weight: 700;
-  text-decoration: none;
+.eiws-register-link:hover {
+  color: var(--eiws-text);
 }
 
 /* ---- WIN STATE ---- */
@@ -617,7 +620,7 @@
 }
 .eiws-win-overlay.show { display: flex; }
 .eiws-win-card {
-  background: linear-gradient(135deg, #ffffff 0%, #FFFBEB 100%);
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.9) 0%, rgba(40, 35, 20, 0.95) 100%);
   border: 2px solid #CA8A04;
   border-radius: 30px;
   padding: 50px 40px;
@@ -638,7 +641,7 @@
   from { transform: scale(0); }
   to   { transform: scale(1); }
 }
-.eiws-win-card h3 { font-size: 2rem; color: #0f172a; font-weight: 900; margin: 0 0 8px; }
+.eiws-win-card h3 { font-size: 2rem; color: var(--eiws-text); font-weight: 900; margin: 0 0 8px; }
 .eiws-win-card h3 span { color: #CA8A04; }
 .eiws-win-prize-name {
   font-size: 1.5rem;
@@ -651,7 +654,7 @@
   margin: 16px 0;
   display: block;
 }
-.eiws-win-card p { color: #475569; font-size: 0.9rem; margin: 0 0 20px; line-height: 1.6; }
+.eiws-win-card p { color: var(--eiws-subtext); font-size: 0.9rem; margin: 0 0 20px; line-height: 1.6; }
 .eiws-win-cart-btn {
   display: block;
   background: linear-gradient(135deg, #CA8A04, #fbbf24);

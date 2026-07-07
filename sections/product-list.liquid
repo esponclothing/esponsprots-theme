@@ -27,7 +27,11 @@
   {% capture list_items %}
     {% if section.settings.collection != blank and shop.products_count != 0 %}
       {% paginate section.settings.collection.products by max_items %}
-        {% for product in section.settings.collection.products limit: max_items %}
+        {% assign visible_count = 0 %}
+        {% for product in section.settings.collection.products %}
+          {% if product.tags contains 'hidden-gift' %}{% continue %}{% endif %}
+          {% if visible_count >= max_items %}{% break %}{% endif %}
+          {% assign visible_count = visible_count | plus: 1 %}
           <div
             class="resource-list__item"
           >
