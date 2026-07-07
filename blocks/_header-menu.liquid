@@ -54,7 +54,7 @@
   {% else %}
     {% liquid
       assign block_settings = block.settings
-      assign menu_content_type = block_settings.menu_style | default: 'text'
+      assign menu_content_type = 'text'
       assign image_border_radius = block_settings.image_border_radius
       assign color_scheme_classes = ''
       assign color_scheme_setting_id = 'color_scheme_' | append: section.settings.menu_row
@@ -68,12 +68,6 @@
       # Check if header and menu colors match. This is used to apply different padding styles in css
       if parent_color_scheme.settings.background.rgb == current_color_scheme.settings.background.rgb
         assign color_scheme_classes = color_scheme_classes | append: ' color-scheme-matches-parent'
-      endif
-
-      if block_settings.menu_style == 'featured_collections'
-        assign ratio = block_settings.featured_collections_aspect_ratio
-      elsif block_settings.menu_style == 'featured_products'
-        assign ratio = block_settings.featured_products_aspect_ratio
       endif
     %}
 
@@ -139,7 +133,7 @@
                 style="{% render 'submenu-font-styles', settings: block_settings %}; padding: 24px 32px;"
               >
                 {% assign list_id = 'MegaMenuList-' | append: forloop.index %}
-                <div class="mega-menu section section--full-width-margin section--{{ section.settings.section_width }}">
+                <div class="mega-menu" style="min-width: 450px;">
                   <div
                     class="mega-menu__grid"
                     data-menu-grid-id="{{ list_id }}"
@@ -250,13 +244,22 @@
     color: #212121 !important;
   }
 
-  /* 4. Dropdown submenu box */
+  /* 4. Dropdown submenu box - Compact and floating like Beyoung */
+  .menu-list__list-item {
+    position: relative !important;
+  }
   .menu-list__submenu {
     border: 1px solid #e5e7eb !important;
     border-radius: 6px !important;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
     background: #ffffff !important;
     transition: all 0.2s ease-out !important;
+    width: auto !important;
+    min-width: max-content;
+    position: absolute !important;
+    left: 0 !important;
+    top: 100% !important;
+    clip-path: none !important;
   }
 
   /* 5. Fix inner padding — override padding-inline which the theme sets */
