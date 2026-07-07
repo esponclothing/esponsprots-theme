@@ -251,18 +251,26 @@
     align-items: center !important;
   }
   
+  /* Hidden by default */
+  .menu-list__submenu {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
   /* Instantly show dropdown on hover, bypassing any JS lag */
-  .menu-list__list-item:hover .menu-list__submenu {
+  .menu-list__list-item:hover > .menu-list__submenu {
     display: block !important;
     opacity: 1 !important;
     visibility: visible !important;
     pointer-events: auto !important;
-    transform: translateY(0) !important;
+    transform: none !important;
   }
 
-  /* Nuke any JS animation classes that hide text */
-  .menu-list__submenu,
-  .menu-list__submenu * {
+  /* Force contents of the submenu to be visible when active, bypassing JS animation bugs */
+  .menu-list__list-item:hover > .menu-list__submenu,
+  .menu-list__list-item:hover > .menu-list__submenu * {
     opacity: 1 !important;
     visibility: visible !important;
     transform: none !important;
