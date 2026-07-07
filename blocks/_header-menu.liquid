@@ -328,6 +328,7 @@
   }
   .menu-list__submenu.simple-dropdown .menu-list__submenu-inner {
     padding: 12px 16px !important;
+    padding-inline: 16px !important;
   }
   .menu-list__submenu.simple-dropdown .mega-menu__list {
     flex-direction: column !important;
@@ -745,12 +746,14 @@
     visibility: visible;
   }
 
+  /* 5. Fix inner padding — override padding-inline which the theme sets */
   .menu-list__submenu-inner,
+  .menu-list__submenu > div,
   .overflow-menu::part(overflow-list) {
     grid-column: 2;
     padding-block-start: var(--submenu-padding-block-start);
     padding-block-end: var(--submenu-padding-block-end);
-    padding-inline: var(--section-padding-inline);
+    padding-inline: 24px !important; /* Compact padding-inline to prevent wide stretching */
   }
 
   .overflow-menu::part(overflow) {
