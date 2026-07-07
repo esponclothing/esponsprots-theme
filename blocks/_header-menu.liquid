@@ -182,42 +182,47 @@
 
 {% stylesheet %}
   /* ========================================
-     BEYOUNG-STYLE DESKTOP MENU
-     Source: beyoung.in/desktop/css/main.css
+     BEYOUNG-STYLE DESKTOP MENU — FINAL FIX
+     Root cause: theme uses CSS vars via inline style
+     Fix: Override the CSS vars + force via all selectors
      ======================================== */
 
-  /* Force Beyoung font everywhere in menu */
-  @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;500;600;700;900&display=swap');
+  /* 1. Override Lato Google Font */
+  @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,400&display=swap');
 
-  /* Desktop top-level links — exact Beyoung .strapi-navigation-link values */
-  .menu-list__link {
+  /* 2. Override the CSS variables the theme injects via inline style="" */
+  .header-menu,
+  .menu-list,
+  .menu-list__submenu,
+  .menu-drawer__navigation {
+    --menu-top-level-font-family: 'Lato', sans-serif;
+    --menu-parent-font-family: 'Lato', sans-serif;
+    --menu-child-font-family: 'Lato', sans-serif;
+    --menu-top-level-font-weight: 600;
+    --menu-top-level-font-case: uppercase;
+    --menu-top-level-font-size: 14px;
+    --menu-top-level-font-size-desktop: 14px;
+    --menu-parent-font-weight: 800;
+    --menu-child-font-weight: 400;
+    /* Fix inner padding — override Shopify's --submenu-padding vars */
+    --submenu-padding-block-start: 24px;
+    --submenu-padding-block-end: 24px;
+  }
+
+  /* 3. Force font on top-level nav links */
+  .menu-list__link,
+  .menu-list__link-title,
+  .menu-list__link .wrap-text,
+  .menu-list__link-title .wrap-text {
     font-family: 'Lato', sans-serif !important;
     font-size: 14px !important;
     font-weight: 600 !important;
     letter-spacing: 0.3px !important;
     text-transform: uppercase !important;
     color: #212121 !important;
-    padding: 10px 0 !important;
-    gap: 6px;
-    white-space: nowrap;
-    transition: color 0.2s ease-out !important;
   }
 
-  .menu-list__link:hover,
-  .menu-list__link:focus {
-    color: #212121 !important;
-  }
-
-  .menu-list__link-title {
-    font-family: 'Lato', sans-serif !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.3px !important;
-    text-transform: uppercase !important;
-    color: #212121 !important;
-  }
-
-  /* Beyoung submenu dropdown — exact .strapi-navigation-dropdown-menu values */
+  /* 4. Dropdown submenu box */
   .menu-list__submenu {
     border: 1px solid #e5e7eb !important;
     border-radius: 6px !important;
@@ -226,89 +231,70 @@
     transition: all 0.2s ease-out !important;
   }
 
-  /* Add proper inner spacing to the mega menu */
-  .menu-list__submenu-inner {
+  /* 5. Fix inner padding — override padding-inline which the theme sets */
+  .menu-list__submenu-inner,
+  .menu-list__submenu > div,
+  .mega-menu,
+  .mega-menu.section {
     padding: 24px 32px !important;
+    padding-inline: 32px !important;
   }
 
   .mega-menu__grid {
-    gap: 32px !important;
+    gap: 24px !important;
   }
 
-  .mega-menu {
-    padding: 8px 0 !important;
-  }
-
-  /* Beyoung hover open effect — instant show on li:hover */
+  /* 6. Show on hover */
   .menu-list__list-item:hover .menu-list__submenu,
   .menu-list__list-item:focus-within .menu-list__submenu {
     opacity: 1 !important;
     visibility: visible !important;
     pointer-events: auto !important;
-    transform: translateY(0) !important;
   }
 
-  /* Submenu column headings — mega-menu__link--parent (the real class from mega-menu-list.liquid) */
-  .mega-menu__link--parent {
-    font-family: 'Lato', sans-serif !important;
-    font-size: 13px !important;
-    font-weight: 800 !important;
-    color: #111111 !important;
-    margin-bottom: 14px !important;
-    padding-bottom: 10px !important;
-    border-bottom: 2px solid #e5e7eb !important;
-    text-decoration: none !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1px !important;
-    display: block !important;
-    line-height: 1.4 !important;
-  }
-
+  /* 7. Column heading (parent link) — BOLD */
+  .mega-menu__link--parent,
   .mega-menu__link--parent .wrap-text {
-    font-weight: 800 !important;
+    font-family: 'Lato', sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 900 !important;
     color: #111111 !important;
+    letter-spacing: 1.2px !important;
+    text-transform: uppercase !important;
+    text-decoration: none !important;
+    line-height: 1.2 !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 12px !important;
+    border-bottom: 2px solid #e5e7eb !important;
+    display: block !important;
   }
 
-  /* Submenu child links — mega-menu__link */
-  .mega-menu__link:not(.mega-menu__link--parent) {
+  /* 8. Child links */
+  .mega-menu__link:not(.mega-menu__link--parent),
+  .mega-menu__link:not(.mega-menu__link--parent) .wrap-text {
     font-family: 'Lato', sans-serif !important;
     font-size: 13px !important;
     font-weight: 400 !important;
-    color: #6b7280 !important;
-    line-height: 2 !important;
+    color: #555555 !important;
+    line-height: 1.9 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
     transition: color 0.15s ease !important;
     text-decoration: none !important;
-    text-transform: capitalize !important;
-    letter-spacing: 0 !important;
-    display: block !important;
   }
 
-  .mega-menu__link:not(.mega-menu__link--parent):hover {
+  .mega-menu__link:not(.mega-menu__link--parent):hover,
+  .mega-menu__link:not(.mega-menu__link--parent):hover .wrap-text {
     color: #111111 !important;
-    font-weight: 500 !important;
+    font-weight: 600 !important;
   }
 
-  /* Submenu sub-links — exact .strapi-navigation-sub-item-link */
-  .menu-list__submenu a,
-  .mega-menu a {
-    font-family: 'Lato', sans-serif !important;
-    font-size: 14px !important;
-    font-weight: 400 !important;
-    color: #6b7280 !important;
-    line-height: 1.5 !important;
-    transition: color 0.2s ease !important;
-    text-decoration: none !important;
-  }
-
-  .menu-list__submenu a:hover,
-  .mega-menu a:hover {
-    color: #212121 !important;
-  }
-
-  /* Espon menu icon */
+  /* 9. Espon menu icon */
   .espon-menu-icon {
     color: #212121;
+    flex-shrink: 0;
   }
+
 
   .menu-list--mobile {
     &.menu-list {
