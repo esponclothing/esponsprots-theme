@@ -244,6 +244,11 @@
     color: #212121 !important;
   }
 
+  /* Fix Shadow DOM overflow clipping on PC navigation */
+  .overflow-menu::part(list) {
+    overflow: visible !important;
+  }
+
   /* 4. Dropdown submenu box - Compact and floating like Beyoung */
   .menu-list__list-item {
     position: relative !important;
@@ -319,14 +324,14 @@
   .menu-list__submenu .mega-menu__list {
     display: flex !important;
     flex-direction: row !important;
-    gap: 40px !important;
+    gap: 24px !important;
     list-style: none !important;
     opacity: 1 !important;
     visibility: visible !important;
     height: auto !important;
   }
   .menu-list__submenu .mega-menu__column {
-    min-width: 140px !important;
+    min-width: 130px !important;
     padding: 0 !important;
     border: none !important;
     opacity: 1 !important;
@@ -337,6 +342,13 @@
     padding: 0 !important;
     opacity: 1 !important;
     visibility: visible !important;
+  }
+
+  /* PC Layout Tightening */
+  @media screen and (min-width: 990px) {
+    .menu-list__submenu-inner {
+      padding: 16px 24px !important;
+    }
   }
 
   /* 5. Fix inner padding — override padding-inline which the theme sets */
