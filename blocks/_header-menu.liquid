@@ -260,6 +260,28 @@
     left: 0 !important;
     top: 100% !important;
     clip-path: none !important;
+    padding: 0 !important; /* Padding is handled by submenu-inner */
+  }
+
+  /* Beyoung Layout Overrides for the Grid inside the dropdown */
+  .menu-list__submenu .mega-menu {
+    min-width: 0 !important;
+  }
+  .menu-list__submenu .mega-menu__grid {
+    display: flex !important;
+    gap: 40px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    list-style: none !important;
+  }
+  .menu-list__submenu .mega-menu__column {
+    min-width: 140px !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+  .menu-list__submenu .list-unstyled {
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   /* 5. Fix inner padding — override padding-inline which the theme sets */
