@@ -1,21 +1,21 @@
 {%- style -%}
 .collection-subcategories {
-  margin-bottom: 2rem;
-  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  margin-top: 0.5rem;
 }
 .subcategories-list {
   display: flex;
   flex-wrap: nowrap;
-  gap: 1rem;
+  gap: 0.5rem;
   list-style: none;
-  padding: 0 1.5rem;
+  padding: 0 1rem;
   margin: 0;
   overflow-x: auto;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 .subcategories-list::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }
 .subcategory-item {
   flex-shrink: 0;
@@ -23,16 +23,17 @@
 .subcategory-link {
   display: flex;
   align-items: center;
-  padding: 10px 20px;
-  border: 1px solid rgba(var(--color-foreground), 0.15);
-  border-radius: 30px;
+  padding: 4px 12px;
+  border: 1px solid rgba(var(--color-foreground), 0.2);
+  border-radius: 999px;
   text-decoration: none;
   color: rgb(var(--color-foreground));
   background-color: rgb(var(--color-background));
-  font-size: 1.4rem;
-  transition: all 0.3s ease;
-  font-weight: 500;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+  font-weight: 600;
   white-space: nowrap;
+  line-height: 1.2;
 }
 .subcategory-link:hover,
 .subcategory-link.active {
