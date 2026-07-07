@@ -1028,6 +1028,17 @@
     }
   }
 
+  /* 3. Nuke full-width white background wrapper bar from overflow list */
+  overflow-list,
+  .overflow-menu,
+  overflow-list::part(overflow),
+  .overflow-menu::part(overflow) {
+    background-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
 {% endstylesheet %}
 
 {% schema %}
