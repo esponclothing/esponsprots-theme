@@ -133,7 +133,7 @@
                 style="{% render 'submenu-font-styles', settings: block_settings %}; padding: 24px 32px;"
               >
                 {% assign list_id = 'MegaMenuList-' | append: forloop.index %}
-                <div class="mega-menu" style="min-width: 450px;">
+                <div class="mega-menu">
                   <div
                     class="mega-menu__grid"
                     data-menu-grid-id="{{ list_id }}"
@@ -248,6 +248,15 @@
   .menu-list__list-item {
     position: relative !important;
   }
+  
+  /* Instantly show dropdown on hover, bypassing any JS lag */
+  .menu-list__list-item:hover .menu-list__submenu {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translateY(0) !important;
+  }
+
   .menu-list__submenu {
     border: 1px solid #e5e7eb !important;
     border-radius: 6px !important;
