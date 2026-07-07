@@ -244,9 +244,15 @@
     color: #212121 !important;
   }
 
-  /* Fix Shadow DOM overflow clipping on PC navigation */
+  /* Fix Shadow DOM overflow clipping and hide the full-width white background wrapper */
   .overflow-menu::part(list) {
     overflow: visible !important;
+  }
+  .overflow-menu::part(overflow) {
+    background-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
   }
 
   /* 4. Dropdown submenu box - Compact and floating like Beyoung */
