@@ -78,6 +78,34 @@
     %}
 
     {% capture children %}
+      <!-- Load Lato font for Beyoung-style nav -->
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;600;700;800;900&display=swap');
+        /* Top nav links */
+        .menu-list__link, .menu-list__link-title {
+          font-family: 'Lato', sans-serif !important;
+          font-size: 14px !important;
+          font-weight: 600 !important;
+          letter-spacing: 0.5px !important;
+          text-transform: uppercase !important;
+          color: #212121 !important;
+        }
+        /* Nav link hover */
+        .mega-menu__link:not(.mega-menu__link--parent):hover span {
+          color: #111111 !important;
+          font-weight: 600 !important;
+        }
+        /* Extra padding for inner submenu */
+        .menu-list__submenu-inner {
+          padding-left: 32px !important;
+          padding-right: 32px !important;
+          padding-top: 24px !important;
+          padding-bottom: 24px !important;
+        }
+        .mega-menu.section {
+          padding-inline: 0 !important;
+        }
+      </style>
       {% for link in block_settings.menu.links %}
         <li
           role="presentation"
@@ -108,7 +136,7 @@
               <div
                 id="submenu-{{ forloop.index }}"
                 class="menu-list__submenu-inner"
-                style="{% render 'submenu-font-styles', settings: block_settings %}"
+                style="{% render 'submenu-font-styles', settings: block_settings %}; padding: 24px 32px;"
               >
                 {% assign list_id = 'MegaMenuList-' | append: forloop.index %}
                 <div class="mega-menu section section--full-width-margin section--{{ section.settings.section_width }}">
