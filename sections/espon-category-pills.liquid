@@ -24,22 +24,24 @@
   display: flex;
   align-items: center;
   padding: 4px 12px;
-  border: 1px solid rgba(var(--color-foreground), 0.2);
+  border: 1px solid rgba(var(--color-foreground), 0.15);
   border-radius: 999px;
   text-decoration: none;
   color: rgb(var(--color-foreground));
-  background-color: rgb(var(--color-background));
+  background-color: transparent;
   font-size: 1.1rem;
   transition: all 0.2s ease;
-  font-weight: 600;
+  font-weight: 500;
   white-space: nowrap;
   line-height: 1.2;
 }
-.subcategory-link:hover,
+.subcategory-link:hover {
+  background-color: rgba(var(--color-foreground), 0.05);
+}
 .subcategory-link.active {
-  background-color: rgb(var(--color-foreground));
-  color: rgb(var(--color-background));
-  border-color: rgb(var(--color-foreground));
+  background-color: #c5a059;
+  color: #ffffff;
+  border-color: #c5a059;
 }
 {%- endstyle -%}
 
