@@ -84,8 +84,38 @@
       "type": "espon-marquee",
       "settings": {
         "bg_color": "#000000",
-        "text_color": "#ffffff"
-      }
+        "text_color": "#ffffff",
+        "speed": 20,
+        "make_sticky": true
+      },
+      "blocks": {
+        "block_1": {
+          "type": "text",
+          "settings": {
+            "text": "FREE SHIPPING ON PREPAID ORDERS",
+            "icon": "fas fa-truck-fast"
+          }
+        },
+        "block_2": {
+          "type": "text",
+          "settings": {
+            "text": "CASH ON DELIVERY AVAILABLE",
+            "icon": "fas fa-wallet"
+          }
+        },
+        "block_3": {
+          "type": "text",
+          "settings": {
+            "text": "PREMIUM QUALITY FABRICS",
+            "icon": "fas fa-star"
+          }
+        }
+      },
+      "block_order": [
+        "block_1",
+        "block_2",
+        "block_3"
+      ]
     }
   },
   "order": [
