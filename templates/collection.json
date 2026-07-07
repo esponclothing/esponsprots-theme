@@ -98,6 +98,56 @@
         "padding-block-end": 48
       }
     },
+    "espon_catalog_pills": {
+      "type": "espon-catalog-pills",
+      "blocks": {
+        "cat_1": {
+          "type": "collection",
+          "settings": {
+            "collection": "track-pants"
+          }
+        },
+        "cat_2": {
+          "type": "collection",
+          "settings": {
+            "collection": "shorts"
+          }
+        },
+        "cat_3": {
+          "type": "collection",
+          "settings": {
+            "collection": "joggers"
+          }
+        },
+        "cat_4": {
+          "type": "collection",
+          "settings": {
+            "collection": "co-ord-sets"
+          }
+        },
+        "cat_5": {
+          "type": "collection",
+          "settings": {
+            "collection": "t-shirts"
+          }
+        },
+        "cat_sample_sets": {
+          "type": "collection",
+          "settings": {
+            "collection": "sample-sets"
+          }
+        }
+      },
+      "block_order": [
+        "cat_1",
+        "cat_2",
+        "cat_3",
+        "cat_4",
+        "cat_5",
+        "cat_sample_sets"
+      ],
+      "settings": {}
+    },
     "espon_category_pills": {
       "type": "espon-category-pills",
       "settings": {}
@@ -520,6 +570,7 @@
   },
   "order": [
     "section",
+    "espon_catalog_pills",
     "espon_category_pills",
     "main",
     "collection_list_4rpP84",
