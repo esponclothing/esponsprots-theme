@@ -736,37 +736,10 @@
         "padding_top_mobile": 50,
         "padding_bottom_mobile": 40
       }
-    },
-    "marquee_restored": {
-      "type": "marquee",
-      "blocks": {
-        "block_1": {
-          "type": "text",
-          "settings": {
-            "text": "<p>FREE SHIPPING ON ALL ORDERS</p>"
-          }
-        },
-        "block_2": {
-          "type": "text",
-          "settings": {
-            "text": "<p>GET 5% CASHBACK (WALLET)</p>"
-          }
-        }
-      },
-      "block_order": [
-        "block_1",
-        "block_2"
-      ],
-      "settings": {
-        "color_scheme": "scheme-1",
-        "padding-block-start": 10,
-        "padding-block-end": 10
-      }
     }
   },
   "order": [
     "hero_jVaWmY",
-    "marquee_restored",
     "espon_hero_9wzmtE",
     "espon_spin_wheel_fiUB9b",
     "espon_categories_Xn4mFJ",

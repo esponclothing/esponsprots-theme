@@ -92,29 +92,21 @@
         "block_1": {
           "type": "text",
           "settings": {
-            "text": "FREE SHIPPING ON PREPAID ORDERS",
-            "icon": "fas fa-truck-fast"
+            "text": "FREE SHIPPING ON ALL ORDERS",
+            "icon": "fas fa-truck"
           }
         },
         "block_2": {
           "type": "text",
           "settings": {
-            "text": "CASH ON DELIVERY AVAILABLE",
-            "icon": "fas fa-wallet"
-          }
-        },
-        "block_3": {
-          "type": "text",
-          "settings": {
-            "text": "PREMIUM QUALITY FABRICS",
-            "icon": "fas fa-star"
+            "text": "GET 5% CASHBACK (WALLET)",
+            "icon": "fas fa-coins"
           }
         }
       },
       "block_order": [
         "block_1",
-        "block_2",
-        "block_3"
+        "block_2"
       ]
     }
   },
