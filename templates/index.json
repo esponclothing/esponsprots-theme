@@ -157,15 +157,16 @@
         "block_2"
       ],
       "settings": {
-        "bg_color": "#BB8A24",
-        "text_color": "#F7F9FA",
-        "icon_color": "#F7F9FA",
+        "bg_color": "#bb8a24",
+        "text_color": "#f7f9fa",
+        "icon_color": "#f7f9fa",
         "speed": 15,
         "make_sticky": false
       }
     },
     "espon_spin_wheel_fiUB9b": {
       "type": "espon-spin-wheel",
+      "disabled": true,
       "name": "Espon Spin Wheel",
       "settings": {
         "min_order_amount": 10000,
