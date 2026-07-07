@@ -204,7 +204,7 @@
         "cat_3": {
           "type": "category_card",
           "settings": {
-            "collection": "co-ord-sets"
+            "collection": "sample-sets"
           }
         }
       },
