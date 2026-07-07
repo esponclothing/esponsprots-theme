@@ -75,28 +75,19 @@
 
 <div class="espon-marquee-section">
   <div class="espon-marquee-track">
-    <!-- First Set -->
-    <div class="espon-marquee-content">
-      {%- for block in section.blocks -%}
-        <div class="espon-marquee-item" {{ block.shopify_attributes }}>
-          {{ block.settings.text }}
-          {%- if block.settings.icon != blank -%}
-            <i class="{{ block.settings.icon }}"></i>
-          {%- endif -%}
-        </div>
-      {%- endfor -%}
-    </div>
-    <!-- Duplicated Set for Seamless Loop -->
-    <div class="espon-marquee-content" aria-hidden="true">
-      {%- for block in section.blocks -%}
-        <div class="espon-marquee-item">
-          {{ block.settings.text }}
-          {%- if block.settings.icon != blank -%}
-            <i class="{{ block.settings.icon }}"></i>
-          {%- endif -%}
-        </div>
-      {%- endfor -%}
-    </div>
+    <!-- Duplicate sets 4 times for seamless ultra-wide looping -->
+    {%- for i in (1..4) -%}
+      <div class="espon-marquee-content" {% if forloop.index > 1 %}aria-hidden="true"{% endif %}>
+        {%- for block in section.blocks -%}
+          <div class="espon-marquee-item" {{ block.shopify_attributes }}>
+            {{ block.settings.text }}
+            {%- if block.settings.icon != blank -%}
+              <i class="{{ block.settings.icon }}"></i>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
   </div>
 </div>
 
