@@ -262,12 +262,6 @@
     "espon_fabrics_section": {
       "type": "espon-categories",
       "blocks": {
-        "category_card_W7F4b8": {
-          "type": "category_card",
-          "settings": {
-            "collection": "sample-sets"
-          }
-        },
         "cat_0": {
           "type": "category_card",
           "settings": {
@@ -294,7 +288,6 @@
         }
       },
       "block_order": [
-        "category_card_W7F4b8",
         "cat_0",
         "cat_1",
         "cat_2",
