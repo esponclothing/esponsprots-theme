@@ -134,6 +134,36 @@
         "tilt_speed": 100
       }
     },
+    "espon_marquee_home": {
+      "type": "espon-marquee",
+      "blocks": {
+        "block_1": {
+          "type": "text",
+          "settings": {
+            "text": "FREE SHIPPING ON ALL ORDERS",
+            "icon": "fas fa-truck"
+          }
+        },
+        "block_2": {
+          "type": "text",
+          "settings": {
+            "text": "GET 5% CASHBACK (WALLET)",
+            "icon": "fas fa-coins"
+          }
+        }
+      },
+      "block_order": [
+        "block_1",
+        "block_2"
+      ],
+      "settings": {
+        "bg_color": "#BB8A24",
+        "text_color": "#F7F9FA",
+        "icon_color": "#F7F9FA",
+        "speed": 15,
+        "make_sticky": false
+      }
+    },
     "espon_spin_wheel_fiUB9b": {
       "type": "espon-spin-wheel",
       "name": "Espon Spin Wheel",
@@ -189,6 +219,53 @@
         "heading_text": "EXPLORE CATEGORIES",
         "heading_color": "#0f172a",
         "border_color": "#e2e8f0",
+        "subtitle_color": "#ca8a04",
+        "padding_top": 100,
+        "padding_bottom": 50,
+        "padding_top_mobile": 50,
+        "padding_bottom_mobile": 40
+      }
+    },
+    "espon_fabrics_section": {
+      "type": "espon-categories",
+      "blocks": {
+        "cat_0": {
+          "type": "category_card",
+          "settings": {
+            "collection": "ns-lycra"
+          }
+        },
+        "cat_1": {
+          "type": "category_card",
+          "settings": {
+            "collection": "4-way-lycra"
+          }
+        },
+        "cat_2": {
+          "type": "category_card",
+          "settings": {
+            "collection": "terry-lycra"
+          }
+        },
+        "cat_3": {
+          "type": "category_card",
+          "settings": {
+            "collection": "crush-lycra"
+          }
+        }
+      },
+      "block_order": [
+        "cat_0",
+        "cat_1",
+        "cat_2",
+        "cat_3"
+      ],
+      "name": "Espon Categories",
+      "settings": {
+        "heading_text": "EXPLORE FABRICS",
+        "heading_color": "#0f172a",
+        "border_color": "#e2e8f0",
+        "subtitle_color": "#ca8a04",
         "padding_top": 100,
         "padding_bottom": 50,
         "padding_top_mobile": 50,
@@ -691,81 +768,6 @@
         "padding_top_mobile": 40,
         "padding_bottom_mobile": 40
       }
-    },
-    "espon_fabrics_section": {
-      "type": "espon-categories",
-      "blocks": {
-        "cat_0": {
-          "type": "category_card",
-          "settings": {
-            "collection": "ns-lycra"
-          }
-        },
-        "cat_1": {
-          "type": "category_card",
-          "settings": {
-            "collection": "4-way-lycra"
-          }
-        },
-        "cat_2": {
-          "type": "category_card",
-          "settings": {
-            "collection": "terry-lycra"
-          }
-        },
-        "cat_3": {
-          "type": "category_card",
-          "settings": {
-            "collection": "crush-lycra"
-          }
-        }
-      },
-      "block_order": [
-        "cat_0",
-        "cat_1",
-        "cat_2",
-        "cat_3"
-      ],
-      "name": "Espon Categories",
-      "settings": {
-        "heading_text": "EXPLORE FABRICS",
-        "heading_color": "#0f172a",
-        "border_color": "#e2e8f0",
-        "padding_top": 100,
-        "padding_bottom": 50,
-        "padding_top_mobile": 50,
-        "padding_bottom_mobile": 40
-      }
-    },
-    "espon_marquee_home": {
-      "type": "espon-marquee",
-      "settings": {
-        "bg_color": "#fef08a",
-        "text_color": "#0f172a",
-        "icon_color": "#0f172a",
-        "speed": 15,
-        "make_sticky": false
-      },
-      "blocks": {
-        "block_1": {
-          "type": "text",
-          "settings": {
-            "text": "FREE SHIPPING ON ALL ORDERS",
-            "icon": "fas fa-truck"
-          }
-        },
-        "block_2": {
-          "type": "text",
-          "settings": {
-            "text": "GET 5% CASHBACK (WALLET)",
-            "icon": "fas fa-coins"
-          }
-        }
-      },
-      "block_order": [
-        "block_1",
-        "block_2"
-      ]
     }
   },
   "order": [
