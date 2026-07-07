@@ -1,0 +1,97 @@
+{%- style -%}
+.catalog-pills-section {
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+.catalog-pills-list {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0 1rem;
+  margin: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  justify-content: center;
+}
+@media (max-width: 768px) {
+  .catalog-pills-list {
+    justify-content: flex-start;
+  }
+}
+.catalog-pills-list::-webkit-scrollbar {
+  display: none;
+}
+.catalog-pill-item {
+  flex-shrink: 0;
+}
+.catalog-pill-link {
+  display: flex;
+  align-items: center;
+  padding: 6px 16px;
+  border: 1px solid rgba(var(--color-foreground), 0.15);
+  border-radius: 999px;
+  text-decoration: none;
+  color: rgb(var(--color-foreground));
+  background-color: transparent;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+.catalog-pill-link:hover {
+  background-color: rgba(var(--color-foreground), 0.05);
+}
+.catalog-pill-link.active {
+  background-color: #c5a059;
+  color: #ffffff;
+  border-color: #c5a059;
+}
+{%- endstyle -%}
+
+<div class="catalog-pills-section page-width">
+  <ul class="catalog-pills-list">
+    <li class="catalog-pill-item">
+      <a href="/collections/all" class="catalog-pill-link {% if request.path == '/collections/all' %}active{% endif %}">
+        All Products
+      </a>
+    </li>
+    {%- for block in section.blocks -%}
+      {%- assign col = block.settings.collection -%}
+      {%- if col != blank -%}
+        <li class="catalog-pill-item">
+          <a href="{{ col.url }}" class="catalog-pill-link {% if request.path == col.url %}active{% endif %}" {{ block.shopify_attributes }}>
+            {{ col.title }}
+          </a>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+</div>
+
+{% schema %}
+{
+  "name": "Espon Catalog Pills",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Espon Catalog Pills"
+    }
+  ]
+}
+{% endschema %}
