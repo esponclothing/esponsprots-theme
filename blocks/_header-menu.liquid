@@ -247,6 +247,8 @@
   /* 4. Dropdown submenu box - Compact and floating like Beyoung */
   .menu-list__list-item {
     position: relative !important;
+    display: flex !important;
+    align-items: center !important;
   }
   
   /* Instantly show dropdown on hover, bypassing any JS lag */
@@ -256,6 +258,14 @@
     visibility: visible !important;
     pointer-events: auto !important;
     transform: translateY(0) !important;
+  }
+
+  /* Nuke any JS animation classes that hide text */
+  .menu-list__submenu,
+  .menu-list__submenu * {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
   }
 
   .menu-list__submenu {
@@ -288,6 +298,15 @@
     gap: 40px !important;
     padding: 0 !important;
     margin: 0 !important;
+    list-style: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    height: auto !important;
+  }
+  .menu-list__submenu .mega-menu__list {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 40px !important;
     list-style: none !important;
     opacity: 1 !important;
     visibility: visible !important;
