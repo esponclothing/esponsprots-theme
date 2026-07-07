@@ -257,6 +257,8 @@
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
+    clip-path: none !important;
+    content-visibility: visible !important;
   }
 
   /* Instantly show dropdown on hover, bypassing any JS lag */
@@ -266,6 +268,8 @@
     visibility: visible !important;
     pointer-events: auto !important;
     transform: none !important;
+    clip-path: none !important;
+    content-visibility: visible !important;
   }
 
   /* Force contents of the submenu to be visible when active, bypassing JS animation bugs */
@@ -274,6 +278,7 @@
     opacity: 1 !important;
     visibility: visible !important;
     transform: none !important;
+    clip-path: none !important;
   }
 
   .menu-list__submenu {
