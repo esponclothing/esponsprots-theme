@@ -273,7 +273,7 @@
           "shorts",
           "terry-lycra-track-pants"
         ],
-        "layout_type": "bento",
+        "layout_type": "grid",
         "carousel_on_mobile": false,
         "columns": 4,
         "mobile_columns": "2",
