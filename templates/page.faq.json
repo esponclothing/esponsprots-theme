@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {
+      }
+    },
+    "faq": {
+      "type": "espon-faq",
+      "settings": {
+        "heading": "Frequently Asked Questions",
+        "subheading": "Everything you need to know about partnering with Espon Sports.",
+        "bg_color": "#f8fafc"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "faq"
+  ]
+}
