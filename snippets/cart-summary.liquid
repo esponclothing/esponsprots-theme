@@ -261,32 +261,56 @@
   </div>
 </div>
 
+{% assign spin_reward_vid = cart.attributes.spin_reward_vid | plus: 0 %}
+{% assign spin_min_order = cart.attributes.spin_min_order | plus: 0 %}
+{% assign has_prize = false %}
+{% for item in cart.items %}
+  {% if item.variant_id == spin_reward_vid %}
+    {% assign has_prize = true %}
+  {% endif %}
+{% endfor %}
+
+{% assign lock_checkout = false %}
+{% if has_prize and cart.total_price < spin_min_order %}
+  {% assign lock_checkout = true %}
+{% endif %}
+
 <div class="cart__ctas">
+  {% if lock_checkout %}
+    <div style="background:#fef2f2; color:#b91c1c; padding:12px; border-radius:6px; font-size:13px; font-weight: 600; text-align: center; margin-bottom:12px; border:1px solid #fca5a5;">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      Add {{ spin_min_order | minus: cart.total_price | money }} more to claim your Free Gift!
+    </div>
+  {% endif %}
+
   <button
     type="submit"
     id="checkout"
     class="cart__checkout-button button"
     name="checkout"
-    {% if cart == empty %}
+    {% if cart == empty or lock_checkout %}
       disabled
+      {% if lock_checkout %}style="cursor:not-allowed; opacity:0.5;"{% endif %}
     {% endif %}
     form="cart-form"
   >
     <span class="button-text">
-      {{ 'content.checkout' | t }}
+      {% if lock_checkout %}LOCKED{% else %}{{ 'content.checkout' | t }}{% endif %}
     </span>
   </button>
 
-  {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
-    <div
-      class="
-        additional-checkout-buttons
-        {% if accelerated_checkout_buttons_layout == 'vertical' %}additional-checkout-buttons--vertical{% endif %}
-      "
-    >
-      {{ content_for_additional_checkout_buttons }}
-    </div>
-  {% endif %}
+  {% unless lock_checkout %}
+    {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
+      <div
+        class="
+          additional-checkout-buttons
+          {% if accelerated_checkout_buttons_layout == 'vertical' %}additional-checkout-buttons--vertical{% endif %}
+        "
+      >
+        {{ content_for_additional_checkout_buttons }}
+      </div>
+    {% endif %}
+  {% endunless %}
 </div>
 
 {% stylesheet %}

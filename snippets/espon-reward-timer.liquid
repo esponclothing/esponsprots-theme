@@ -138,51 +138,7 @@
     });
   }
 
-  // BULLETPROOF AGGRESSIVE BLOCKER - FASTER EXECUTION (50ms)
-  setInterval(() => {
-    if (!window.s2wIsBlocked) return; 
-
-    const cartForms = document.querySelectorAll('form[action="/cart"], form[action="/checkout"]');
-    cartForms.forEach(form => {
-        form.addEventListener('submit', handleCheckoutAttempt);
-    });
-
-    const expressSelectors = '[data-shopify-buttoncontainer], .shopify-payment-button, [name="checkout"], .checkout-button, .additional-checkout-buttons';
-    const allButtons = document.querySelectorAll(expressSelectors);
-    
-    allButtons.forEach(container => {
-        if (!container.querySelector('.s2w-blocker-overlay')) {
-            container.style.position = 'relative';
-            const overlay = document.createElement('div');
-            overlay.className = 's2w-blocker-overlay';
-            overlay.style = 'position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.7); z-index:9999; cursor:not-allowed; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#dc2626; font-weight:800; font-size:12px;';
-            overlay.innerText = 'LOCKED';
-            overlay.addEventListener('click', handleCheckoutAttempt);
-            container.appendChild(overlay);
-        }
-    });
-
-    const standardBtns = document.querySelectorAll('button[name="checkout"], input[name="checkout"]');
-    standardBtns.forEach(btn => {
-        btn.disabled = true;
-        btn.style.opacity = '0.5';
-        btn.style.cursor = 'not-allowed';
-        btn.onclick = handleCheckoutAttempt;
-    });
-
-  }, 50);
-
-  setInterval(() => {
-    if (window.s2wIsBlocked) return;
-    document.querySelectorAll('.s2w-blocker-overlay').forEach(el => el.remove());
-    document.querySelectorAll('button[name="checkout"], input[name="checkout"]').forEach(btn => {
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        btn.style.cursor = 'pointer';
-        btn.onclick = null;
-    });
-  }, 1000);
-
+  // (JS Blocker Removed in favor of server-side Liquid logic in cart-summary.liquid)
   function handleCheckoutAttempt(e) {
     if (window.s2wIsBlocked) {
         e.preventDefault();
