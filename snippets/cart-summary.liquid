@@ -263,6 +263,7 @@
 
 {% assign spin_reward_vid = cart.attributes.spin_reward_vid | plus: 0 %}
 {% assign spin_min_order = cart.attributes.spin_min_order | plus: 0 %}
+{% assign spin_min_order_paise = spin_min_order | times: 100 %}
 {% assign has_prize = false %}
 {% for item in cart.items %}
   {% if item.variant_id == spin_reward_vid %}
@@ -271,7 +272,7 @@
 {% endfor %}
 
 {% assign lock_checkout = false %}
-{% if has_prize and cart.total_price < spin_min_order %}
+{% if has_prize and cart.total_price < spin_min_order_paise %}
   {% assign lock_checkout = true %}
 {% endif %}
 
@@ -279,7 +280,7 @@
   {% if lock_checkout %}
     <div style="background:#fef2f2; color:#b91c1c; padding:12px; border-radius:6px; font-size:13px; font-weight: 600; text-align: center; margin-bottom:12px; border:1px solid #fca5a5;">
       <i class="fa-solid fa-triangle-exclamation"></i>
-      Add {{ spin_min_order | minus: cart.total_price | money }} more to claim your Free Gift!
+      Add {{ spin_min_order_paise | minus: cart.total_price | money }} more to claim your Free Gift!
     </div>
   {% endif %}
 

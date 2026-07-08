@@ -2,6 +2,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+{% assign global_spin_min = shop.metafields.esponsports.spin_min_order | default: section.settings.min_order_amount | default: 10000 %}
 <style>
 /* ============================================================
    ESPON SPIN WHEEL — REDESIGNED
@@ -748,7 +749,7 @@
     <p>
       Your reward has been added to your cart for just <strong>₹1</strong>.<br>
       Valid for <strong>30 minutes</strong> on orders over
-      <strong>₹{{ section.settings.min_order_amount | default: 10000 }}</strong>.
+      <strong>₹{{ global_spin_min }}</strong>.
     </p>
     <a href="/cart" class="eiws-win-cart-btn">
       <i class="fas fa-shopping-cart"></i> &nbsp;GO TO CART
@@ -957,7 +958,7 @@
 
       <!-- CTA Box -->
       <div class="eiws-cta-box">
-        <p>Welcome! 🎯<br>Spin the wheel today to unlock an exclusive physical reward for just ₹1 on orders over <strong>₹{{ section.settings.min_order_amount | default: 10000 }}</strong>.</p>
+        <p>Welcome! 🎯<br>Spin the wheel today to unlock an exclusive physical reward for just ₹1 on orders over <strong>₹{{ global_spin_min }}</strong>.</p>
         <div id="eiwsActionDisplay"></div>
       </div>
 
@@ -980,7 +981,7 @@
 
   const WEIGHTS = [0, 20, 20, 20, 20, 20]; 
   const MAX_SPINS = {{ section.settings.daily_spin_limit | default: 1 }};
-  const MIN_ORDER = {{ section.settings.min_order_amount | default: 10000 }};
+  const MIN_ORDER = {{ global_spin_min }};
   const SLICE_CENTERS = [30, 90, 150, 210, 270, 330];
 
   let isSpinning = false;
