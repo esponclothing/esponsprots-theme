@@ -112,10 +112,15 @@
       </div>
 
       <div class="builder-container">
-        <div class="builder-title-bar">
-          <i class="fa-solid fa-palette"></i>
-          <span>Build Your Order</span>
-          <span class="builder-hint">Pick colors &amp; quantities below</span>
+        <div class="builder-title-bar" style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <div>
+            <i class="fa-solid fa-palette"></i>
+            <span>Build Your Order</span>
+            <span class="builder-hint">Pick colors &amp; quantities below</span>
+          </div>
+          <button type="button" class="size-chart-btn" onclick="openSizeChart()">
+            <i class="fa-solid fa-ruler"></i> Size Guide
+          </button>
         </div>
 
         <div id="js-dynamic-rows" class="builder-body"></div>
@@ -178,7 +183,7 @@ default: color_val }} <i class="fa-solid fa-plus" style="font-size: 0.8em; opaci
     <div class="ticker-wrapper">
       <div class="ticker-track">
         
-        {% assign ticker_col = section.settings.ticker_collection %}
+        {% assign ticker_col = product.collections.first | default: section.settings.ticker_collection %}
         
         {% if ticker_col != blank %}
           {% for i in (1..2) %}
