@@ -166,7 +166,6 @@
     },
     "espon_spin_wheel_fiUB9b": {
       "type": "espon-spin-wheel",
-      "disabled": true,
       "name": "Espon Spin Wheel",
       "settings": {
         "min_order_amount": 10000,
