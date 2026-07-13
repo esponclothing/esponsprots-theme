@@ -359,6 +359,13 @@
       const loggedInPhone = "";
     {% endif %}
 
+    // --- PAGE AWARE CONTEXT ---
+    {% if template contains 'product' and product %}
+      const currentProductContext = "{{ product.title | escape }}";
+    {% else %}
+      const currentProductContext = "";
+    {% endif %}
+
     // --- MEMORY: SESSION & HISTORY (Persistent) ---
     let sessionId = localStorage.getItem('espoSessionId') || 'espo-' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('espoSessionId', sessionId);
@@ -447,6 +454,10 @@
         
         // Add a secret prefix so your n8n Switch Node catches it instantly
         payloadText = "TRACK_ORDER_PHONE: " + digitsOnly;
+      } else {
+        if (typeof currentProductContext !== 'undefined' && currentProductContext !== '' && !text.startsWith("TRACK_ORDER_PHONE:")) {
+           payloadText = `[User is currently viewing product: ${currentProductContext}] ` + text;
+        }
       }
 
       // Display the user's message visually
