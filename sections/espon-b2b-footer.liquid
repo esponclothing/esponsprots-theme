@@ -384,6 +384,16 @@
         msgDiv.innerHTML = msg.content;
         chatBody.appendChild(msgDiv);
       });
+      
+      // Starter Questions
+      if (chatHistory.length === 1) {
+        const starterQuestions = ["Show me Top 5 Shorts", "What is the Minimum Order Quantity?", "How to place an order?"];
+        const pillContainer = document.createElement('div');
+        pillContainer.className = 'ecp-pill-container';
+        pillContainer.innerHTML = starterQuestions.map(p => `<button class="ecp-pill-btn" onclick="sendQuickReply('${p}')">${p}</button>`).join('');
+        chatBody.appendChild(pillContainer);
+      }
+      
       chatBody.scrollTop = chatBody.scrollHeight;
     }
     renderHistory();
