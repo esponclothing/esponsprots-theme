@@ -258,6 +258,14 @@
     <div class="cart-totals__item cart-totals__tax-note cart-primary-typography">
       {% render 'tax-info', has_discounts_enabled: settings.show_add_discount_code %}
     </div>
+
+    {%- if true_total > 0 -%}
+      {%- assign cart_cashback = true_total | times: 5 | divided_by: 10000 -%}
+      <div style="margin-top: 15px; padding: 15px; background: #eff6ff; border: 1px solid #3b82f6; border-radius: 8px; font-weight: bold; font-size: 15px; color: #1e3a8a; display: flex; align-items: center; gap: 10px; text-align: left;">
+        <span style="font-size: 22px;">💰</span>
+        <span>You will receive <strong>₹{{ cart_cashback }}</strong> cashback as Store Credit on this order!</span>
+      </div>
+    {%- endif -%}
   </div>
 </div>
 

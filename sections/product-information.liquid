@@ -68,6 +68,13 @@
             <span>{{ section.settings.offer_heading_text }}</span>
           </div>
           <div class="offers-track" id="offersTrack">
+            <div class="offer-card">
+              <div class="offer-card-icon"><i class="fa-solid fa-wallet"></i></div>
+              <div class="offer-card-body">
+                <strong>5% Cashback</strong>
+                <span>Earn 5% store credit automatically on every order dispatched.</span>
+              </div>
+            </div>
             {% if section.settings.offer_1_title != blank %}
             <div class="offer-card">
               <div class="offer-card-icon"><i class="fa-solid {{ section.settings.offer_1_icon }}"></i></div>
@@ -366,7 +373,7 @@ default: color_val }} <i class="fa-solid fa-plus" style="font-size: 0.8em; opaci
     .b2b-container { align-items: flex-start; }
     .b2b-gallery { position: sticky; top: 80px; z-index: 10; height: max-content; align-self: flex-start; }
   }
-  .main-image-frame { position: relative; width: 100%; aspect-ratio: 3 / 4; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; margin-bottom: 15px; background: #f8fafc; }
+  .main-image-frame { position: relative; width: 100%; aspect-ratio: 4 / 5; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; margin-bottom: 15px; background: #f8fafc; }
   .main-image-frame img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.5s ease-in-out; }
   .status-badge { position: absolute; top: 15px; left: 15px; background: #0f172a; color: #fff; font-size: 0.7rem; font-weight: 800; padding: 5px 12px; border-radius: 4px; z-index: 2; }
   .thumb-grid { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
@@ -663,8 +670,8 @@ default: color_val }} <i class="fa-solid fa-plus" style="font-size: 0.8em; opaci
 
 
   /* --- SIZE CHART MODAL --- */
-  .size-chart-btn { background: none; border: 1px solid #cbd5e1; color: #0f172a; padding: 8px 15px; border-radius: 6px; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
-  .size-chart-btn:hover { border-color: #CA8A04; color: #CA8A04; background: #FFFBEB; }
+  .size-chart-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: #cbd5e1; padding: 8px 15px; border-radius: 6px; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
+  .size-chart-btn:hover { border-color: #CA8A04; color: #CA8A04; background: rgba(202, 138, 4, 0.1); }
   
   .size-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(3px); opacity: 0; transition: opacity 0.3s; }
   .size-modal-overlay.show { display: flex; opacity: 1; }
