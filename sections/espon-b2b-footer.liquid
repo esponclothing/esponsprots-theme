@@ -458,6 +458,22 @@
           finalMsg = data.replace(/esponsports\.in/g, "esponsports.com"); 
         }
 
+        // FIX: n8n sends each product in its own <div class="espo-carousel">, causing them to stack. 
+        // We need to merge them all into the FIRST carousel container.
+        let tempDiv = document.createElement('div');
+        tempDiv.innerHTML = finalMsg;
+        let carousels = tempDiv.querySelectorAll('.espo-carousel');
+        if (carousels.length > 1) {
+          let firstCarousel = carousels[0];
+          for (let i = 1; i < carousels.length; i++) {
+            while (carousels[i].firstChild) {
+              firstCarousel.appendChild(carousels[i].firstChild);
+            }
+            carousels[i].remove();
+          }
+        }
+        finalMsg = tempDiv.innerHTML;
+
         const aiMsg = document.createElement('div');
         aiMsg.className = 'ecp-msg ecp-msg-ai';
         aiMsg.innerHTML = finalMsg;
