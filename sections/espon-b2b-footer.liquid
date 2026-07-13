@@ -348,7 +348,11 @@
 
     // --- AUTO-DETECT LOGGED IN USER ---
     {% if customer %}
-      const loggedInPhone = "{{ customer.phone | remove: '+' | remove: ' ' | remove: '-' }}";
+      {% assign cust_phone = customer.phone %}
+      {% if cust_phone == blank and customer.default_address.phone != blank %}
+        {% assign cust_phone = customer.default_address.phone %}
+      {% endif %}
+      const loggedInPhone = "{{ cust_phone | remove: '+' | remove: ' ' | remove: '-' }}";
     {% else %}
       const loggedInPhone = "";
     {% endif %}
