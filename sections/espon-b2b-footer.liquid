@@ -479,10 +479,19 @@
           finalMsg = data.replace(/esponsports\.in/g, "esponsports.com"); 
         }
 
+        // PREVENT WHATSAPP BUTTON SPAM
+        const contactKeywords = ['contact', 'human', 'agent', 'support', 'talk', 'whatsapp', 'call'];
+        const isContactIntent = contactKeywords.some(kw => text.toLowerCase().includes(kw));
+
         // FIX: n8n sends each product in its own <div class="espo-carousel">, causing them to stack. 
         // We need to merge them all into the FIRST carousel container.
         let tempDiv = document.createElement('div');
         tempDiv.innerHTML = finalMsg;
+
+        if (!isContactIntent) {
+          tempDiv.querySelectorAll('.ai-wa-btn').forEach(btn => btn.remove());
+          tempDiv.innerHTML = tempDiv.innerHTML.replace(/<br>\s*(<\/div>)?\s*$/, '$1');
+        }
         let carousels = tempDiv.querySelectorAll('.espo-carousel');
         if (carousels.length > 1) {
           let firstCarousel = carousels[0];
