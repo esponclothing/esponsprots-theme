@@ -212,6 +212,13 @@
   .ai-wa-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #25D366; color: #fff !important; text-decoration: none !important; padding: 10px 16px; border-radius: 8px; font-weight: 800; font-size: 13px; margin-top: 10px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); transition: 0.2s; }
   .ai-wa-btn:hover { background: #1EBE55; transform: translateY(-2px); color:#fff; }
 
+  /* CHATBOT PILLS & ATC */
+  .ecp-pill-container { display: flex; gap: 8px; padding-bottom: 15px; flex-wrap: wrap; margin-left: 10px; }
+  .ecp-pill-btn { background: #f8fafc; border: 1px solid #cbd5e1; color: #475569; padding: 6px 14px; border-radius: 20px; font-size: 11.5px; cursor: pointer; transition: 0.2s; font-weight: 600; font-family: inherit; }
+  .ecp-pill-btn:hover { background: #e2e8f0; color: #0f172a; border-color: #94a3b8; }
+  .espo-atc-btn { background: #0f172a; color: #fff; border: none; padding: 8px; margin: 0 10px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: 0.2s; text-align: center; font-family: inherit; }
+  .espo-atc-btn:hover { background: #CA8A04; color: #fff; }
+
   @media (max-width: 768px) {
     .espo-mini-toggle { width: 55px; height: 55px; font-size: 22px; bottom: var(--wa-bottom-mob, 20px); }
     .espo-mini-toggle.wa-pos-right { right: 20px; }
@@ -339,11 +346,18 @@
     if(!toggleBtn || !chatWindow) return;
     const iconClass = "{{ section.settings.ai_widget_icon | default: 'fa-headset' | escape }}";
 
-    // --- MEMORY: SESSION & HISTORY ---
-    let sessionId = sessionStorage.getItem('espoSessionId') || 'espo-' + Math.random().toString(36).substr(2, 9);
-    sessionStorage.setItem('espoSessionId', sessionId);
+    // --- AUTO-DETECT LOGGED IN USER ---
+    {% if customer %}
+      const loggedInPhone = "{{ customer.phone | remove: '+' | remove: ' ' | remove: '-' }}";
+    {% else %}
+      const loggedInPhone = "";
+    {% endif %}
 
-    let chatHistory = JSON.parse(sessionStorage.getItem('espoChatHistory')) || [];
+    // --- MEMORY: SESSION & HISTORY (Persistent) ---
+    let sessionId = localStorage.getItem('espoSessionId') || 'espo-' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('espoSessionId', sessionId);
+
+    let chatHistory = JSON.parse(localStorage.getItem('espoChatHistory')) || [];
     
     function renderHistory() {
       chatBody.innerHTML = '';
@@ -363,11 +377,11 @@
 
     function saveMessage(role, content) {
       chatHistory.push({ role, content });
-      sessionStorage.setItem('espoChatHistory', JSON.stringify(chatHistory));
+      localStorage.setItem('espoChatHistory', JSON.stringify(chatHistory));
     }
 
     // --- MEMORY: WINDOW STATE ---
-    if (sessionStorage.getItem('espoChatOpen') === 'true') {
+    if (localStorage.getItem('espoChatOpen') === 'true') {
       chatWindow.classList.add('is-open');
       toggleBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
       setTimeout(() => { chatBody.scrollTop = chatBody.scrollHeight; }, 500);
@@ -375,7 +389,7 @@
 
     function toggleChat() {
       const isOpen = chatWindow.classList.toggle('is-open');
-      sessionStorage.setItem('espoChatOpen', isOpen);
+      localStorage.setItem('espoChatOpen', isOpen);
       toggleBtn.innerHTML = isOpen ? '<i class="fa-solid fa-xmark"></i>' : `<i class="fa-solid ${iconClass}"></i>`;
       if(isOpen) {
         setTimeout(() => chatInput.focus(), 300);
@@ -401,8 +415,11 @@
       const text = chatInput.value.trim();
       if(!text) return;
 
+      // Clear any existing follow-up pills
+      document.querySelectorAll('.ecp-pill-container').forEach(el => el.remove());
+
       // --- NEW: Phone Number Intercept Logic ---
-      const isAwaitingPhone = sessionStorage.getItem('espoAwaitingPhone') === 'true';
+      const isAwaitingPhone = localStorage.getItem('espoAwaitingPhone') === 'true';
       let payloadText = text;
 
       if (isAwaitingPhone) {
@@ -418,7 +435,7 @@
         }
         
         // Valid number! Reset the text box back to normal chat mode
-        sessionStorage.removeItem('espoAwaitingPhone');
+        localStorage.removeItem('espoAwaitingPhone');
         chatInput.type = "text";
         chatInput.placeholder = "Type or speak...";
         
@@ -472,6 +489,23 @@
             carousels[i].remove();
           }
         }
+        
+        // ADD TO CART INJECTION
+        tempDiv.querySelectorAll('.espo-card').forEach(card => {
+          try {
+             let url = new URL(card.href);
+             let segments = url.pathname.split('/');
+             let handle = segments[segments.length - 1];
+             if(handle) {
+                const btn = document.createElement('button');
+                btn.className = 'espo-atc-btn';
+                btn.innerHTML = 'Add to Cart';
+                btn.onclick = function(e) { window.addEspoCart(e, handle); };
+                card.appendChild(btn);
+             }
+          } catch(e) {}
+        });
+        
         finalMsg = tempDiv.innerHTML;
 
         const aiMsg = document.createElement('div');
@@ -480,6 +514,15 @@
         chatBody.appendChild(aiMsg);
         
         saveMessage('ai', finalMsg);
+        
+        // FOLLOW-UP PILLS
+        const followUps = ["What colors do you have?", "What is the minimum order quantity?", "Do you offer custom branding?", "How fast is shipping?"];
+        const shuffled = followUps.sort(() => 0.5 - Math.random());
+        const selectedPills = shuffled.slice(0, 2);
+        const pillContainer = document.createElement('div');
+        pillContainer.className = 'ecp-pill-container';
+        pillContainer.innerHTML = selectedPills.map(p => `<button class="ecp-pill-btn" onclick="sendQuickReply('${p}')">${p}</button>`).join('');
+        chatBody.appendChild(pillContainer);
         chatBody.scrollTop = chatBody.scrollHeight;
       } catch (err) { 
         if(typing.parentNode) chatBody.removeChild(typing); 
@@ -489,8 +532,8 @@
 // --- CLEAR CHAT LOGIC ---
     clearBtn.addEventListener('click', () => {
       if(confirm("Are you sure you want to clear the chat history?")) {
-        sessionStorage.removeItem('espoChatHistory');
-        sessionStorage.removeItem('espoAwaitingPhone');
+        localStorage.removeItem('espoChatHistory');
+        localStorage.removeItem('espoAwaitingPhone');
         chatHistory = [];
         chatInput.type = "text";
         chatInput.placeholder = "Type or speak...";
@@ -527,6 +570,13 @@
         saveMessage('user', "📍 Track Order");
         chatBody.scrollTop = chatBody.scrollHeight;
 
+        if (typeof loggedInPhone !== 'undefined' && loggedInPhone && loggedInPhone.length >= 10) {
+          // Auto-track for logged in user
+          chatInput.value = "TRACK_ORDER_PHONE: " + loggedInPhone;
+          sendMessage();
+          return;
+        }
+
         // 2. Make Espo ask for the number instantly (Zero delay!)
         setTimeout(() => {
           const aiText = "I can certainly help you track your order! Please enter your 10-digit registered mobile number below:";
@@ -543,7 +593,7 @@
           chatInput.focus();
           
           // 4. Tell the system we are waiting for a phone number
-          sessionStorage.setItem('espoAwaitingPhone', 'true');
+          localStorage.setItem('espoAwaitingPhone', 'true');
         }, 400);
 
       } else {
@@ -556,6 +606,34 @@
     sendBtn.addEventListener('click', sendMessage);
     chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
   });
+
+  window.addEspoCart = async function(e, handle) {
+      e.preventDefault();
+      const btn = e.target;
+      if (btn.disabled) return;
+      btn.innerHTML = 'Adding...';
+      btn.disabled = true;
+      try {
+          const res = await fetch('/products/' + handle + '.js');
+          const product = await res.json();
+          const variantId = product.variants[0].id;
+          await fetch('/cart/add.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: variantId, quantity: 1 })
+          });
+          btn.innerHTML = '✅ Added';
+          btn.style.background = '#16a34a';
+          setTimeout(() => { btn.innerHTML = 'Add to Cart'; btn.style.background = ''; btn.disabled = false; }, 2000);
+          
+          if (document.documentElement.dispatchEvent) {
+            document.documentElement.dispatchEvent(new CustomEvent('cart:updated', { bubbles: true }));
+          }
+      } catch (err) {
+          btn.innerHTML = 'Error';
+          setTimeout(() => { btn.innerHTML = 'Add to Cart'; btn.disabled = false; }, 2000);
+      }
+  };
   </script>
 {% endif %}
 
