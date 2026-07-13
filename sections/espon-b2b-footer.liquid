@@ -352,7 +352,9 @@
       {% if cust_phone == blank and customer.default_address.phone != blank %}
         {% assign cust_phone = customer.default_address.phone %}
       {% endif %}
-      const loggedInPhone = "{{ cust_phone | remove: '+' | remove: ' ' | remove: '-' }}";
+      let rawPhone = "{{ cust_phone | remove: '+' | remove: ' ' | remove: '-' }}";
+      if (rawPhone.length > 10) rawPhone = rawPhone.slice(-10);
+      const loggedInPhone = rawPhone;
     {% else %}
       const loggedInPhone = "";
     {% endif %}
@@ -448,11 +450,13 @@
       }
 
       // Display the user's message visually
-      const userMsg = document.createElement('div');
-      userMsg.className = 'ecp-msg ecp-msg-user';
-      userMsg.textContent = text; 
-      chatBody.appendChild(userMsg);
-      saveMessage('user', text);
+      if (!text.startsWith("TRACK_ORDER_PHONE:")) {
+        const userMsg = document.createElement('div');
+        userMsg.className = 'ecp-msg ecp-msg-user';
+        userMsg.textContent = text; 
+        chatBody.appendChild(userMsg);
+        saveMessage('user', text);
+      }
       
       chatInput.value = '';
       chatBody.scrollTop = chatBody.scrollHeight;
