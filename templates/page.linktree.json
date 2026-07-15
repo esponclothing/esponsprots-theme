@@ -87,8 +87,8 @@
         "fabric_lycra": {
           "type": "catalog_fabric",
           "settings": {
-            "title": "Lycra Fabric",
-            "url": "/collections/lycra",
+            "title": "Crush Lycra",
+            "url": "shopify://collections/crush-lycra",
             "icon": "ti-stretching"
           }
         }
