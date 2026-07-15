@@ -109,56 +109,6 @@
 
     <label
       class="visually-hidden"
-      for="ContactForm-whatsapp"
-    >
-      WhatsApp Number
-    </label>
-    <input
-      type="tel"
-      id="ContactForm-whatsapp"
-      class="contact-form__input"
-      autocomplete="tel"
-      name="contact[WhatsApp Number]"
-      pattern="[0-9\-]*"
-      value=""
-      placeholder="WhatsApp Number (Important for B2B Updates)"
-    >
-
-    <label
-      class="visually-hidden"
-      for="ContactForm-business"
-    >
-      Business / Shop Name
-    </label>
-    <input
-      type="text"
-      id="ContactForm-business"
-      class="contact-form__input"
-      autocomplete="organization"
-      name="contact[Business Name]"
-      value=""
-      placeholder="Business or Shop Name"
-    >
-
-    <label
-      class="visually-hidden"
-      for="ContactForm-volume"
-    >
-      Expected Order Volume
-    </label>
-    <select
-      id="ContactForm-volume"
-      class="contact-form__input"
-      name="contact[Expected Order Volume]"
-    >
-      <option value="" disabled selected>Select Expected Order Volume</option>
-      <option value="50 - 100 pcs">50 - 100 pcs</option>
-      <option value="100 - 500 pcs">100 - 500 pcs</option>
-      <option value="500+ pcs">500+ pcs</option>
-    </select>
-
-    <label
-      class="visually-hidden"
       for="ContactForm-body"
     >
       {{- 'blocks.contact_form.comment' | t -}}
