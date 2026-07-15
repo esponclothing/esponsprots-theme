@@ -68,11 +68,19 @@
             "icon": "ti-run"
           }
         },
+        "catalog_fabric_kFQTmU": {
+          "type": "catalog_fabric",
+          "settings": {
+            "title": "Ns Lycra",
+            "url": "shopify://collections/ns-lycra",
+            "icon": "ti-texture"
+          }
+        },
         "fabric_ns": {
           "type": "catalog_fabric",
           "settings": {
-            "title": "NS Fabric",
-            "url": "/collections/ns-fabric",
+            "title": "4 Way Lycra",
+            "url": "shopify://collections/4-way-lycra",
             "icon": "ti-layers-intersect"
           }
         },
@@ -93,6 +101,7 @@
         "category_pants",
         "catalog_category_UCJB9E",
         "catalog_category_Uh4k76",
+        "catalog_fabric_kFQTmU",
         "fabric_ns",
         "fabric_lycra"
       ],
