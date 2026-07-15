@@ -91,6 +91,14 @@
             "url": "shopify://collections/crush-lycra",
             "icon": "ti-stretching"
           }
+        },
+        "catalog_fabric_aPLRPJ": {
+          "type": "catalog_fabric",
+          "settings": {
+            "title": "Terry Lycra",
+            "url": "shopify://collections/terry-lycra",
+            "icon": "ti-texture"
+          }
         }
       },
       "block_order": [
@@ -103,7 +111,8 @@
         "catalog_category_Uh4k76",
         "catalog_fabric_kFQTmU",
         "fabric_ns",
-        "fabric_lycra"
+        "fabric_lycra",
+        "catalog_fabric_aPLRPJ"
       ],
       "settings": {
         "title": "Espon Sports",
