@@ -166,6 +166,18 @@
   .lt-btn.btn-gmb:hover { border-color: #EA4335; color: #b91c1c; }
   .lt-btn.btn-gmb i { color: #EA4335; }
 
+  .lt-btn-primary {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+    margin-top: 6px;
+  }
+  .lt-btn-primary:hover {
+    background: #1e293b;
+    color: #ffffff;
+    border-color: #1e293b;
+  }
+
   /* ── DROPDOWN ACCORDIONS ── */
   .lt-dropdown {
     width: 100%;
@@ -334,6 +346,12 @@
       </div>
       {% endif %}
 
+      {% if section.settings.catalog_btn_text != blank %}
+        <a href="{{ section.settings.catalog_btn_url | default: '/collections/all' }}" class="lt-btn lt-btn-primary">
+          {{ section.settings.catalog_btn_text }}
+        </a>
+      {% endif %}
+
     </div>
 
     <!-- Social & Contact Links -->
@@ -465,6 +483,18 @@
       "id": "catalog_heading",
       "label": "Catalog Heading",
       "default": "Our Catalog"
+    },
+    {
+      "type": "text",
+      "id": "catalog_btn_text",
+      "label": "Master Catalog Button Text",
+      "default": "View All Collections"
+    },
+    {
+      "type": "url",
+      "id": "catalog_btn_url",
+      "label": "Master Catalog Button URL",
+      "info": "Leave blank to default to /collections/all"
     }
   ],
   "blocks": [
