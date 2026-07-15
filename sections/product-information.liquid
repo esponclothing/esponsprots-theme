@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <div class="b2b-pro-page">
-  <div class="b2b-container">
+  <div class="b2b-container" data-product-grid-content>
     
     <div class="b2b-gallery">
         {% assign featured_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media %}
