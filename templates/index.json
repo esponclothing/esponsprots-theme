@@ -201,6 +201,12 @@
             "collection": "joggers"
           }
         },
+        "category_card_BeJEtL": {
+          "type": "category_card",
+          "settings": {
+            "collection": "co-ord-sets"
+          }
+        },
         "cat_3": {
           "type": "category_card",
           "settings": {
@@ -212,6 +218,7 @@
         "cat_0",
         "cat_1",
         "cat_2",
+        "category_card_BeJEtL",
         "cat_3"
       ],
       "name": "Espon Categories",
