@@ -17,7 +17,9 @@
           "settings": {
             "title": "WhatsApp Support",
             "url": "",
-            "brand": "whatsapp"
+            "brand": "whatsapp",
+            "whatsapp_number": "919896507407",
+            "whatsapp_text": "Hello! Can I get more info on this?"
           }
         },
         "link_insta": {
@@ -25,7 +27,9 @@
           "settings": {
             "title": "Follow on Instagram",
             "url": "",
-            "brand": "instagram"
+            "brand": "instagram",
+            "whatsapp_number": "",
+            "whatsapp_text": ""
           }
         },
         "link_fb": {
@@ -33,71 +37,65 @@
           "settings": {
             "title": "Follow on Facebook",
             "url": "",
-            "brand": "facebook"
+            "brand": "facebook",
+            "whatsapp_number": "",
+            "whatsapp_text": ""
           }
         },
         "category_shorts": {
           "type": "catalog_category",
           "settings": {
             "title": "Premium Shorts",
-            "url": "/collections/shorts",
-            "icon": "ti-shirt"
+            "url": "/collections/shorts"
           }
         },
         "category_pants": {
           "type": "catalog_category",
           "settings": {
             "title": "Track Pants",
-            "url": "/collections/track-pants",
-            "icon": "ti-hanger"
+            "url": "/collections/track-pants"
           }
         },
         "catalog_category_UCJB9E": {
           "type": "catalog_category",
           "settings": {
             "title": "Co - Ord Sets",
-            "url": "shopify://collections/co-ord-sets",
-            "icon": "ti-hanger-2"
+            "url": "shopify://collections/co-ord-sets"
           }
         },
         "catalog_category_Uh4k76": {
           "type": "catalog_category",
           "settings": {
             "title": "Joggers",
-            "url": "shopify://collections/joggers",
-            "icon": "ti-run"
+            "url": "shopify://collections/joggers"
           }
         },
         "catalog_fabric_kFQTmU": {
           "type": "catalog_fabric",
           "settings": {
             "title": "Ns Lycra",
-            "url": "shopify://collections/ns-lycra",
-            "icon": "ti-layers-intersect"
+            "url": "shopify://collections/ns-lycra"
           }
         },
         "fabric_ns": {
           "type": "catalog_fabric",
           "settings": {
             "title": "4 Way Lycra",
-            "url": "shopify://collections/4-way-lycra",
-            "icon": "ti-stretching"
+            "url": "shopify://collections/4-way-lycra"
           }
         },
         "fabric_lycra": {
           "type": "catalog_fabric",
           "settings": {
             "title": "Crush Lycra",
-            "url": "shopify://collections/crush-lycra",
-            "icon": "ti-texture"
+            "url": "shopify://collections/crush-lycra"
           }
         },
         "catalog_fabric_aPLRPJ": {
           "type": "catalog_fabric",
           "settings": {
             "title": "Terry Lycra",
-            "url": "shopify://collections/terry-lycra",
-            "icon": "ti-shirt-sport"
+            "url": "shopify://collections/terry-lycra"
           }
         }
       },
