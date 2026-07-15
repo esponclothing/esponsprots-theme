@@ -265,19 +265,21 @@
       "name": "t:names.collections_bento",
       "settings": {
         "collection_list": [
-          "lycra-track-pants",
-          "crush-lycra-track-pants",
           "joggers",
-          "ns-lycra-trackpants",
-          "ns-shorts",
           "shorts",
-          "terry-lycra-track-pants"
+          "4-way-lycra",
+          "co-ord-sets",
+          "crush-lycra",
+          "ns-lycra",
+          "sample-sets",
+          "terry-lycra",
+          "track-pants"
         ],
         "layout_type": "grid",
-        "carousel_on_mobile": false,
+        "carousel_on_mobile": true,
         "columns": 4,
         "mobile_columns": "2",
-        "mobile_card_size": "60cqw",
+        "mobile_card_size": "44cqw",
         "columns_gap": 8,
         "bento_gap": 43,
         "rows_gap": 8,
