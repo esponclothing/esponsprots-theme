@@ -12,14 +12,6 @@
     "main": {
       "type": "espon-linktree",
       "blocks": {
-        "catalog_category_UCJB9E": {
-          "type": "catalog_category",
-          "settings": {
-            "title": "Co - Ord Sets",
-            "url": "shopify://collections/co-ord-sets",
-            "icon": "ti-shirt"
-          }
-        },
         "link_whatsapp": {
           "type": "link",
           "settings": {
@@ -60,6 +52,22 @@
             "icon": "ti-hanger"
           }
         },
+        "catalog_category_UCJB9E": {
+          "type": "catalog_category",
+          "settings": {
+            "title": "Co - Ord Sets",
+            "url": "shopify://collections/co-ord-sets",
+            "icon": "ti-stretching"
+          }
+        },
+        "catalog_category_Uh4k76": {
+          "type": "catalog_category",
+          "settings": {
+            "title": "Joggers",
+            "url": "shopify://collections/joggers",
+            "icon": "ti-run"
+          }
+        },
         "fabric_ns": {
           "type": "catalog_fabric",
           "settings": {
@@ -78,12 +86,13 @@
         }
       },
       "block_order": [
-        "catalog_category_UCJB9E",
         "link_whatsapp",
         "link_insta",
         "link_fb",
         "category_shorts",
         "category_pants",
+        "catalog_category_UCJB9E",
+        "catalog_category_Uh4k76",
         "fabric_ns",
         "fabric_lycra"
       ],
