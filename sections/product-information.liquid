@@ -13,7 +13,7 @@
           {% else %}
             <div class="status-badge" style="background: #ef4444;">OUT OF STOCK</div>
           {% endif %}
-          <img id="MainImg" src="{{ featured_media | img_url: '1000x' }}" alt="{{ featured_media.alt }}">
+          {{ featured_media | image_url: width: 1000 | image_tag: id: 'MainImg', loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 750px) 50vw, 100vw', widths: '375, 550, 750, 1000' }}
         </div>
 
         <script>
