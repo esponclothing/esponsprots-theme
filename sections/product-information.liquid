@@ -8,7 +8,11 @@
         {% assign featured_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media %}
         
         <div class="main-image-frame">
-          <div class="status-badge">IN STOCK</div>
+          {% if product.available %}
+            <div class="status-badge">IN STOCK</div>
+          {% else %}
+            <div class="status-badge" style="background: #ef4444;">OUT OF STOCK</div>
+          {% endif %}
           <img id="MainImg" src="{{ featured_media | img_url: '1000x' }}" alt="{{ featured_media.alt }}">
         </div>
 
