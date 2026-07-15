@@ -1,6 +1,6 @@
 {% comment %}
   ============================================================
-  ESPONSPORTS - Premium Linktree Page
+  ESPONSPORTS - Premium Linktree Page (Light Theme)
   A sleek, mobile-optimized hub for all your essential links.
   ============================================================
 {% endcomment %}
@@ -13,12 +13,12 @@
   .espon-linktree-wrapper * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
   .espon-linktree-wrapper {
     min-height: 100vh;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     padding: 60px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #ffffff;
+    color: #0f172a;
   }
   
   .linktree-container {
@@ -42,37 +42,49 @@
     width: 96px;
     height: 96px;
     border-radius: 50%;
-    object-fit: contain;
-    background: #ffffff;
-    padding: 8px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-    border: 2px solid rgba(255,255,255,0.1);
+    object-fit: cover;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    border: 3px solid #ffffff;
   }
   .lt-title {
     font-size: 22px;
     font-weight: 700;
     margin: 0;
     letter-spacing: -0.02em;
+    color: #0f172a;
   }
   .lt-subtitle {
     font-size: 15px;
-    color: #94a3b8;
+    color: #475569;
     margin: 0;
   }
+  
   .lt-gst-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(34, 197, 94, 0.15);
-    color: #4ade80;
-    padding: 6px 12px;
+    background: #ffffff;
+    color: #10b981;
+    padding: 8px 16px;
     border-radius: 100px;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
-    border: 1px solid rgba(34, 197, 94, 0.3);
+    border: 1px solid rgba(16, 185, 129, 0.2);
     margin-top: 4px;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
   }
-  .lt-gst-badge i { font-size: 16px; }
+  .lt-gst-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.2);
+  }
+  .lt-gst-badge.copied {
+    background: #10b981;
+    color: #ffffff;
+  }
+  .lt-gst-badge i { font-size: 18px; }
 
   /* ── LINK BLOCKS ── */
   .lt-section {
@@ -83,7 +95,7 @@
   .lt-section-title {
     font-size: 13px;
     font-weight: 600;
-    color: #94a3b8;
+    color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-bottom: 4px;
@@ -96,17 +108,18 @@
     justify-content: center;
     width: 100%;
     padding: 16px 20px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 1);
     border-radius: 14px;
-    color: #ffffff;
+    color: #1e293b;
     text-decoration: none;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 600;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     position: relative;
     overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
   }
   .lt-btn i {
     position: absolute;
@@ -115,62 +128,91 @@
   }
   .lt-btn:hover {
     transform: translateY(-4px) scale(1.02);
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.3);
-    color: #ffffff;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
   }
 
   /* Specific Button Colors */
-  .lt-btn.btn-whatsapp:hover { border-color: #25D366; background: rgba(37, 211, 102, 0.1); }
+  .lt-btn.btn-whatsapp:hover { border-color: #25D366; color: #16a34a; }
   .lt-btn.btn-whatsapp i { color: #25D366; }
 
-  .lt-btn.btn-instagram:hover { border-color: #E1306C; background: rgba(225, 48, 108, 0.1); }
+  .lt-btn.btn-instagram:hover { border-color: #E1306C; color: #db2777; }
   .lt-btn.btn-instagram i { color: #E1306C; }
 
-  .lt-btn.btn-facebook:hover { border-color: #1877F2; background: rgba(24, 119, 242, 0.1); }
+  .lt-btn.btn-facebook:hover { border-color: #1877F2; color: #2563eb; }
   .lt-btn.btn-facebook i { color: #1877F2; }
 
-  .lt-btn.btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; font-weight: 600; }
-  .lt-btn.btn-primary:hover { box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); }
-  .lt-btn.btn-primary i { color: #ffffff; }
-
-  /* ── CATALOG GRID ── */
-  .lt-catalog-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+  /* ── DROPDOWN ACCORDIONS ── */
+  .lt-dropdown {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 1);
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    overflow: hidden;
+    margin-bottom: 14px;
   }
-  .lt-catalog-card {
+  .lt-dropdown-header {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 24px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    color: #ffffff;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    text-align: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+    cursor: pointer;
+    transition: background 0.3s ease;
   }
-  .lt-catalog-card i {
-    font-size: 32px;
-    margin-bottom: 12px;
+  .lt-dropdown-header:hover {
+    background: #ffffff;
+  }
+  .lt-dropdown-header i.icon-main {
+    margin-right: 12px;
+    font-size: 22px;
     color: #3b82f6;
   }
-  .lt-catalog-card span {
+  .lt-dropdown-header i.icon-caret {
+    font-size: 20px;
+    color: #94a3b8;
+    transition: transform 0.3s ease;
+  }
+  .lt-dropdown.active .lt-dropdown-header i.icon-caret {
+    transform: rotate(180deg);
+  }
+  .lt-dropdown-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  .lt-dropdown-inner {
+    padding: 0 20px 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .lt-dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(241, 245, 249, 0.6);
+    border-radius: 10px;
+    text-decoration: none;
+    color: #334155;
     font-size: 15px;
     font-weight: 500;
+    transition: all 0.2s ease;
   }
-  .lt-catalog-card:hover {
-    transform: translateY(-4px);
-    background: rgba(255, 255, 255, 0.1);
-    border-color: #3b82f6;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    color: #ffffff;
+  .lt-dropdown-item:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+    transform: translateX(4px);
   }
+  .lt-dropdown-item i {
+    margin-right: 10px;
+    color: #64748b;
+  }
+
 </style>
 
 <div class="espon-linktree-wrapper">
@@ -179,9 +221,9 @@
     <!-- Profile Section -->
     <div class="lt-profile">
       {% if section.settings.logo != blank %}
-        <img src="{{ section.settings.logo | img_url: '200x' }}" alt="{{ shop.name }}" class="lt-profile-img">
+        <img src="{{ section.settings.logo | img_url: '400x' }}" alt="{{ shop.name }}" class="lt-profile-img">
       {% else %}
-        <div class="lt-profile-img" style="display:flex; align-items:center; justify-content:center; background:#1e293b; color:#fff; font-size: 24px; font-weight: bold;">
+        <div class="lt-profile-img" style="display:flex; align-items:center; justify-content:center; background:#0f172a; color:#fff; font-size: 32px; font-weight: bold;">
           {{ shop.name | slice: 0, 1 }}
         </div>
       {% endif %}
@@ -190,73 +232,145 @@
       <p class="lt-subtitle">{{ section.settings.subtitle }}</p>
       
       {% if section.settings.show_gst %}
-        <div class="lt-gst-badge">
-          <i class="ti ti-shield-check-filled"></i> {{ section.settings.gst_text | default: 'GST Verified Business' }}
+        <div class="lt-gst-badge" id="lt-gst-btn" onclick="copyGstAndRedirect('{{ section.settings.gst_number }}')">
+          <i class="ti ti-shield-check-filled"></i> 
+          <span id="lt-gst-text">GST: {{ section.settings.gst_number }}</span>
         </div>
       {% endif %}
     </div>
 
-    <!-- Links & Catalog Blocks -->
-    {% assign has_links = false %}
-    {% assign has_catalog = false %}
-    
-    {% for block in section.blocks %}
-      {% if block.type == 'link' %}{% assign has_links = true %}{% endif %}
-      {% if block.type == 'catalog' %}{% assign has_catalog = true %}{% endif %}
-    {% endfor %}
-
     <!-- Social & Contact Links -->
-    {% if has_links %}
-      <div class="lt-section">
-        {% if section.settings.links_heading != blank %}
-          <div class="lt-section-title">{{ section.settings.links_heading }}</div>
-        {% endif %}
-        
-        {% for block in section.blocks %}
-          {% if block.type == 'link' %}
-            <a href="{{ block.settings.url }}" class="lt-btn {% if block.settings.brand == 'whatsapp' %}btn-whatsapp{% elsif block.settings.brand == 'instagram' %}btn-instagram{% elsif block.settings.brand == 'facebook' %}btn-facebook{% elsif block.settings.brand == 'primary' %}btn-primary{% endif %}" {{ block.shopify_attributes }}>
-              
-              {% if block.settings.brand == 'whatsapp' %}
-                <i class="ti ti-brand-whatsapp"></i>
-              {% elsif block.settings.brand == 'instagram' %}
-                <i class="ti ti-brand-instagram"></i>
-              {% elsif block.settings.brand == 'facebook' %}
-                <i class="ti ti-brand-facebook"></i>
-              {% elsif block.settings.brand == 'bot' %}
-                <i class="ti ti-robot"></i>
-              {% else %}
-                <i class="ti ti-link"></i>
-              {% endif %}
-              
-              <span>{{ block.settings.title }}</span>
-            </a>
-          {% endif %}
-        {% endfor %}
-      </div>
-    {% endif %}
-
-    <!-- Catalog Categories -->
-    {% if has_catalog %}
-      <div class="lt-section" style="margin-top: 12px;">
-        {% if section.settings.catalog_heading != blank %}
-          <div class="lt-section-title">{{ section.settings.catalog_heading }}</div>
-        {% endif %}
-        
-        <div class="lt-catalog-grid">
-          {% for block in section.blocks %}
-            {% if block.type == 'catalog' %}
-              <a href="{{ block.settings.url }}" class="lt-catalog-card" {{ block.shopify_attributes }}>
-                <i class="ti {{ block.settings.icon | default: 'ti-hanger' }}"></i>
-                <span>{{ block.settings.title }}</span>
-              </a>
+    <div class="lt-section">
+      {% if section.settings.links_heading != blank %}
+        <div class="lt-section-title">{{ section.settings.links_heading }}</div>
+      {% endif %}
+      
+      {% for block in section.blocks %}
+        {% if block.type == 'link' %}
+          <a href="{{ block.settings.url }}" class="lt-btn {% if block.settings.brand == 'whatsapp' %}btn-whatsapp{% elsif block.settings.brand == 'instagram' %}btn-instagram{% elsif block.settings.brand == 'facebook' %}btn-facebook{% endif %}" {{ block.shopify_attributes }}>
+            
+            {% if block.settings.brand == 'whatsapp' %}
+              <i class="ti ti-brand-whatsapp"></i>
+            {% elsif block.settings.brand == 'instagram' %}
+              <i class="ti ti-brand-instagram"></i>
+            {% elsif block.settings.brand == 'facebook' %}
+              <i class="ti ti-brand-facebook"></i>
+            {% else %}
+              <i class="ti ti-link"></i>
             {% endif %}
-          {% endfor %}
+            
+            <span>{{ block.settings.title }}</span>
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- Catalog Accordions -->
+    <div class="lt-section" style="margin-top: 12px;">
+      {% if section.settings.catalog_heading != blank %}
+        <div class="lt-section-title">{{ section.settings.catalog_heading }}</div>
+      {% endif %}
+      
+      <!-- Shop by Category Dropdown -->
+      {% assign has_categories = false %}
+      {% for block in section.blocks %}
+        {% if block.type == 'catalog_category' %}{% assign has_categories = true %}{% endif %}
+      {% endfor %}
+
+      {% if has_categories %}
+      <div class="lt-dropdown" onclick="toggleLtDropdown(this)">
+        <div class="lt-dropdown-header">
+          <div style="display:flex; align-items:center;">
+            <i class="ti ti-category icon-main"></i>
+            <span>Shop by Category</span>
+          </div>
+          <i class="ti ti-chevron-down icon-caret"></i>
+        </div>
+        <div class="lt-dropdown-body">
+          <div class="lt-dropdown-inner">
+            {% for block in section.blocks %}
+              {% if block.type == 'catalog_category' %}
+                <a href="{{ block.settings.url }}" class="lt-dropdown-item" {{ block.shopify_attributes }} onclick="event.stopPropagation()">
+                  <i class="ti {{ block.settings.icon | default: 'ti-hanger' }}"></i>
+                  {{ block.settings.title }}
+                </a>
+              {% endif %}
+            {% endfor %}
+          </div>
         </div>
       </div>
-    {% endif %}
+      {% endif %}
+
+      <!-- Shop by Fabric Dropdown -->
+      {% assign has_fabrics = false %}
+      {% for block in section.blocks %}
+        {% if block.type == 'catalog_fabric' %}{% assign has_fabrics = true %}{% endif %}
+      {% endfor %}
+
+      {% if has_fabrics %}
+      <div class="lt-dropdown" onclick="toggleLtDropdown(this)">
+        <div class="lt-dropdown-header">
+          <div style="display:flex; align-items:center;">
+            <i class="ti ti-layers-intersect icon-main"></i>
+            <span>Shop by Fabric</span>
+          </div>
+          <i class="ti ti-chevron-down icon-caret"></i>
+        </div>
+        <div class="lt-dropdown-body">
+          <div class="lt-dropdown-inner">
+            {% for block in section.blocks %}
+              {% if block.type == 'catalog_fabric' %}
+                <a href="{{ block.settings.url }}" class="lt-dropdown-item" {{ block.shopify_attributes }} onclick="event.stopPropagation()">
+                  <i class="ti {{ block.settings.icon | default: 'ti-texture' }}"></i>
+                  {{ block.settings.title }}
+                </a>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
 
   </div>
 </div>
+
+<script>
+  function copyGstAndRedirect(gstNumber) {
+    // 1. Copy to clipboard
+    navigator.clipboard.writeText(gstNumber).then(() => {
+      // 2. Show visual feedback
+      const btn = document.getElementById('lt-gst-btn');
+      const text = document.getElementById('lt-gst-text');
+      const originalText = text.innerHTML;
+      
+      btn.classList.add('copied');
+      text.innerHTML = 'Copied! Opening Portal...';
+      
+      // 3. Open portal in new tab after a brief delay
+      setTimeout(() => {
+        window.open('https://services.gst.gov.in/services/searchtp', '_blank');
+        
+        // 4. Revert button state
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          text.innerHTML = originalText;
+        }, 2000);
+      }, 800);
+    });
+  }
+
+  function toggleLtDropdown(element) {
+    element.classList.toggle('active');
+    const body = element.querySelector('.lt-dropdown-body');
+    if (element.classList.contains('active')) {
+      body.style.maxHeight = body.scrollHeight + "px";
+    } else {
+      body.style.maxHeight = "0px";
+    }
+  }
+</script>
 
 {% schema %}
 {
@@ -274,26 +388,27 @@
     {
       "type": "text",
       "id": "title",
-      "label": "Brand Name / Headline",
+      "label": "Brand Name",
       "default": "Espon Sports"
     },
     {
       "type": "text",
       "id": "subtitle",
-      "label": "Subtitle / Bio",
+      "label": "Subtitle",
       "default": "Premium Activewear B2B Manufacturing"
     },
     {
       "type": "checkbox",
       "id": "show_gst",
-      "label": "Show GST Verified Badge",
+      "label": "Show GST Badge",
       "default": true
     },
     {
       "type": "text",
-      "id": "gst_text",
-      "label": "GST Badge Text",
-      "default": "GST Verified Business"
+      "id": "gst_number",
+      "label": "GST Number",
+      "default": "06AAHCE7721Q1Z4",
+      "info": "This number will be copied to clipboard when users click it."
     },
     {
       "type": "header",
@@ -309,7 +424,7 @@
       "type": "text",
       "id": "catalog_heading",
       "label": "Catalog Heading",
-      "default": "Shop by Category"
+      "default": "Our Catalog"
     }
   ],
   "blocks": [
@@ -331,28 +446,26 @@
         {
           "type": "select",
           "id": "brand",
-          "label": "Style / Icon",
+          "label": "Brand Icon",
           "options": [
             { "value": "whatsapp", "label": "WhatsApp" },
             { "value": "instagram", "label": "Instagram" },
             { "value": "facebook", "label": "Facebook" },
-            { "value": "bot", "label": "Chatbot" },
-            { "value": "primary", "label": "Primary Button (Filled)" },
-            { "value": "default", "label": "Default (Outline)" }
+            { "value": "default", "label": "Default Link" }
           ],
           "default": "whatsapp"
         }
       ]
     },
     {
-      "type": "catalog",
-      "name": "Catalog Card",
+      "type": "catalog_category",
+      "name": "Category Item",
       "settings": [
         {
           "type": "text",
           "id": "title",
-          "label": "Card Title",
-          "default": "Track Pants"
+          "label": "Category Name",
+          "default": "Shorts"
         },
         {
           "type": "url",
@@ -363,8 +476,30 @@
           "type": "text",
           "id": "icon",
           "label": "Tabler Icon Class",
-          "default": "ti-hanger",
-          "info": "Find icons at tabler-icons.io (e.g. ti-shirt, ti-shopping-cart)"
+          "default": "ti-shirt"
+        }
+      ]
+    },
+    {
+      "type": "catalog_fabric",
+      "name": "Fabric Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Fabric Name",
+          "default": "NS Fabric"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link URL"
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Tabler Icon Class",
+          "default": "ti-texture"
         }
       ]
     }
@@ -374,12 +509,12 @@
       "name": "Linktree Premium",
       "blocks": [
         { "type": "link", "settings": { "title": "WhatsApp Support", "brand": "whatsapp" } },
-        { "type": "link", "settings": { "title": "AI Assistant (Chatbot)", "brand": "bot" } },
         { "type": "link", "settings": { "title": "Instagram", "brand": "instagram" } },
-        { "type": "catalog", "settings": { "title": "Shorts", "icon": "ti-shirt" } },
-        { "type": "catalog", "settings": { "title": "Track Pants", "icon": "ti-hanger" } },
-        { "type": "catalog", "settings": { "title": "NS Fabric", "icon": "ti-layers-intersect" } },
-        { "type": "catalog", "settings": { "title": "Lycra Fabric", "icon": "ti-stretching" } }
+        { "type": "link", "settings": { "title": "Facebook", "brand": "facebook" } },
+        { "type": "catalog_category", "settings": { "title": "Shorts", "icon": "ti-shirt" } },
+        { "type": "catalog_category", "settings": { "title": "Track Pants", "icon": "ti-hanger" } },
+        { "type": "catalog_fabric", "settings": { "title": "NS Fabric", "icon": "ti-layers-intersect" } },
+        { "type": "catalog_fabric", "settings": { "title": "Lycra Fabric", "icon": "ti-stretching" } }
       ]
     }
   ]

@@ -11,14 +11,6 @@
             "brand": "whatsapp"
           }
         },
-        "link_bot": {
-          "type": "link",
-          "settings": {
-            "title": "AI Assistant (Chatbot)",
-            "url": "",
-            "brand": "bot"
-          }
-        },
         "link_insta": {
           "type": "link",
           "settings": {
@@ -35,32 +27,32 @@
             "brand": "facebook"
           }
         },
-        "catalog_shorts": {
-          "type": "catalog",
+        "category_shorts": {
+          "type": "catalog_category",
           "settings": {
             "title": "Premium Shorts",
             "url": "/collections/shorts",
             "icon": "ti-shirt"
           }
         },
-        "catalog_pants": {
-          "type": "catalog",
+        "category_pants": {
+          "type": "catalog_category",
           "settings": {
             "title": "Track Pants",
             "url": "/collections/track-pants",
             "icon": "ti-hanger"
           }
         },
-        "catalog_ns": {
-          "type": "catalog",
+        "fabric_ns": {
+          "type": "catalog_fabric",
           "settings": {
             "title": "NS Fabric",
             "url": "/collections/ns-fabric",
             "icon": "ti-layers-intersect"
           }
         },
-        "catalog_lycra": {
-          "type": "catalog",
+        "fabric_lycra": {
+          "type": "catalog_fabric",
           "settings": {
             "title": "Lycra Fabric",
             "url": "/collections/lycra",
@@ -70,21 +62,20 @@
       },
       "block_order": [
         "link_whatsapp",
-        "link_bot",
         "link_insta",
         "link_fb",
-        "catalog_shorts",
-        "catalog_pants",
-        "catalog_ns",
-        "catalog_lycra"
+        "category_shorts",
+        "category_pants",
+        "fabric_ns",
+        "fabric_lycra"
       ],
       "settings": {
         "title": "Espon Sports",
         "subtitle": "Premium Activewear B2B Manufacturing",
         "show_gst": true,
-        "gst_text": "GST Verified Business",
+        "gst_number": "06AAHCE7721Q1Z4",
         "links_heading": "Connect With Us",
-        "catalog_heading": "Shop by Category"
+        "catalog_heading": "Our Catalog"
       }
     }
   },
