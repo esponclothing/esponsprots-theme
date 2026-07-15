@@ -52,44 +52,22 @@
       {% capture children %}
         {% assign grid_index = 0 %}
         {% for product in collection.products %}
-          {% if product.available %}
-            {% comment %} --- HIDE WHEEL GIFTS FROM SHOP PAGES --- {% endcomment %}
-            {% if product.tags contains 'hidden-gift' %}
-              {% continue %}
-            {% endif %}
-            <li
-              id="{{ section.id }}-{{ product.id }}"
-              class="product-grid__item product-grid__item--{{ grid_index }}"
-              data-page="{{ paginate.current_page }}"
-              data-product-id="{{ product.id }}"
-              ref="cards[]"
-            >
-              {% # theme-check-disable %}
-              {% content_for 'block', type: '_product-card', id: 'product-card', closest.product: product %}
-              {% # theme-check-enable %}
-            </li>
-            {% assign grid_index = grid_index | plus: 1 %}
+          {% comment %} --- HIDE WHEEL GIFTS FROM SHOP PAGES --- {% endcomment %}
+          {% if product.tags contains 'hidden-gift' %}
+            {% continue %}
           {% endif %}
-        {% endfor %}
-        {% for product in collection.products %}
-          {% unless product.available %}
-            {% comment %} --- HIDE WHEEL GIFTS FROM SHOP PAGES --- {% endcomment %}
-            {% if product.tags contains 'hidden-gift' %}
-              {% continue %}
-            {% endif %}
-            <li
-              id="{{ section.id }}-{{ product.id }}"
-              class="product-grid__item product-grid__item--{{ grid_index }}"
-              data-page="{{ paginate.current_page }}"
-              data-product-id="{{ product.id }}"
-              ref="cards[]"
-            >
-              {% # theme-check-disable %}
-              {% content_for 'block', type: '_product-card', id: 'product-card', closest.product: product %}
-              {% # theme-check-enable %}
-            </li>
-            {% assign grid_index = grid_index | plus: 1 %}
-          {% endunless %}
+          <li
+            id="{{ section.id }}-{{ product.id }}"
+            class="product-grid__item product-grid__item--{{ grid_index }}"
+            data-page="{{ paginate.current_page }}"
+            data-product-id="{{ product.id }}"
+            ref="cards[]"
+          >
+            {% # theme-check-disable %}
+            {% content_for 'block', type: '_product-card', id: 'product-card', closest.product: product %}
+            {% # theme-check-enable %}
+          </li>
+          {% assign grid_index = grid_index | plus: 1 %}
         {% endfor %}
       {% endcapture %}
 
