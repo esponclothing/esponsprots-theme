@@ -296,7 +296,6 @@
             {% for block in section.blocks %}
               {% if block.type == 'catalog_category' %}
                 <a href="{{ block.settings.url }}" class="lt-dropdown-item" {{ block.shopify_attributes }} onclick="event.stopPropagation()">
-                  <i class="ti {{ block.settings.icon | default: 'ti-hanger' }}"></i>
                   {{ block.settings.title }}
                 </a>
               {% endif %}
@@ -326,7 +325,6 @@
             {% for block in section.blocks %}
               {% if block.type == 'catalog_fabric' %}
                 <a href="{{ block.settings.url }}" class="lt-dropdown-item" {{ block.shopify_attributes }} onclick="event.stopPropagation()">
-                  <i class="ti {{ block.settings.icon | default: 'ti-texture' }}"></i>
                   {{ block.settings.title }}
                 </a>
               {% endif %}
@@ -525,12 +523,6 @@
           "type": "url",
           "id": "url",
           "label": "Link URL"
-        },
-        {
-          "type": "text",
-          "id": "icon",
-          "label": "Tabler Icon Class",
-          "default": "ti-shirt"
         }
       ]
     },
@@ -548,12 +540,6 @@
           "type": "url",
           "id": "url",
           "label": "Link URL"
-        },
-        {
-          "type": "text",
-          "id": "icon",
-          "label": "Tabler Icon Class",
-          "default": "ti-texture"
         }
       ]
     }
@@ -565,10 +551,10 @@
         { "type": "link", "settings": { "title": "WhatsApp Support", "brand": "whatsapp" } },
         { "type": "link", "settings": { "title": "Instagram", "brand": "instagram" } },
         { "type": "link", "settings": { "title": "Facebook", "brand": "facebook" } },
-        { "type": "catalog_category", "settings": { "title": "Shorts", "icon": "ti-shirt" } },
-        { "type": "catalog_category", "settings": { "title": "Track Pants", "icon": "ti-hanger" } },
-        { "type": "catalog_fabric", "settings": { "title": "NS Fabric", "icon": "ti-layers-intersect" } },
-        { "type": "catalog_fabric", "settings": { "title": "Lycra Fabric", "icon": "ti-stretching" } }
+        { "type": "catalog_category", "settings": { "title": "Shorts" } },
+        { "type": "catalog_category", "settings": { "title": "Track Pants" } },
+        { "type": "catalog_fabric", "settings": { "title": "NS Fabric" } },
+        { "type": "catalog_fabric", "settings": { "title": "Lycra Fabric" } }
       ]
     }
   ]
