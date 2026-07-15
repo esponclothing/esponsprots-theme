@@ -1,0 +1,94 @@
+{
+  "sections": {
+    "main": {
+      "type": "espon-linktree",
+      "blocks": {
+        "link_whatsapp": {
+          "type": "link",
+          "settings": {
+            "title": "WhatsApp Support",
+            "url": "",
+            "brand": "whatsapp"
+          }
+        },
+        "link_bot": {
+          "type": "link",
+          "settings": {
+            "title": "AI Assistant (Chatbot)",
+            "url": "",
+            "brand": "bot"
+          }
+        },
+        "link_insta": {
+          "type": "link",
+          "settings": {
+            "title": "Follow on Instagram",
+            "url": "",
+            "brand": "instagram"
+          }
+        },
+        "link_fb": {
+          "type": "link",
+          "settings": {
+            "title": "Follow on Facebook",
+            "url": "",
+            "brand": "facebook"
+          }
+        },
+        "catalog_shorts": {
+          "type": "catalog",
+          "settings": {
+            "title": "Premium Shorts",
+            "url": "/collections/shorts",
+            "icon": "ti-shirt"
+          }
+        },
+        "catalog_pants": {
+          "type": "catalog",
+          "settings": {
+            "title": "Track Pants",
+            "url": "/collections/track-pants",
+            "icon": "ti-hanger"
+          }
+        },
+        "catalog_ns": {
+          "type": "catalog",
+          "settings": {
+            "title": "NS Fabric",
+            "url": "/collections/ns-fabric",
+            "icon": "ti-layers-intersect"
+          }
+        },
+        "catalog_lycra": {
+          "type": "catalog",
+          "settings": {
+            "title": "Lycra Fabric",
+            "url": "/collections/lycra",
+            "icon": "ti-stretching"
+          }
+        }
+      },
+      "block_order": [
+        "link_whatsapp",
+        "link_bot",
+        "link_insta",
+        "link_fb",
+        "catalog_shorts",
+        "catalog_pants",
+        "catalog_ns",
+        "catalog_lycra"
+      ],
+      "settings": {
+        "title": "Espon Sports",
+        "subtitle": "Premium Activewear B2B Manufacturing",
+        "show_gst": true,
+        "gst_text": "GST Verified Business",
+        "links_heading": "Connect With Us",
+        "catalog_heading": "Shop by Category"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,387 @@
+{% comment %}
+  ============================================================
+  ESPONSPORTS - Premium Linktree Page
+  A sleek, mobile-optimized hub for all your essential links.
+  ============================================================
+{% endcomment %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+
+<style>
+  .espon-linktree-wrapper * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+  .espon-linktree-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    padding: 60px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #ffffff;
+  }
+  
+  .linktree-container {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  /* ── PROFILE SECTION ── */
+  .lt-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+  .lt-profile-img {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: contain;
+    background: #ffffff;
+    padding: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    border: 2px solid rgba(255,255,255,0.1);
+  }
+  .lt-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+  .lt-subtitle {
+    font-size: 15px;
+    color: #94a3b8;
+    margin: 0;
+  }
+  .lt-gst-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    margin-top: 4px;
+  }
+  .lt-gst-badge i { font-size: 16px; }
+
+  /* ── LINK BLOCKS ── */
+  .lt-section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .lt-section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+
+  .lt-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .lt-btn i {
+    position: absolute;
+    left: 20px;
+    font-size: 22px;
+  }
+  .lt-btn:hover {
+    transform: translateY(-4px) scale(1.02);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+    color: #ffffff;
+  }
+
+  /* Specific Button Colors */
+  .lt-btn.btn-whatsapp:hover { border-color: #25D366; background: rgba(37, 211, 102, 0.1); }
+  .lt-btn.btn-whatsapp i { color: #25D366; }
+
+  .lt-btn.btn-instagram:hover { border-color: #E1306C; background: rgba(225, 48, 108, 0.1); }
+  .lt-btn.btn-instagram i { color: #E1306C; }
+
+  .lt-btn.btn-facebook:hover { border-color: #1877F2; background: rgba(24, 119, 242, 0.1); }
+  .lt-btn.btn-facebook i { color: #1877F2; }
+
+  .lt-btn.btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; font-weight: 600; }
+  .lt-btn.btn-primary:hover { box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); }
+  .lt-btn.btn-primary i { color: #ffffff; }
+
+  /* ── CATALOG GRID ── */
+  .lt-catalog-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .lt-catalog-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+  .lt-catalog-card i {
+    font-size: 32px;
+    margin-bottom: 12px;
+    color: #3b82f6;
+  }
+  .lt-catalog-card span {
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .lt-catalog-card:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #3b82f6;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    color: #ffffff;
+  }
+</style>
+
+<div class="espon-linktree-wrapper">
+  <div class="linktree-container">
+
+    <!-- Profile Section -->
+    <div class="lt-profile">
+      {% if section.settings.logo != blank %}
+        <img src="{{ section.settings.logo | img_url: '200x' }}" alt="{{ shop.name }}" class="lt-profile-img">
+      {% else %}
+        <div class="lt-profile-img" style="display:flex; align-items:center; justify-content:center; background:#1e293b; color:#fff; font-size: 24px; font-weight: bold;">
+          {{ shop.name | slice: 0, 1 }}
+        </div>
+      {% endif %}
+      
+      <h1 class="lt-title">{{ section.settings.title | default: shop.name }}</h1>
+      <p class="lt-subtitle">{{ section.settings.subtitle }}</p>
+      
+      {% if section.settings.show_gst %}
+        <div class="lt-gst-badge">
+          <i class="ti ti-shield-check-filled"></i> {{ section.settings.gst_text | default: 'GST Verified Business' }}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Links & Catalog Blocks -->
+    {% assign has_links = false %}
+    {% assign has_catalog = false %}
+    
+    {% for block in section.blocks %}
+      {% if block.type == 'link' %}{% assign has_links = true %}{% endif %}
+      {% if block.type == 'catalog' %}{% assign has_catalog = true %}{% endif %}
+    {% endfor %}
+
+    <!-- Social & Contact Links -->
+    {% if has_links %}
+      <div class="lt-section">
+        {% if section.settings.links_heading != blank %}
+          <div class="lt-section-title">{{ section.settings.links_heading }}</div>
+        {% endif %}
+        
+        {% for block in section.blocks %}
+          {% if block.type == 'link' %}
+            <a href="{{ block.settings.url }}" class="lt-btn {% if block.settings.brand == 'whatsapp' %}btn-whatsapp{% elsif block.settings.brand == 'instagram' %}btn-instagram{% elsif block.settings.brand == 'facebook' %}btn-facebook{% elsif block.settings.brand == 'primary' %}btn-primary{% endif %}" {{ block.shopify_attributes }}>
+              
+              {% if block.settings.brand == 'whatsapp' %}
+                <i class="ti ti-brand-whatsapp"></i>
+              {% elsif block.settings.brand == 'instagram' %}
+                <i class="ti ti-brand-instagram"></i>
+              {% elsif block.settings.brand == 'facebook' %}
+                <i class="ti ti-brand-facebook"></i>
+              {% elsif block.settings.brand == 'bot' %}
+                <i class="ti ti-robot"></i>
+              {% else %}
+                <i class="ti ti-link"></i>
+              {% endif %}
+              
+              <span>{{ block.settings.title }}</span>
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Catalog Categories -->
+    {% if has_catalog %}
+      <div class="lt-section" style="margin-top: 12px;">
+        {% if section.settings.catalog_heading != blank %}
+          <div class="lt-section-title">{{ section.settings.catalog_heading }}</div>
+        {% endif %}
+        
+        <div class="lt-catalog-grid">
+          {% for block in section.blocks %}
+            {% if block.type == 'catalog' %}
+              <a href="{{ block.settings.url }}" class="lt-catalog-card" {{ block.shopify_attributes }}>
+                <i class="ti {{ block.settings.icon | default: 'ti-hanger' }}"></i>
+                <span>{{ block.settings.title }}</span>
+              </a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Linktree Premium",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Profile Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Brand Logo"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Brand Name / Headline",
+      "default": "Espon Sports"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle / Bio",
+      "default": "Premium Activewear B2B Manufacturing"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_gst",
+      "label": "Show GST Verified Badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "gst_text",
+      "label": "GST Badge Text",
+      "default": "GST Verified Business"
+    },
+    {
+      "type": "header",
+      "content": "Section Headings"
+    },
+    {
+      "type": "text",
+      "id": "links_heading",
+      "label": "Links Heading",
+      "default": "Connect With Us"
+    },
+    {
+      "type": "text",
+      "id": "catalog_heading",
+      "label": "Catalog Heading",
+      "default": "Shop by Category"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Social / Contact Link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Link Title",
+          "default": "Chat on WhatsApp"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link URL"
+        },
+        {
+          "type": "select",
+          "id": "brand",
+          "label": "Style / Icon",
+          "options": [
+            { "value": "whatsapp", "label": "WhatsApp" },
+            { "value": "instagram", "label": "Instagram" },
+            { "value": "facebook", "label": "Facebook" },
+            { "value": "bot", "label": "Chatbot" },
+            { "value": "primary", "label": "Primary Button (Filled)" },
+            { "value": "default", "label": "Default (Outline)" }
+          ],
+          "default": "whatsapp"
+        }
+      ]
+    },
+    {
+      "type": "catalog",
+      "name": "Catalog Card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Card Title",
+          "default": "Track Pants"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link URL"
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Tabler Icon Class",
+          "default": "ti-hanger",
+          "info": "Find icons at tabler-icons.io (e.g. ti-shirt, ti-shopping-cart)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Linktree Premium",
+      "blocks": [
+        { "type": "link", "settings": { "title": "WhatsApp Support", "brand": "whatsapp" } },
+        { "type": "link", "settings": { "title": "AI Assistant (Chatbot)", "brand": "bot" } },
+        { "type": "link", "settings": { "title": "Instagram", "brand": "instagram" } },
+        { "type": "catalog", "settings": { "title": "Shorts", "icon": "ti-shirt" } },
+        { "type": "catalog", "settings": { "title": "Track Pants", "icon": "ti-hanger" } },
+        { "type": "catalog", "settings": { "title": "NS Fabric", "icon": "ti-layers-intersect" } },
+        { "type": "catalog", "settings": { "title": "Lycra Fabric", "icon": "ti-stretching" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
