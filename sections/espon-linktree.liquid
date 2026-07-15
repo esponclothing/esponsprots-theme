@@ -38,13 +38,34 @@
     text-align: center;
     gap: 12px;
   }
+  .lt-profile-img-wrap {
+    position: relative;
+    display: inline-block;
+  }
   .lt-profile-img {
     width: 96px;
     height: 96px;
     border-radius: 50%;
     object-fit: cover;
     box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-    border: 3px solid #ffffff;
+    border: 3px solid #3b82f6;
+  }
+  .lt-profile-tick {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: #ffffff;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .lt-profile-tick i {
+    color: #3b82f6;
+    font-size: 26px;
   }
   .lt-title {
     font-size: 22px;
@@ -220,15 +241,20 @@
 
     <!-- Profile Section -->
     <div class="lt-profile">
-      {% if section.settings.logo != blank %}
-        <img src="{{ section.settings.logo | img_url: '400x' }}" alt="{{ shop.name }}" class="lt-profile-img">
-      {% elsif settings.logo != blank %}
-        <img src="{{ settings.logo | img_url: '400x' }}" alt="{{ shop.name }}" class="lt-profile-img">
-      {% else %}
-        <div class="lt-profile-img" style="display:flex; align-items:center; justify-content:center; background:#0f172a; color:#fff; font-size: 32px; font-weight: bold;">
-          {{ shop.name | slice: 0, 1 }}
+      <div class="lt-profile-img-wrap">
+        {% if section.settings.logo != blank %}
+          <img src="{{ section.settings.logo | img_url: '400x' }}" alt="{{ shop.name }}" class="lt-profile-img">
+        {% elsif settings.logo != blank %}
+          <img src="{{ settings.logo | img_url: '400x' }}" alt="{{ shop.name }}" class="lt-profile-img">
+        {% else %}
+          <div class="lt-profile-img" style="display:flex; align-items:center; justify-content:center; background:#0f172a; color:#fff; font-size: 32px; font-weight: bold;">
+            {{ shop.name | slice: 0, 1 }}
+          </div>
+        {% endif %}
+        <div class="lt-profile-tick">
+          <i class="ti ti-rosette-discount-check-filled"></i>
         </div>
-      {% endif %}
+      </div>
       
       <h1 class="lt-title">{{ section.settings.title | default: shop.name }}</h1>
       <p class="lt-subtitle">{{ section.settings.subtitle }}</p>
