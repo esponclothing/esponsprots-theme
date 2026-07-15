@@ -111,6 +111,11 @@
       {% if block_settings.padding-block-end > 0 %}--zoom-out-padding-block-end: min(var(--padding-xs), {{ block_settings.padding-block-end | times: 0.7}}px);{% endif %}
     "
   >
+    {% unless product.available or onboarding %}
+      <div class="custom-out-of-stock-badge">
+        OUT OF STOCK
+      </div>
+    {% endunless %}
     {{ children }}
   </div>
 </product-card>
@@ -132,5 +137,26 @@
     .product-card slideshow-arrows .slideshow-control {
       display: none;
     }
+  }
+
+  .custom-out-of-stock-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background-color: #dc2626;
+    color: #ffffff;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    border-radius: 4px;
+    z-index: 10;
+    pointer-events: none;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    line-height: 1;
+  }
+  
+  .product-card {
+    position: relative;
   }
 {% endstylesheet %}
