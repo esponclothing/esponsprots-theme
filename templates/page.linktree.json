@@ -131,7 +131,7 @@
         "links_heading": "Connect With Us",
         "catalog_heading": "Our Catalog",
         "catalog_btn_text": "View All Collections",
-        "catalog_btn_url": ""
+        "catalog_btn_url": "shopify://collections"
       }
     }
   },
