@@ -12,6 +12,14 @@
     "main": {
       "type": "espon-linktree",
       "blocks": {
+        "catalog_category_UCJB9E": {
+          "type": "catalog_category",
+          "settings": {
+            "title": "Co - Ord Sets",
+            "url": "shopify://collections/co-ord-sets",
+            "icon": "ti-shirt"
+          }
+        },
         "link_whatsapp": {
           "type": "link",
           "settings": {
@@ -70,6 +78,7 @@
         }
       },
       "block_order": [
+        "catalog_category_UCJB9E",
         "link_whatsapp",
         "link_insta",
         "link_fb",
