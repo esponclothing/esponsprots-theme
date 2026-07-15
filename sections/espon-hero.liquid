@@ -249,9 +249,17 @@
             {% for block in section.blocks %}
               {% if block.type == 'slide' and block.settings.slide_image != blank %}
                 <img
-                  src="{{ block.settings.slide_image | img_url: '1100x' }}"
+                  srcset="
+                    {{ block.settings.slide_image | image_url: width: 375 }} 375w,
+                    {{ block.settings.slide_image | image_url: width: 550 }} 550w,
+                    {{ block.settings.slide_image | image_url: width: 750 }} 750w,
+                    {{ block.settings.slide_image | image_url: width: 1100 }} 1100w
+                  "
+                  sizes="(min-width: 750px) 50vw, 100vw"
+                  src="{{ block.settings.slide_image | image_url: width: 1100 }}"
                   class="espon-slide-img"
-                  alt="{{ block.settings.slide_image.alt | default: 'Hero slide' }}"
+                  alt="{{ block.settings.slide_image.alt | default: 'Hero slide' | escape }}"
+                  {% if forloop.first %}fetchpriority="high" loading="eager"{% else %}loading="lazy"{% endif %}
                   {{ block.shopify_attributes }}
                 >
               {% endif %}
