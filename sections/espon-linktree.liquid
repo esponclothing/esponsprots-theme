@@ -163,6 +163,9 @@
   .lt-btn.btn-facebook:hover { border-color: #1877F2; color: #2563eb; }
   .lt-btn.btn-facebook i { color: #1877F2; }
 
+  .lt-btn.btn-gmb:hover { border-color: #EA4335; color: #b91c1c; }
+  .lt-btn.btn-gmb i { color: #EA4335; }
+
   /* ── DROPDOWN ACCORDIONS ── */
   .lt-dropdown {
     width: 100%;
@@ -343,7 +346,16 @@
       
       {% for block in section.blocks %}
         {% if block.type == 'link' %}
-          <a href="{{ block.settings.url }}" class="lt-btn {% if block.settings.brand == 'whatsapp' %}btn-whatsapp{% elsif block.settings.brand == 'instagram' %}btn-instagram{% elsif block.settings.brand == 'facebook' %}btn-facebook{% endif %}" {{ block.shopify_attributes }}>
+          {% assign final_url = block.settings.url %}
+          {% if block.settings.brand == 'whatsapp' and block.settings.whatsapp_number != blank %}
+            {% assign final_url = 'https://wa.me/' | append: block.settings.whatsapp_number %}
+            {% if block.settings.whatsapp_text != blank %}
+              {% assign wa_text = block.settings.whatsapp_text | url_param_escape %}
+              {% assign final_url = final_url | append: '?text=' | append: wa_text %}
+            {% endif %}
+          {% endif %}
+          
+          <a href="{{ final_url }}" class="lt-btn {% if block.settings.brand == 'whatsapp' %}btn-whatsapp{% elsif block.settings.brand == 'instagram' %}btn-instagram{% elsif block.settings.brand == 'facebook' %}btn-facebook{% elsif block.settings.brand == 'gmb' %}btn-gmb{% endif %}" {{ block.shopify_attributes }}>
             
             {% if block.settings.brand == 'whatsapp' %}
               <i class="ti ti-brand-whatsapp"></i>
@@ -351,6 +363,8 @@
               <i class="ti ti-brand-instagram"></i>
             {% elsif block.settings.brand == 'facebook' %}
               <i class="ti ti-brand-facebook"></i>
+            {% elsif block.settings.brand == 'gmb' %}
+              <i class="ti ti-map-pin-filled"></i>
             {% else %}
               <i class="ti ti-link"></i>
             {% endif %}
@@ -479,9 +493,21 @@
             { "value": "whatsapp", "label": "WhatsApp" },
             { "value": "instagram", "label": "Instagram" },
             { "value": "facebook", "label": "Facebook" },
+            { "value": "gmb", "label": "Google Maps / GMB" },
             { "value": "default", "label": "Default Link" }
           ],
           "default": "whatsapp"
+        },
+        {
+          "type": "text",
+          "id": "whatsapp_number",
+          "label": "WhatsApp Number (Optional)",
+          "info": "Include country code (e.g. 919876543210). Overrides the URL above."
+        },
+        {
+          "type": "text",
+          "id": "whatsapp_text",
+          "label": "WhatsApp Prefilled Text (Optional)"
         }
       ]
     },

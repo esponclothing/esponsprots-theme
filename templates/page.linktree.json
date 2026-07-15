@@ -57,7 +57,7 @@
           "settings": {
             "title": "Co - Ord Sets",
             "url": "shopify://collections/co-ord-sets",
-            "icon": "ti-stretching"
+            "icon": "ti-hanger-2"
           }
         },
         "catalog_category_Uh4k76": {
@@ -73,7 +73,7 @@
           "settings": {
             "title": "Ns Lycra",
             "url": "shopify://collections/ns-lycra",
-            "icon": "ti-texture"
+            "icon": "ti-layers-intersect"
           }
         },
         "fabric_ns": {
@@ -81,7 +81,7 @@
           "settings": {
             "title": "4 Way Lycra",
             "url": "shopify://collections/4-way-lycra",
-            "icon": "ti-layers-intersect"
+            "icon": "ti-stretching"
           }
         },
         "fabric_lycra": {
@@ -89,7 +89,7 @@
           "settings": {
             "title": "Crush Lycra",
             "url": "shopify://collections/crush-lycra",
-            "icon": "ti-stretching"
+            "icon": "ti-texture"
           }
         },
         "catalog_fabric_aPLRPJ": {
@@ -97,7 +97,7 @@
           "settings": {
             "title": "Terry Lycra",
             "url": "shopify://collections/terry-lycra",
-            "icon": "ti-texture"
+            "icon": "ti-shirt-sport"
           }
         }
       },
