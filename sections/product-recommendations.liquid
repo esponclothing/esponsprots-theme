@@ -79,16 +79,27 @@
         endif
       %}
       {% capture list_items %}
+        {% assign is_first = true %}
         {% for product in products limit: section.settings.max_products %}
-          {% comment %} --- HIDE WHEEL GIFTS FROM SHOP PAGES --- {% endcomment %}
-{% if product.tags contains 'hidden-gift' %}
-  {% continue %}
-{% endif %}
-          <div class="resource-list__item">
-            {% content_for 'block', type: '_product-card', id: 'static-product-card', closest.product: product %}
-          </div>
-          {% unless forloop.last %}
-            <!--@list/split-->
+          {% if product.available %}
+            {% comment %} --- HIDE WHEEL GIFTS FROM SHOP PAGES --- {% endcomment %}
+            {% if product.tags contains 'hidden-gift' %}{% continue %}{% endif %}
+            {% unless is_first %}<!--@list/split-->{% endunless %}
+            <div class="resource-list__item">
+              {% content_for 'block', type: '_product-card', id: 'static-product-card', closest.product: product %}
+            </div>
+            {% assign is_first = false %}
+          {% endif %}
+        {% endfor %}
+        {% for product in products limit: section.settings.max_products %}
+          {% unless product.available %}
+            {% comment %} --- HIDE WHEEL GIFTS FROM SHOP PAGES --- {% endcomment %}
+            {% if product.tags contains 'hidden-gift' %}{% continue %}{% endif %}
+            {% unless is_first %}<!--@list/split-->{% endunless %}
+            <div class="resource-list__item">
+              {% content_for 'block', type: '_product-card', id: 'static-product-card', closest.product: product %}
+            </div>
+            {% assign is_first = false %}
           {% endunless %}
         {% endfor %}
       {% endcapture %}
