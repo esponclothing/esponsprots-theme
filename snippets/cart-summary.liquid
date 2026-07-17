@@ -309,6 +309,17 @@
   </button>
 
   {% unless lock_checkout %}
+    <button
+      type="button"
+      id="checkout-advance"
+      class="cart__checkout-button button button--secondary"
+      {% if cart == empty %}disabled{% endif %}
+    >
+      <span class="button-text">Pay 10% Advance (Rest COD)</span>
+    </button>
+  {% endunless %}
+
+  {% unless lock_checkout %}
     {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
       <div
         class="
@@ -321,6 +332,56 @@
     {% endif %}
   {% endunless %}
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const advanceBtn = document.getElementById('checkout-advance');
+    if (!advanceBtn) return;
+
+    advanceBtn.addEventListener('click', async function(e) {
+      e.preventDefault();
+      
+      const originalText = advanceBtn.innerHTML;
+      advanceBtn.innerHTML = '<span class="button-text">Processing...</span>';
+      advanceBtn.disabled = true;
+
+      try {
+        // Fetch current cart data
+        const cartRes = await fetch('/cart.js');
+        const cartData = await cartRes.json();
+
+        // Send to esponsports editor backend
+        // Note: Replace with the actual deployed URL of esponsports editor if this is hardcoded
+        const editorApiUrl = 'https://esponsports-editor.vercel.app/api/create-advance-order';
+        
+        const response = await fetch(editorApiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            // Need these headers as expected by the new endpoint proxy logic if used
+            'x-client-store-url': window.location.hostname
+          },
+          body: JSON.stringify(cartData)
+        });
+
+        const data = await response.json();
+        
+        if (data.invoice_url) {
+          window.location.href = data.invoice_url;
+        } else {
+          alert('Failed to generate advance checkout: ' + (data.error || 'Unknown error'));
+          advanceBtn.innerHTML = originalText;
+          advanceBtn.disabled = false;
+        }
+      } catch (err) {
+        console.error(err);
+        alert('An error occurred while creating the advance checkout.');
+        advanceBtn.innerHTML = originalText;
+        advanceBtn.disabled = false;
+      }
+    });
+  });
+</script>
 
 {% stylesheet %}
   .cart-actions {
