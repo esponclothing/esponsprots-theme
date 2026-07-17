@@ -545,7 +545,10 @@
         }
       } else {
         const phoneToUse = verifiedGlobalPhone || customerPhone || customerDefaultAddressPhone;
-        const customerIdToUse = window.esponsports_customer_id || sessionStorage.getItem('esponsports_verified_id') || '{{ customer.id }}';
+        const realCustomerId = '{{ customer.id }}';
+        const customerIdToUse = (realCustomerId && realCustomerId !== '') 
+          ? realCustomerId 
+          : (window.esponsports_customer_id || sessionStorage.getItem('esponsports_verified_id'));
 
         if (type === 'advance') {
           window.triggerAdvanceCheckout(buttonElement, phoneToUse, customerIdToUse);
