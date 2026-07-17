@@ -444,8 +444,16 @@
     const advanceBtn = document.getElementById('checkout-advance');
     if (!advanceBtn) return;
     const originalText = advanceBtn.innerHTML;
-    advanceBtn.innerHTML = '<span class="button-text">Processing...</span>';
+    advanceBtn.innerHTML = '<span class="button-text" style="display: flex; align-items: center; justify-content: center; gap: 8px;"><svg class="spinner" viewBox="0 0 50 50" style="width: 20px; height: 20px; animation: rotate 2s linear infinite;"><circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="4" style="stroke-dasharray: 1, 200; stroke-dashoffset: 0; animation: dash 1.5s ease-in-out infinite; stroke-linecap: round;"></circle></svg> Processing...</span>';
     advanceBtn.disabled = true;
+
+    // Inject styles for spinner if they don't exist
+    if (!document.getElementById('espon-spinner-style')) {
+      const style = document.createElement('style');
+      style.id = 'espon-spinner-style';
+      style.innerHTML = `@keyframes rotate { 100% { transform: rotate(360deg); } } @keyframes dash { 0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; } 50% { stroke-dasharray: 90, 200; stroke-dashoffset: -35px; } 100% { stroke-dasharray: 90, 200; stroke-dashoffset: -124px; } }`;
+      document.head.appendChild(style);
+    }
 
     try {
       const cartRes = await fetch('/cart.js');
@@ -511,8 +519,8 @@
       e.preventDefault();
       
       if (!isCustomerLoggedIn) {
-        // Set a session storage flag to force redirect back to cart after social login
-        sessionStorage.setItem('esponsports_redirect_after_login', '/cart');
+        // Set a local storage flag to force redirect back to cart after social login (survives popups)
+        localStorage.setItem('esponsports_redirect_after_login', '/cart?trigger_checkout=' + type);
         
         // Redirect to native login page with ABSOLUTE URL so New Customer Accounts respects it
         const absoluteCartUrl = encodeURIComponent('https://' + window.location.hostname + '/cart?trigger_checkout=' + type);

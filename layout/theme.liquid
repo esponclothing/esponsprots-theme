@@ -151,9 +151,9 @@
 
     <script>
       (function() {
-        var redirectUrl = sessionStorage.getItem('esponsports_redirect_after_login');
+        var redirectUrl = localStorage.getItem('esponsports_redirect_after_login');
         if (redirectUrl && window.location.pathname.includes('/account')) {
-          sessionStorage.removeItem('esponsports_redirect_after_login');
+          localStorage.removeItem('esponsports_redirect_after_login');
           window.location.href = redirectUrl;
         }
       })();
