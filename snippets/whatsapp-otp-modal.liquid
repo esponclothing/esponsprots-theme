@@ -103,6 +103,11 @@
       <button class="wa-otp-btn" id="wa-verify-btn" onclick="verifyWaOtp()">
         Verify & Proceed
       </button>
+
+      <div id="wa-resend-container" style="margin-top: 15px; font-size: 14px; color: #64748b;">
+        <span id="wa-resend-text">Resend OTP in <span id="wa-resend-timer">60</span>s</span>
+        <a id="wa-resend-link" href="#" onclick="resendWaOtp(event)" style="display:none; color: #25D366; font-weight: bold; text-decoration: none;">Resend OTP</a>
+      </div>
     </div>
 
   </div>
@@ -113,6 +118,35 @@
   let waTargetButton = null;
   let waSignature = null;
   let waCustomerEmail = '{{ customer.email | escape }}';
+  let waResendInterval = null;
+
+  function startResendTimer() {
+    clearInterval(waResendInterval);
+    const textSpan = document.getElementById('wa-resend-text');
+    const linkA = document.getElementById('wa-resend-link');
+    const timerSpan = document.getElementById('wa-resend-timer');
+    
+    textSpan.style.display = 'inline';
+    linkA.style.display = 'none';
+    
+    let timeLeft = 60;
+    timerSpan.innerText = timeLeft;
+    
+    waResendInterval = setInterval(() => {
+      timeLeft--;
+      timerSpan.innerText = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(waResendInterval);
+        textSpan.style.display = 'none';
+        linkA.style.display = 'inline';
+      }
+    }, 1000);
+  }
+
+  function resendWaOtp(e) {
+    e.preventDefault();
+    sendWaOtp();
+  }
 
   function openWaModal(checkoutType, buttonElement) {
     waTargetCheckoutType = checkoutType;
@@ -126,6 +160,7 @@
   function closeWaModal() {
     document.getElementById('wa-otp-overlay').classList.remove('active');
     document.body.style.overflow = '';
+    clearInterval(waResendInterval);
   }
 
   async function sendWaOtp() {
@@ -154,6 +189,8 @@
       
       document.getElementById('wa-step-1').style.display = 'none';
       document.getElementById('wa-step-2').style.display = 'block';
+      
+      startResendTimer();
     } catch (err) {
       document.getElementById('wa-phone-error').innerText = err.message || 'Failed to send OTP';
       document.getElementById('wa-phone-error').style.display = 'block';
