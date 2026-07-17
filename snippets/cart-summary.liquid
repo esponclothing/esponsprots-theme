@@ -345,45 +345,14 @@
     const advanceBtn = document.getElementById('checkout-advance');
     if (!advanceBtn) return;
 
-    advanceBtn.addEventListener('click', async function(e) {
+    advanceBtn.addEventListener('click', function(e) {
       e.preventDefault();
       
-      const originalText = advanceBtn.innerHTML;
       advanceBtn.innerHTML = '<span class="button-text">Processing...</span>';
       advanceBtn.disabled = true;
 
-      try {
-        // Fetch current cart data
-        const cartRes = await fetch('/cart.js');
-        const cartData = await cartRes.json();
-
-        // Send to esponsports editor backend
-        const editorApiUrl = 'https://esponsports-editor.vercel.app/api/create-advance-coupon';
-        
-        const response = await fetch(editorApiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-client-store-url': window.location.hostname
-          },
-          body: JSON.stringify(cartData)
-        });
-
-        const data = await response.json();
-        
-        if (data.discount_code) {
-          window.location.href = '/checkout?discount=' + data.discount_code;
-        } else {
-          alert('Failed to generate advance checkout: ' + (data.error || 'Unknown error'));
-          advanceBtn.innerHTML = originalText;
-          advanceBtn.disabled = false;
-        }
-      } catch (err) {
-        console.error(err);
-        alert('An error occurred while creating the advance checkout.');
-        advanceBtn.innerHTML = originalText;
-        advanceBtn.disabled = false;
-      }
+      // Directly redirect to checkout with a permanent 90% coupon (You must create this coupon in Shopify Admin!)
+      window.location.href = '/checkout?discount=ADVANCE10';
     });
   });
 </script>
