@@ -533,7 +533,7 @@
       const customerPhone = '{{ customer.phone | escape }}';
       const customerDefaultAddressPhone = '{{ customer.default_address.phone | escape }}';
       const hasPhone = (customerPhone && customerPhone !== '') || (customerDefaultAddressPhone && customerDefaultAddressPhone !== '');
-      const verifiedGlobalPhone = window.esponsports_customer_phone;
+      const verifiedGlobalPhone = window.esponsports_customer_phone || sessionStorage.getItem('esponsports_verified_phone');
 
       // If they don't have a phone on file and haven't verified one this session
       if (!hasPhone && !verifiedGlobalPhone) {
@@ -545,7 +545,7 @@
         }
       } else {
         const phoneToUse = verifiedGlobalPhone || customerPhone || customerDefaultAddressPhone;
-        const customerIdToUse = window.esponsports_customer_id || '{{ customer.id }}';
+        const customerIdToUse = window.esponsports_customer_id || sessionStorage.getItem('esponsports_verified_id') || '{{ customer.id }}';
 
         if (type === 'advance') {
           window.triggerAdvanceCheckout(buttonElement, phoneToUse, customerIdToUse);

@@ -311,6 +311,10 @@
       
       // Secretly instantiate a checkout to log it as an Abandoned Checkout natively in Shopify if they drop off
       triggerSilentCheckout(checkoutPhone);
+      
+      sessionStorage.setItem('esponsports_verified_phone', checkoutPhone);
+      sessionStorage.setItem('esponsports_verified_id', data.customer_id);
+
       if (waTargetCheckoutType === 'advance') {
         window.triggerAdvanceCheckout(waTargetButton, checkoutPhone, data.customer_id);
       } else {
@@ -331,6 +335,10 @@
     if (overlay && overlay.parentNode !== document.body) {
       document.body.appendChild(overlay);
     }
+    
+    // Clear inputs on load to prevent browser from caching the old OTP if user clicks back from checkout
+    const otpInput = document.getElementById('wa-otp-code');
+    if (otpInput) otpInput.value = '';
   });
 
   function triggerSilentCheckout(phone) {
