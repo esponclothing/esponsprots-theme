@@ -440,7 +440,7 @@
 {% render 'whatsapp-otp-modal' %}
 
 <script>
-  window.triggerAdvanceCheckout = async function(buttonElement) {
+  window.triggerAdvanceCheckout = async function(buttonElement, verifiedPhone, customerId) {
     const advanceBtn = buttonElement || document.getElementById('checkout-advance');
     if (!advanceBtn) return;
     const originalText = advanceBtn.innerHTML;
@@ -459,7 +459,10 @@
       const cartRes = await fetch('/cart.js');
       const cartData = await cartRes.json();
 
-      // Inject phone for the backend payload if newly verified
+      // Inject verified customer details
+      if (verifiedPhone) cartData.customer_phone = verifiedPhone;
+      if (customerId) cartData.customer_id = customerId;
+
       const editorApiUrl = 'https://esponsports-editor.vercel.app/api/create-advance-draft';
       
       const response = await fetch(editorApiUrl, {
@@ -488,9 +491,18 @@
     }
   };
 
-  window.triggerFullCheckout = function(buttonElement) {
+  window.triggerFullCheckout = function(buttonElement, verifiedPhone, customerId) {
     const cartForm = buttonElement ? buttonElement.closest('form') : (document.getElementById('cart-form') || document.querySelector('form[action="/cart"]'));
+    
+    // Construct query parameters for phone pre-fill if verified
+    let queryParams = '';
+    if (verifiedPhone) {
+      queryParams = '?step=contact_information&checkout[shipping_address][phone]=' + encodeURIComponent(verifiedPhone);
+    }
+
     if (cartForm) {
+      if (queryParams) cartForm.action = '/cart' + queryParams;
+      
       // Append hidden checkout input so Shopify routes to checkout, not cart
       const checkoutInput = document.createElement('input');
       checkoutInput.type = 'hidden';
@@ -499,7 +511,7 @@
       cartForm.appendChild(checkoutInput);
       cartForm.submit();
     } else {
-      window.location.href = '/checkout';
+      window.location.href = '/checkout' + queryParams;
     }
   };
 
@@ -512,11 +524,28 @@
       e.preventDefault();
       e.stopPropagation();
       
-      // Bypass WhatsApp auth for now
-      if (type === 'advance') {
-        window.triggerAdvanceCheckout(buttonElement);
+      const customerPhone = '{{ customer.phone | escape }}';
+      const customerDefaultAddressPhone = '{{ customer.default_address.phone | escape }}';
+      const hasPhone = (customerPhone && customerPhone !== '') || (customerDefaultAddressPhone && customerDefaultAddressPhone !== '');
+      const verifiedGlobalPhone = window.esponsports_customer_phone;
+
+      // If they don't have a phone on file and haven't verified one this session
+      if (!hasPhone && !verifiedGlobalPhone) {
+        if (typeof openWaModal === 'function') {
+           openWaModal(type, buttonElement);
+        } else {
+           console.error("WhatsApp Modal snippet missing!");
+           type === 'advance' ? window.triggerAdvanceCheckout(buttonElement) : window.triggerFullCheckout(buttonElement);
+        }
       } else {
-        window.triggerFullCheckout(buttonElement);
+        const phoneToUse = verifiedGlobalPhone || customerPhone || customerDefaultAddressPhone;
+        const customerIdToUse = window.esponsports_customer_id || '{{ customer.id }}';
+
+        if (type === 'advance') {
+          window.triggerAdvanceCheckout(buttonElement, phoneToUse, customerIdToUse);
+        } else {
+          window.triggerFullCheckout(buttonElement, phoneToUse, customerIdToUse);
+        }
       }
     }
 

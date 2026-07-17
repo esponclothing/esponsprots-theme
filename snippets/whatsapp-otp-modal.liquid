@@ -110,11 +110,13 @@
 
 <script>
   let waTargetCheckoutType = null; // 'full' or 'advance'
+  let waTargetButton = null;
   let waSignature = null;
   let waCustomerEmail = '{{ customer.email | escape }}';
 
-  function openWaModal(checkoutType) {
+  function openWaModal(checkoutType, buttonElement) {
     waTargetCheckoutType = checkoutType;
+    waTargetButton = buttonElement;
     document.getElementById('wa-otp-overlay').classList.add('active');
     document.getElementById('wa-step-1').style.display = 'block';
     document.getElementById('wa-step-2').style.display = 'none';
@@ -186,9 +188,9 @@
       // OTP is valid and phone is attached in Shopify!
       closeWaModal();
       if (waTargetCheckoutType === 'advance') {
-        window.triggerAdvanceCheckout(phone);
+        window.triggerAdvanceCheckout(waTargetButton, phone, data.customer_id);
       } else {
-        window.triggerFullCheckout(phone);
+        window.triggerFullCheckout(waTargetButton, phone, data.customer_id);
       }
       
     } catch (err) {
