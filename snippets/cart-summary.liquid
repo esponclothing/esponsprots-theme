@@ -510,6 +510,7 @@
 
     function handleCheckoutClick(e, type, buttonElement) {
       e.preventDefault();
+      e.stopPropagation();
       
       // Bypass WhatsApp auth for now
       if (type === 'advance') {
