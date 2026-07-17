@@ -437,51 +437,111 @@
   {% endunless %}
 </div>
 
+{% render 'whatsapp-otp-modal' %}
+
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  window.triggerAdvanceCheckout = async function(verifiedPhone) {
     const advanceBtn = document.getElementById('checkout-advance');
     if (!advanceBtn) return;
+    const originalText = advanceBtn.innerHTML;
+    advanceBtn.innerHTML = '<span class="button-text">Processing...</span>';
+    advanceBtn.disabled = true;
 
-    advanceBtn.addEventListener('click', async function(e) {
-      e.preventDefault();
+    try {
+      const cartRes = await fetch('/cart.js');
+      const cartData = await cartRes.json();
+
+      // Inject phone for the backend payload if newly verified
+      if (verifiedPhone) {
+        cartData.customer_phone = verifiedPhone;
+        cartData.customer_id = '{{ customer.id }}';
+      }
+
+      const editorApiUrl = 'https://esponsports-editor.vercel.app/api/create-advance-draft';
       
-      const originalText = advanceBtn.innerHTML;
-      advanceBtn.innerHTML = '<span class="button-text">Processing...</span>';
-      advanceBtn.disabled = true;
+      const response = await fetch(editorApiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-client-store-url': window.location.hostname
+        },
+        body: JSON.stringify(cartData)
+      });
 
-      try {
-        // Fetch current cart data
-        const cartRes = await fetch('/cart.js');
-        const cartData = await cartRes.json();
-
-        // Send to esponsports editor backend
-        const editorApiUrl = 'https://esponsports-editor.vercel.app/api/create-advance-draft';
-        
-        const response = await fetch(editorApiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-client-store-url': window.location.hostname
-          },
-          body: JSON.stringify(cartData)
-        });
-
-        const data = await response.json();
-        
-        if (data.invoice_url) {
-          window.location.href = data.invoice_url;
-        } else {
-          alert('Failed to generate advance checkout: ' + (data.error || 'Unknown error'));
-          advanceBtn.innerHTML = originalText;
-          advanceBtn.disabled = false;
-        }
-      } catch (err) {
-        console.error(err);
-        alert('An error occurred while creating the advance checkout.');
+      const data = await response.json();
+      
+      if (data.invoice_url) {
+        window.location.href = data.invoice_url;
+      } else {
+        alert('Failed to generate advance checkout: ' + (data.error || 'Unknown error'));
         advanceBtn.innerHTML = originalText;
         advanceBtn.disabled = false;
       }
-    });
+    } catch (err) {
+      console.error(err);
+      alert('An error occurred while creating the advance checkout.');
+      advanceBtn.innerHTML = originalText;
+      advanceBtn.disabled = false;
+    }
+  };
+
+  window.triggerFullCheckout = function(verifiedPhone) {
+    // If they just verified, the phone is already permanently attached to their 
+    // Shopify profile by our backend. Submitting the cart naturally will now pull it!
+    const cartForm = document.getElementById('cart-form') || document.querySelector('form[action="/cart"]');
+    if (cartForm) {
+      cartForm.submit();
+    } else {
+      window.location.href = '/checkout';
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const advanceBtn = document.getElementById('checkout-advance');
+    const fullBtn = document.getElementById('checkout');
+
+    const isCustomerLoggedIn = {% if customer %}true{% else %}false{% endif %};
+    const customerPhone = '{{ customer.phone | escape }}';
+    const customerDefaultAddressPhone = '{{ customer.default_address.phone | escape }}';
+
+    // Sometimes phone is only stored in default address
+    const hasPhone = (customerPhone && customerPhone !== '') || (customerDefaultAddressPhone && customerDefaultAddressPhone !== '');
+
+    function handleCheckoutClick(e, type) {
+      e.preventDefault();
+      
+      if (!isCustomerLoggedIn) {
+        // Redirect to native login page, then back to cart
+        window.location.href = '/account/login?checkout_url=/cart';
+        return;
+      }
+
+      if (!hasPhone) {
+        // Trigger WhatsApp OTP Modal!
+        if (typeof openWaModal === 'function') {
+           openWaModal(type);
+        } else {
+           console.error("WhatsApp Modal snippet missing!");
+           // Fallback to normal checkout if modal fails to load
+           type === 'advance' ? window.triggerAdvanceCheckout() : window.triggerFullCheckout();
+        }
+      } else {
+        // Already verified and has phone!
+        if (type === 'advance') {
+          window.triggerAdvanceCheckout();
+        } else {
+          window.triggerFullCheckout();
+        }
+      }
+    }
+
+    if (advanceBtn) {
+      advanceBtn.addEventListener('click', function(e) { handleCheckoutClick(e, 'advance'); });
+    }
+    
+    if (fullBtn) {
+      fullBtn.addEventListener('click', function(e) { handleCheckoutClick(e, 'full'); });
+    }
   });
 </script>
 
