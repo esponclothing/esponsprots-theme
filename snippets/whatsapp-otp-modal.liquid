@@ -120,10 +120,12 @@
     document.getElementById('wa-otp-overlay').classList.add('active');
     document.getElementById('wa-step-1').style.display = 'block';
     document.getElementById('wa-step-2').style.display = 'none';
+    document.body.style.overflow = 'hidden';
   }
 
   function closeWaModal() {
     document.getElementById('wa-otp-overlay').classList.remove('active');
+    document.body.style.overflow = '';
   }
 
   async function sendWaOtp() {
