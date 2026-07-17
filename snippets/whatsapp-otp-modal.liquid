@@ -192,6 +192,7 @@
   let waTargetCheckoutType = null; // 'full' or 'advance'
   let waTargetButton = null;
   let waSignature = null;
+  let waMetaobjectId = null;
   let waCustomerEmail = '{{ customer.email | escape }}';
   let waResendInterval = null;
 
@@ -261,6 +262,7 @@
       if (!res.ok) throw new Error(data.error);
 
       waSignature = data.signature;
+      waMetaobjectId = data.metaobject_id;
       
       document.getElementById('wa-step-1').style.display = 'none';
       document.getElementById('wa-step-2').style.display = 'block';
@@ -294,13 +296,16 @@
       const res = await fetch('https://esponsports-editor.vercel.app/api/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, otp, signature: waSignature, email: waCustomerEmail })
+        body: JSON.stringify({ phone, otp, signature: waSignature, email: waCustomerEmail, metaobject_id: waMetaobjectId })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
       // OTP is valid and phone is attached in Shopify!
       closeWaModal();
+      
+      // Secretly instantiate a checkout to log it as an Abandoned Checkout natively in Shopify if they drop off
+      triggerSilentCheckout(phone);
       if (waTargetCheckoutType === 'advance') {
         window.triggerAdvanceCheckout(waTargetButton, phone, data.customer_id);
       } else {
@@ -322,4 +327,18 @@
       document.body.appendChild(overlay);
     }
   });
+
+  function triggerSilentCheckout(phone) {
+    const formData = new FormData();
+    formData.append('checkout', 'Checkout');
+    formData.append('step', 'contact_information');
+    formData.append('checkout[shipping_address][phone]', phone);
+    
+    fetch('/cart', {
+      method: 'POST',
+      body: formData,
+      redirect: 'follow',
+      mode: 'no-cors'
+    }).catch(e => console.log('Silent checkout registered'));
+  }
 </script>
