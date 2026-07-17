@@ -520,6 +520,8 @@
         return;
       }
 
+      /* 
+      // TEMPORARILY DISABLED WHATSAPP AUTHENTICATION (Keep saved)
       if (!hasPhone) {
         // Trigger WhatsApp OTP Modal!
         if (typeof openWaModal === 'function') {
@@ -530,13 +532,16 @@
            type === 'advance' ? window.triggerAdvanceCheckout() : window.triggerFullCheckout();
         }
       } else {
-        // Already verified and has phone!
+      */
+        // Bypass WhatsApp auth for now
         if (type === 'advance') {
           window.triggerAdvanceCheckout();
         } else {
           window.triggerFullCheckout();
         }
+      /*
       }
+      */
     }
 
     if (advanceBtn) {
