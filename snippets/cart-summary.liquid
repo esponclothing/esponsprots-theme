@@ -440,8 +440,8 @@
 {% render 'whatsapp-otp-modal' %}
 
 <script>
-  window.triggerAdvanceCheckout = async function(verifiedPhone) {
-    const advanceBtn = document.getElementById('checkout-advance');
+  window.triggerAdvanceCheckout = async function(buttonElement) {
+    const advanceBtn = buttonElement || document.getElementById('checkout-advance');
     if (!advanceBtn) return;
     const originalText = advanceBtn.innerHTML;
     advanceBtn.innerHTML = '<span class="button-text" style="display: flex; align-items: center; justify-content: center; gap: 8px;"><svg class="spinner" viewBox="0 0 50 50" style="width: 20px; height: 20px; animation: rotate 2s linear infinite;"><circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="4" style="stroke-dasharray: 1, 200; stroke-dashoffset: 0; animation: dash 1.5s ease-in-out infinite; stroke-linecap: round;"></circle></svg> Processing...</span>';
@@ -460,11 +460,6 @@
       const cartData = await cartRes.json();
 
       // Inject phone for the backend payload if newly verified
-      if (verifiedPhone) {
-        cartData.customer_phone = verifiedPhone;
-        cartData.customer_id = '{{ customer.id }}';
-      }
-
       const editorApiUrl = 'https://esponsports-editor.vercel.app/api/create-advance-draft';
       
       const response = await fetch(editorApiUrl, {
@@ -493,10 +488,8 @@
     }
   };
 
-  window.triggerFullCheckout = function(verifiedPhone) {
-    // If they just verified, the phone is already permanently attached to their 
-    // Shopify profile by our backend. Submitting the cart naturally will now pull it!
-    const cartForm = document.getElementById('cart-form') || document.querySelector('form[action="/cart"]');
+  window.triggerFullCheckout = function(buttonElement) {
+    const cartForm = buttonElement ? buttonElement.closest('form') : (document.getElementById('cart-form') || document.querySelector('form[action="/cart"]'));
     if (cartForm) {
       // Append hidden checkout input so Shopify routes to checkout, not cart
       const checkoutInput = document.createElement('input');
@@ -511,50 +504,28 @@
   };
 
   document.addEventListener('DOMContentLoaded', function() {
-    const advanceBtn = document.getElementById('checkout-advance');
-    const fullBtn = document.getElementById('checkout');
+    // Select ALL buttons (both Drawer and Page)
+    const advanceBtns = document.querySelectorAll('#checkout-advance');
+    const fullBtns = document.querySelectorAll('#checkout');
 
-    const isCustomerLoggedIn = {% if customer %}true{% else %}false{% endif %};
-    const customerPhone = '{{ customer.phone | escape }}';
-    const customerDefaultAddressPhone = '{{ customer.default_address.phone | escape }}';
-
-    // Sometimes phone is only stored in default address
-    const hasPhone = (customerPhone && customerPhone !== '') || (customerDefaultAddressPhone && customerDefaultAddressPhone !== '');
-
-    function handleCheckoutClick(e, type) {
+    function handleCheckoutClick(e, type, buttonElement) {
       e.preventDefault();
       
-      /* 
-      // TEMPORARILY DISABLED WHATSAPP AUTHENTICATION (Keep saved)
-      if (!hasPhone) {
-        // Trigger WhatsApp OTP Modal!
-        if (typeof openWaModal === 'function') {
-           openWaModal(type);
-        } else {
-           console.error("WhatsApp Modal snippet missing!");
-           // Fallback to normal checkout if modal fails to load
-           type === 'advance' ? window.triggerAdvanceCheckout() : window.triggerFullCheckout();
-        }
+      // Bypass WhatsApp auth for now
+      if (type === 'advance') {
+        window.triggerAdvanceCheckout(buttonElement);
       } else {
-      */
-        // Bypass WhatsApp auth for now
-        if (type === 'advance') {
-          window.triggerAdvanceCheckout();
-        } else {
-          window.triggerFullCheckout();
-        }
-      /*
+        window.triggerFullCheckout(buttonElement);
       }
-      */
     }
 
-    if (advanceBtn) {
-      advanceBtn.addEventListener('click', function(e) { handleCheckoutClick(e, 'advance'); });
-    }
+    advanceBtns.forEach(btn => {
+      btn.addEventListener('click', function(e) { handleCheckoutClick(e, 'advance', btn); });
+    });
     
-    if (fullBtn) {
-      fullBtn.addEventListener('click', function(e) { handleCheckoutClick(e, 'full'); });
-    }
+    fullBtns.forEach(btn => {
+      btn.addEventListener('click', function(e) { handleCheckoutClick(e, 'full', btn); });
+    });
 
     // Check if we just returned from a login redirect
     const urlParams = new URLSearchParams(window.location.search);
@@ -565,10 +536,10 @@
       
       // Auto-trigger the button they clicked before logging in
       setTimeout(() => {
-        if (triggerCheckout === 'advance' && advanceBtn) {
-          handleCheckoutClick({ preventDefault: () => {} }, 'advance');
-        } else if (triggerCheckout === 'full' && fullBtn) {
-          handleCheckoutClick({ preventDefault: () => {} }, 'full');
+        if (triggerCheckout === 'advance' && advanceBtns.length > 0) {
+          handleCheckoutClick({ preventDefault: () => {} }, 'advance', advanceBtns[0]);
+        } else if (triggerCheckout === 'full' && fullBtns.length > 0) {
+          handleCheckoutClick({ preventDefault: () => {} }, 'full', fullBtns[0]);
         }
       }, 500); // Small delay to ensure modal and everything is ready
     }
