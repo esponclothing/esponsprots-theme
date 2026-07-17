@@ -311,19 +311,30 @@
   {% unless lock_checkout %}
     {% assign advance_amount = true_total | times: 10 | divided_by: 100 %}
     {% assign cod_amount = true_total | minus: advance_amount %}
-    <button
-      type="button"
-      id="checkout-advance"
-      class="cart__checkout-button button button--secondary"
-      {% if cart == empty %}disabled{% endif %}
-    >
-      <span class="button-text" style="display:inline-flex; align-items:center; gap:8px;">
-        Pay 10% Advance (Rest COD)
-        <span class="info-icon" style="font-size: 14px; font-weight: bold; font-family: monospace; background: var(--color-foreground, #000); color: var(--color-background, #fff); border-radius: 50%; width: 20px; height: 20px; display: inline-flex; justify-content: center; align-items: center; cursor: help;" title="Pay Now: {{ advance_amount | money }} | Pending (COD): {{ cod_amount | money }}">
-          i
+    <div class="advance-checkout-wrapper" style="width: 100%; display: flex; flex-direction: column; gap: 8px;">
+      <button
+        type="button"
+        id="checkout-advance"
+        class="cart__checkout-button button button--secondary"
+        {% if cart == empty %}disabled{% endif %}
+        style="border: 2px solid #3b82f6; color: #3b82f6; font-weight: bold;"
+      >
+        <span class="button-text">
+          Pay 10% Advance (Rest COD)
         </span>
-      </span>
-    </button>
+      </button>
+      
+      <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px; font-size: 13px; color: #1e3a8a; line-height: 1.5; text-align: left;">
+         <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+           <span>Pay Now (10%):</span>
+           <span style="font-weight: 700; font-size: 14px;">{{ advance_amount | money }}</span>
+         </div>
+         <div style="display: flex; justify-content: space-between; padding-top: 6px; border-top: 1px dashed #93c5fd;">
+           <span>Pay on Delivery (90%):</span>
+           <span style="font-weight: 700; font-size: 14px;">{{ cod_amount | money }}</span>
+         </div>
+      </div>
+    </div>
   {% endunless %}
 
   {% unless lock_checkout %}
