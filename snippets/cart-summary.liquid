@@ -518,16 +518,6 @@
     function handleCheckoutClick(e, type) {
       e.preventDefault();
       
-      if (!isCustomerLoggedIn) {
-        // Set a local storage flag to force redirect back to cart after social login (survives popups)
-        localStorage.setItem('esponsports_redirect_after_login', '/cart?trigger_checkout=' + type);
-        
-        // Redirect to native login page with ABSOLUTE URL so New Customer Accounts respects it
-        const absoluteCartUrl = encodeURIComponent('https://' + window.location.hostname + '/cart?trigger_checkout=' + type);
-        window.location.href = '/account/login?checkout_url=' + absoluteCartUrl;
-        return;
-      }
-
       /* 
       // TEMPORARILY DISABLED WHATSAPP AUTHENTICATION (Keep saved)
       if (!hasPhone) {

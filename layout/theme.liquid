@@ -148,15 +148,5 @@
       {% render 'quick-add-modal' %}
     {% endif %}
     {% render 'espon-reward-timer' %}
-
-    <script>
-      (function() {
-        var redirectUrl = localStorage.getItem('esponsports_redirect_after_login');
-        if (redirectUrl && window.location.pathname.includes('/account')) {
-          localStorage.removeItem('esponsports_redirect_after_login');
-          window.location.href = redirectUrl;
-        }
-      })();
-    </script>
   </body>
 </html>
