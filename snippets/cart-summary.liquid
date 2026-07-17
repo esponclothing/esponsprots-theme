@@ -315,12 +315,13 @@
       type="button"
       id="checkout-advance"
       class="cart__checkout-button button button--secondary"
-      style="display:flex; justify-content:center; align-items:center; gap:8px;"
       {% if cart == empty %}disabled{% endif %}
     >
-      <span class="button-text">Pay 10% Advance (Rest COD)</span>
-      <span class="info-icon" style="font-size: 14px; background: rgba(0,0,0,0.1); border-radius: 50%; width: 20px; height: 20px; display: inline-flex; justify-content: center; align-items: center; cursor: help;" title="Pay Now: {{ advance_amount | money }} | Pending (COD): {{ cod_amount | money }}">
-        i
+      <span class="button-text" style="display:inline-flex; align-items:center; gap:8px;">
+        Pay 10% Advance (Rest COD)
+        <span class="info-icon" style="font-size: 14px; font-weight: bold; font-family: monospace; background: var(--color-foreground, #000); color: var(--color-background, #fff); border-radius: 50%; width: 20px; height: 20px; display: inline-flex; justify-content: center; align-items: center; cursor: help;" title="Pay Now: {{ advance_amount | money }} | Pending (COD): {{ cod_amount | money }}">
+          i
+        </span>
       </span>
     </button>
   {% endunless %}
