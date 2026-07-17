@@ -304,12 +304,17 @@
       // OTP is valid and phone is attached in Shopify!
       closeWaModal();
       
+      let checkoutPhone = phone;
+      if (!checkoutPhone.startsWith('+')) {
+        checkoutPhone = '+91' + checkoutPhone;
+      }
+      
       // Secretly instantiate a checkout to log it as an Abandoned Checkout natively in Shopify if they drop off
-      triggerSilentCheckout(phone);
+      triggerSilentCheckout(checkoutPhone);
       if (waTargetCheckoutType === 'advance') {
-        window.triggerAdvanceCheckout(waTargetButton, phone, data.customer_id);
+        window.triggerAdvanceCheckout(waTargetButton, checkoutPhone, data.customer_id);
       } else {
-        window.triggerFullCheckout(waTargetButton, phone, data.customer_id);
+        window.triggerFullCheckout(waTargetButton, checkoutPhone, data.customer_id);
       }
       
     } catch (err) {

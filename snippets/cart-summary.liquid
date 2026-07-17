@@ -460,7 +460,11 @@
       const cartData = await cartRes.json();
 
       // Inject verified customer details
-      if (verifiedPhone) cartData.customer_phone = verifiedPhone;
+      if (verifiedPhone) {
+        let formattedPhone = verifiedPhone;
+        if (!formattedPhone.startsWith('+')) formattedPhone = '+91' + formattedPhone;
+        cartData.customer_phone = formattedPhone;
+      }
       if (customerId) cartData.customer_id = customerId;
 
       const editorApiUrl = 'https://esponsports-editor.vercel.app/api/create-advance-draft';
@@ -497,7 +501,9 @@
     // Construct query parameters for phone pre-fill if verified
     let queryParams = '';
     if (verifiedPhone) {
-      queryParams = '?step=contact_information&checkout[shipping_address][phone]=' + encodeURIComponent(verifiedPhone);
+      let formattedPhone = verifiedPhone;
+      if (!formattedPhone.startsWith('+')) formattedPhone = '+91' + formattedPhone;
+      queryParams = '?step=contact_information&checkout[shipping_address][phone]=' + encodeURIComponent(formattedPhone);
     }
 
     if (cartForm) {
