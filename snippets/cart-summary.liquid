@@ -513,8 +513,10 @@
       if (!isCustomerLoggedIn) {
         // Set a session storage flag to force redirect back to cart after social login
         sessionStorage.setItem('esponsports_redirect_after_login', '/cart');
-        // Redirect to native login page
-        window.location.href = '/account/login?checkout_url=/cart';
+        
+        // Redirect to native login page with ABSOLUTE URL so New Customer Accounts respects it
+        const absoluteCartUrl = encodeURIComponent('https://' + window.location.hostname + '/cart?trigger_checkout=' + type);
+        window.location.href = '/account/login?checkout_url=' + absoluteCartUrl;
         return;
       }
 
@@ -543,6 +545,23 @@
     
     if (fullBtn) {
       fullBtn.addEventListener('click', function(e) { handleCheckoutClick(e, 'full'); });
+    }
+
+    // Check if we just returned from a login redirect
+    const urlParams = new URLSearchParams(window.location.search);
+    const triggerCheckout = urlParams.get('trigger_checkout');
+    if (triggerCheckout) {
+      // Clean up the URL so it doesn't trigger again on refresh
+      window.history.replaceState({}, document.title, window.location.pathname);
+      
+      // Auto-trigger the button they clicked before logging in
+      setTimeout(() => {
+        if (triggerCheckout === 'advance' && advanceBtn) {
+          handleCheckoutClick({ preventDefault: () => {} }, 'advance');
+        } else if (triggerCheckout === 'full' && fullBtn) {
+          handleCheckoutClick({ preventDefault: () => {} }, 'full');
+        }
+      }, 500); // Small delay to ensure modal and everything is ready
     }
   });
 </script>
