@@ -2,9 +2,9 @@
   .wa-otp-overlay {
     position: fixed;
     top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(5px);
-    z-index: 999999;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 2147483647; /* Highest possible z-index to stay above cart drawer */
     display: none;
     justify-content: center;
     align-items: center;
@@ -13,100 +13,175 @@
     display: flex;
   }
   .wa-otp-modal {
-    background: #fff;
-    width: 90%;
+    background: #ffffff;
+    width: 92%;
     max-width: 400px;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-    font-family: var(--font-body-family, sans-serif);
+    border-radius: 20px;
+    padding: 35px 25px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+    font-family: var(--font-body-family, 'Inter', sans-serif);
     text-align: center;
     position: relative;
+    border: 1px solid #e2e8f0;
+    box-sizing: border-box;
+  }
+  .wa-otp-logo {
+    height: 45px;
+    width: auto;
+    margin: 0 auto 20px auto;
+    display: block;
+    object-fit: contain;
   }
   .wa-otp-close {
     position: absolute;
-    top: 15px; right: 15px;
+    top: 15px; right: 18px;
     cursor: pointer;
-    font-size: 20px;
-    color: #64748b;
+    font-size: 24px;
+    color: #94a3b8;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .wa-otp-close:hover {
+    color: #0f172a;
   }
   .wa-otp-title {
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 800;
     margin-bottom: 8px;
     color: #0f172a;
+    letter-spacing: -0.5px;
   }
   .wa-otp-desc {
     font-size: 14px;
     color: #64748b;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    line-height: 1.5;
+  }
+  .wa-otp-input-group {
+    position: relative;
+    margin-bottom: 16px;
+    text-align: left;
+  }
+  .wa-otp-input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
   }
   .wa-otp-input {
     width: 100%;
-    padding: 12px 16px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
+    padding: 14px 16px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
     font-size: 16px;
-    margin-bottom: 16px;
     box-sizing: border-box;
     color: #0f172a;
+    transition: all 0.2s;
+    background: #f8fafc;
   }
+  .wa-otp-input:focus {
+    outline: none;
+    border-color: #000;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+  }
+  
+  /* Remove number arrows/spinners */
+  .wa-otp-input[type="number"]::-webkit-inner-spin-button, 
+  .wa-otp-input[type="number"]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+  }
+  .wa-otp-input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
   .wa-otp-btn {
     width: 100%;
-    padding: 12px;
-    background: #25D366;
+    padding: 14px;
+    background: #000;
     color: #fff;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 700;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
-    transition: background 0.2s;
+    transition: all 0.2s;
+    margin-top: 10px;
   }
-  .wa-otp-btn:hover { background: #128C7E; }
-  .wa-otp-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+  .wa-otp-btn:hover { 
+    background: #1e293b; 
+    transform: translateY(-1px);
+  }
+  .wa-otp-btn:active {
+    transform: translateY(1px);
+  }
+  .wa-otp-btn:disabled { 
+    background: #cbd5e1; 
+    color: #64748b;
+    cursor: not-allowed; 
+    transform: none;
+  }
   
   #wa-step-2 { display: none; }
-  .wa-error { color: #ef4444; font-size: 13px; margin-top: -8px; margin-bottom: 12px; display: none; text-align: left; }
+  .wa-error { 
+    color: #ef4444; 
+    font-size: 13px; 
+    margin-top: 6px; 
+    margin-bottom: 12px; 
+    display: none; 
+    text-align: left;
+    font-weight: 500;
+  }
 </style>
 
 <div class="wa-otp-overlay" id="wa-otp-overlay">
   <div class="wa-otp-modal">
     <div class="wa-otp-close" onclick="closeWaModal()">&times;</div>
     
+    {% if settings.logo != blank %}
+      <img src="{{ settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" class="wa-otp-logo">
+    {% else %}
+      <h2 style="margin:0 0 20px 0; font-weight:900;">{{ shop.name }}</h2>
+    {% endif %}
+    
     <!-- STEP 1: PHONE -->
     <div id="wa-step-1">
-      <div class="wa-otp-title">Verify WhatsApp Number</div>
-      <div class="wa-otp-desc">To secure your order, please verify your WhatsApp number.</div>
+      <div class="wa-otp-title">Sign In</div>
+      <div class="wa-otp-desc">Enter your WhatsApp number to seamlessly create or access your account.</div>
       
-      <input type="tel" id="wa-phone" class="wa-otp-input" placeholder="WhatsApp No. (e.g. 9876543210)">
-      <div class="wa-error" id="wa-phone-error">Please enter a valid number.</div>
+      <div class="wa-otp-input-group">
+        <label>WhatsApp Number</label>
+        <input type="tel" id="wa-phone" class="wa-otp-input" placeholder="e.g. 9876543210">
+        <div class="wa-error" id="wa-phone-error">Please enter a valid number.</div>
+      </div>
       
       <button class="wa-otp-btn" id="wa-send-btn" onclick="sendWaOtp()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.489-1.761-1.663-2.06-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        Send OTP to WhatsApp
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color:#25D366;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.489-1.761-1.663-2.06-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Send Login Code
       </button>
     </div>
     
     <!-- STEP 2: OTP -->
     <div id="wa-step-2">
-      <div class="wa-otp-title">Enter OTP</div>
-      <div class="wa-otp-desc">We sent a 4-digit code to your WhatsApp.</div>
+      <div class="wa-otp-title">Enter Code</div>
+      <div class="wa-otp-desc">We sent a secure 6-digit code to your WhatsApp.</div>
       
-      <input type="number" id="wa-otp-code" class="wa-otp-input" placeholder="XXXX" maxlength="4" style="text-align:center; font-size: 24px; letter-spacing: 8px;">
+      <input type="number" id="wa-otp-code" class="wa-otp-input" placeholder="XXXXXX" maxlength="6" style="text-align:center; font-size: 28px; letter-spacing: 12px; font-weight: 700;">
       <div class="wa-error" id="wa-otp-error">Invalid OTP.</div>
       
       <button class="wa-otp-btn" id="wa-verify-btn" onclick="verifyWaOtp()">
-        Verify & Proceed
+        Verify & Sign In
       </button>
 
-      <div id="wa-resend-container" style="margin-top: 15px; font-size: 14px; color: #64748b;">
-        <span id="wa-resend-text">Resend OTP in <span id="wa-resend-timer">60</span>s</span>
-        <a id="wa-resend-link" href="#" onclick="resendWaOtp(event)" style="display:none; color: #25D366; font-weight: bold; text-decoration: none;">Resend OTP</a>
+      <div id="wa-resend-container" style="margin-top: 18px; font-size: 14px; color: #64748b; font-weight: 500;">
+        <span id="wa-resend-text">Resend code in <span id="wa-resend-timer" style="color:#0f172a; font-weight:700;">60</span>s</span>
+        <a id="wa-resend-link" href="#" onclick="resendWaOtp(event)" style="display:none; color: #000; font-weight: 700; text-decoration: underline;">Resend Code</a>
       </div>
     </div>
 
