@@ -56,6 +56,18 @@
       {% sections 'header-group' %}
     </div>
 
+    {% if customer %}
+      <script>
+        if (sessionStorage.getItem('esponsports_redirect_after_login')) {
+          const redirectUrl = sessionStorage.getItem('esponsports_redirect_after_login');
+          sessionStorage.removeItem('esponsports_redirect_after_login');
+          if (window.location.pathname !== redirectUrl) {
+            window.location.href = redirectUrl;
+          }
+        }
+      </script>
+    {% endif %}
+
     <script>
       // Inline header height and menu style calculations to prevent layout shift
       // Note: Updates in calculateHeaderGroupHeight(), updateTransparentHeaderOffset() and setHeaderMenuStyle() utilities.js should be kept in sync with this function

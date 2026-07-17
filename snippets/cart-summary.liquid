@@ -511,7 +511,9 @@
       e.preventDefault();
       
       if (!isCustomerLoggedIn) {
-        // Redirect to native login page, then back to cart
+        // Set a session storage flag to force redirect back to cart after social login
+        sessionStorage.setItem('esponsports_redirect_after_login', '/cart');
+        // Redirect to native login page
         window.location.href = '/account/login?checkout_url=/cart';
         return;
       }
