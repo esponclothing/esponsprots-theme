@@ -304,18 +304,24 @@
     form="cart-form"
   >
     <span class="button-text">
-      {% if lock_checkout %}LOCKED{% else %}{{ 'content.checkout' | t }}{% endif %}
+      {% if lock_checkout %}LOCKED{% else %}Pay Full (Prepaid){% endif %}
     </span>
   </button>
 
   {% unless lock_checkout %}
+    {% assign advance_amount = true_total | times: 10 | divided_by: 100 %}
+    {% assign cod_amount = true_total | minus: advance_amount %}
     <button
       type="button"
       id="checkout-advance"
       class="cart__checkout-button button button--secondary"
+      style="display:flex; justify-content:center; align-items:center; gap:8px;"
       {% if cart == empty %}disabled{% endif %}
     >
       <span class="button-text">Pay 10% Advance (Rest COD)</span>
+      <span class="info-icon" style="font-size: 14px; background: rgba(0,0,0,0.1); border-radius: 50%; width: 20px; height: 20px; display: inline-flex; justify-content: center; align-items: center; cursor: help;" title="Pay Now: {{ advance_amount | money }} | Pending (COD): {{ cod_amount | money }}">
+        i
+      </span>
     </button>
   {% endunless %}
 
@@ -351,14 +357,12 @@
         const cartData = await cartRes.json();
 
         // Send to esponsports editor backend
-        // Note: Replace with the actual deployed URL of esponsports editor if this is hardcoded
-        const editorApiUrl = 'https://esponsports-editor.vercel.app/api/create-advance-order';
+        const editorApiUrl = 'https://esponsports-editor.vercel.app/api/create-advance-coupon';
         
         const response = await fetch(editorApiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            // Need these headers as expected by the new endpoint proxy logic if used
             'x-client-store-url': window.location.hostname
           },
           body: JSON.stringify(cartData)
@@ -366,8 +370,8 @@
 
         const data = await response.json();
         
-        if (data.invoice_url) {
-          window.location.href = data.invoice_url;
+        if (data.discount_code) {
+          window.location.href = '/checkout?discount=' + data.discount_code;
         } else {
           alert('Failed to generate advance checkout: ' + (data.error || 'Unknown error'));
           advanceBtn.innerHTML = originalText;
