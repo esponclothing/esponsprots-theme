@@ -253,10 +253,10 @@
     btn.innerHTML = 'Sending...';
 
     try {
-      const res = await fetch('https://esponsports-editor.vercel.app/api/send-otp', {
+      const res = await fetch('https://checkout-app-one-lilac.vercel.app/api/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone })
+        body: JSON.stringify({ phone, merchant_key: 'sk_live_esponsports_h47rwi3ny0j' })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -293,10 +293,10 @@
     btn.innerHTML = 'Verifying...';
 
     try {
-      const res = await fetch('https://esponsports-editor.vercel.app/api/verify-otp', {
+      const res = await fetch('https://checkout-app-one-lilac.vercel.app/api/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, otp, signature: waSignature, email: waCustomerEmail, metaobject_id: waMetaobjectId })
+        body: JSON.stringify({ phone, otp, signature: waSignature, email: waCustomerEmail, metaobject_id: waMetaobjectId, merchant_key: 'sk_live_esponsports_h47rwi3ny0j' })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
