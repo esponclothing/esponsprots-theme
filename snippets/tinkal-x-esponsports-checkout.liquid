@@ -2392,6 +2392,7 @@ window._shopifyCustomer = {
     // Re-compute display total (respecting payment method fee/discount too)
     updateTotalDisplay();
     waRenderWalletSection();
+    renderPaymentMethods();
   }
 
 function renderPaymentMethods() {
@@ -2626,7 +2627,7 @@ function renderPaymentMethods() {
       // Attempt to load Cashfree if needed
       if ((waSelectedPayment === 'prepaid' || waSelectedPayment === 'partial_cod') && typeof Cashfree !== 'undefined') {
         try {
-          waCashfree = Cashfree({ mode: waPaymentSettings.cashfree_env || 'sandbox' });
+          cashfreeObj = Cashfree({ mode: waPaymentSettings.cashfree_env || 'sandbox' });
         } catch(e) { console.error('Cashfree init error', e); }
       }
 
