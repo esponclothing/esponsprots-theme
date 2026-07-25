@@ -1183,7 +1183,7 @@ window._shopifyCustomer = {
     // Check identity via device (for "Welcome Back" flow if no session cache)
     try {
       const device_id = localStorage.getItem('fit11_device_id');
-      const res = await fetch(`${WA_API_BASE}/identify`, {
+      const res = await fetch(`${WA_API_BASE}/wallet-balance`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ device_id, merchant_key: MERCHANT_KEY })
