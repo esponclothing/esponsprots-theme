@@ -1261,6 +1261,9 @@ window._shopifyCustomer = {
         const greenBox = document.getElementById('wa-green-otp-box'); if(greenBox) greenBox.style.display = 'none';
         document.getElementById('wa-switch-account').style.display = 'block';
         waPhone = 'MASKED';
+        if (data.storeCreditBalance) {
+          waWalletBalance = parseFloat(data.storeCreditBalance || 0);
+        }
         if (data.email) {
           document.getElementById('wa-email').value = data.email;
         }
@@ -2315,12 +2318,17 @@ window._shopifyCustomer = {
   let waWalletAppliedAmt = 0;      // amount currently deducted from total
 
   async function fetchWalletBalance() {
-    if (!waPhone) return;
+    const devId = localStorage.getItem('fit11_device_id') || localStorage.getItem('wa_device_id');
+    if (!waPhone && !devId) return;
     try {
       const res = await fetch(`${WA_API_BASE}/wallet-balance`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ merchant_key: MERCHANT_KEY, phone: waPhone })
+        body: JSON.stringify({ 
+          merchant_key: MERCHANT_KEY, 
+          phone: waPhone,
+          device_id: devId
+        })
       });
       const data = await res.json();
       waWalletBalance = parseFloat(data?.customer?.storeCreditBalance || data?.storeCreditBalance || 0);
