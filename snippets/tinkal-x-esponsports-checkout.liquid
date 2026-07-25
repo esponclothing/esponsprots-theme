@@ -2460,7 +2460,7 @@ function renderPaymentMethods() {
               disc = waPaymentSettings.prepaid_offer_type === 'percent' ? (baseTotal * waPaymentSettings.prepaid_offer_value) / 100 : waPaymentSettings.prepaid_offer_value;
               disc = Math.min(disc, baseTotal);
           }
-          let payAmt = baseTotal - disc;
+          let payAmt = Math.max(0, (baseTotal - disc) - (waWalletApplied ? waWalletAppliedAmt : 0));
           
           opt.className = `wa-pay-opt recommended ${isSelected ? 'selected' : ''}`;
           html = `
@@ -2521,7 +2521,7 @@ function renderPaymentMethods() {
           } else {
             advanceAmt = waPaymentSettings.partial_cod_value;
           }
-          let payAmt = advanceAmt;
+          let payAmt = Math.max(0, advanceAmt - (waWalletApplied ? waWalletAppliedAmt : 0));
           let remainingAmt = baseTotal - payAmt;
           
           opt.className = `wa-pay-opt ${isSelected ? 'selected' : ''}`;
@@ -2584,7 +2584,7 @@ function renderPaymentMethods() {
           `;
         } else if (m.type === 'cod') {
           let fee = waPaymentSettings.cod_fee || 0;
-          let payAmt = baseTotal + fee;
+          let payAmt = Math.max(0, (baseTotal + fee) - (waWalletApplied ? waWalletAppliedAmt : 0));
           
           opt.className = `wa-pay-opt ${isSelected ? 'selected' : ''}`;
           
