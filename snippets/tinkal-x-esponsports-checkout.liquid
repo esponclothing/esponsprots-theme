@@ -2315,7 +2315,7 @@ window._shopifyCustomer = {
   async function fetchWalletBalance() {
     if (!waPhone) return;
     try {
-      const res = await fetch(`${WA_API_BASE}/identify`, {
+      const res = await fetch(`${WA_API_BASE}/wallet-balance`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ merchant_key: MERCHANT_KEY, phone: waPhone })
