@@ -2754,6 +2754,33 @@ function renderPaymentMethods() {
         }
       } else {
         // Cashfree flow (Partial COD or standard Prepaid)
+        const walletDeduction = (waWalletApplied && waWalletAppliedAmt > 0) ? waWalletAppliedAmt : 0;
+        let targetPay = parseFloat(document.getElementById('wa-total')?.getAttribute('data-base-total') || '0');
+        if (waSelectedPayment === 'partial_cod') {
+          targetPay = waPaymentSettings.partial_cod_type === 'percent' 
+            ? (targetPay * waPaymentSettings.partial_cod_value) / 100 
+            : waPaymentSettings.partial_cod_value;
+        } else if (waSelectedPayment === 'prepaid' && waPaymentSettings.prepaid_offer_enabled) {
+          const disc = waPaymentSettings.prepaid_offer_type === 'percent'
+            ? (targetPay * waPaymentSettings.prepaid_offer_value) / 100
+            : waPaymentSettings.prepaid_offer_value;
+          targetPay = Math.max(0, targetPay - disc);
+        }
+        const netPayable = Math.max(0, targetPay - walletDeduction);
+
+        if (netPayable <= 0) {
+          // Wallet covers 100% of payable amount! Directly complete order!
+          try {
+            await finishOrderBackend({ payment_method: waSelectedPayment, shipping_address: addr });
+          } catch (e) {
+            errEl.innerText = 'Error: ' + e.message;
+            errEl.style.display = 'block';
+            btn.disabled = false;
+            btn.innerHTML = '<span id="wa-pay-btn-text">Pay Now</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+          }
+          return;
+        }
+
         try {
           const res = await fetch(`${WA_API_BASE}/checkout/create-payment`, {
             method: 'POST',
@@ -2765,7 +2792,8 @@ function renderPaymentMethods() {
               customer_phone: waPhone,
               device_id: localStorage.getItem('fit11_device_id') || localStorage.getItem('wa_device_id'),
               customer_email: waEmail,
-              customer_name: (addr?.first_name || '') + ' ' + (addr?.last_name || '')
+              customer_name: (addr?.first_name || '') + ' ' + (addr?.last_name || ''),
+              wallet_credit_amount: walletDeduction
             })
           });
           const data = await res.json();
