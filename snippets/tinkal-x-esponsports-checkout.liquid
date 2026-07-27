@@ -2878,7 +2878,21 @@ function renderPaymentMethods() {
         btn.innerHTML = 'Pay Now <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
         return;
       }
-      const addr = waAddresses.find(a => String(a.id) === String(waSelectedAddress));
+      let addr = waAddresses.find(a => 
+        String(a.id) === String(waSelectedAddress) || 
+        String(a.id).replace('shopify_', '') === String(waSelectedAddress).replace('shopify_', '')
+      );
+      if (!addr && waAddresses.length > 0) {
+        addr = waAddresses[0];
+      }
+      if (!addr) {
+        errEl.innerText = 'Please select or add a shipping address before proceeding.';
+        errEl.style.display = 'block';
+        errEl.scrollIntoView({ behavior: 'smooth' });
+        btn.disabled = false;
+        btn.innerHTML = 'Pay Now <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+        return;
+      }
       
       if (waSelectedPayment === 'cod') {
         // Direct complete
@@ -2910,6 +2924,7 @@ function renderPaymentMethods() {
         } catch(e) {
           errEl.innerText = 'Error: ' + e.message;
           errEl.style.display = 'block';
+          errEl.scrollIntoView({ behavior: 'smooth' });
           btn.disabled = false;
           btn.innerHTML = '<span id="wa-pay-btn-text">Pay Now</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
         }
@@ -2930,12 +2945,13 @@ function renderPaymentMethods() {
         const netPayable = Math.max(0, targetPay - walletDeduction);
 
         if (netPayable <= 0) {
-          // Wallet covers 100% of payable amount! Directly complete order!
+          // Store Credit covers 100% of online advance payable amount! Directly complete order!
           try {
             await finishOrderBackend({ payment_method: waSelectedPayment, shipping_address: addr });
           } catch (e) {
-            errEl.innerText = 'Error: ' + e.message;
+            errEl.innerText = 'Error: ' + (e.message || 'Failed to complete order.');
             errEl.style.display = 'block';
+            errEl.scrollIntoView({ behavior: 'smooth' });
             btn.disabled = false;
             btn.innerHTML = '<span id="wa-pay-btn-text">Pay Now</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
           }
@@ -2971,23 +2987,20 @@ function renderPaymentMethods() {
             }
           };
           
-          // CRITICAL FIX: Hide our custom modal overlay so the Cashfree modal is visible!
-          // Cashfree's injected iframe modal might have a lower z-index than our 9999999 overlay.
           const overlay = document.getElementById('wa-otp-overlay');
-          const originalDisplay = overlay.style.display;
-          overlay.style.display = 'none';
+          const originalDisplay = overlay ? overlay.style.display : 'flex';
+          if (overlay) overlay.style.display = 'none';
           
           cashfreeObj.checkout(checkoutOptions).then(async (result) => {
-            // Bring our modal back
-            overlay.style.display = originalDisplay;
+            if (overlay) overlay.style.display = originalDisplay;
             
             if (result.error) {
               errEl.innerText = result.error.message || 'Payment failed or cancelled by user.';
               errEl.style.display = 'block';
+              errEl.scrollIntoView({ behavior: 'smooth' });
               btn.disabled = false;
               btn.innerHTML = '<span id="wa-pay-btn-text">Pay Now</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
             } else {
-              // Success
               if (result.paymentDetails && result.paymentDetails.paymentMessage) {
                 await finishOrderBackend({ payment_method: waSelectedPayment, shipping_address: addr, cashfree_order_id: data.order_id });
               }
@@ -2995,12 +3008,12 @@ function renderPaymentMethods() {
           });
   
         } catch(e) {
-          // If we hid the overlay, make sure it's back
           const overlay = document.getElementById('wa-otp-overlay');
           if (overlay && overlay.style.display === 'none') overlay.style.display = 'flex';
           
           errEl.innerText = 'Error: ' + e.message;
           errEl.style.display = 'block';
+          errEl.scrollIntoView({ behavior: 'smooth' });
           btn.disabled = false;
           btn.innerHTML = '<span id="wa-pay-btn-text">Pay Now</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
         }
@@ -3008,9 +3021,22 @@ function renderPaymentMethods() {
     }
 
   async function finishOrderBackend(payload) {
+    const btn = document.getElementById('wa-cod-btn');
+    const errEl = document.getElementById('wa-payment-error');
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 30000);
     try {
+      let addr = payload.shipping_address;
+      if (!addr && waAddresses && waAddresses.length > 0) {
+        addr = waAddresses.find(a => 
+          String(a.id) === String(waSelectedAddress) || 
+          String(a.id).replace('shopify_', '') === String(waSelectedAddress).replace('shopify_', '')
+        ) || waAddresses[0];
+      }
+      if (!addr) {
+        throw new Error('Shipping address is missing. Please select or add an address.');
+      }
+
       const res = await fetch(`${WA_API_BASE}/checkout/complete`, {
         method: 'POST',
         signal: controller.signal,
@@ -3018,18 +3044,18 @@ function renderPaymentMethods() {
         body: JSON.stringify({ 
           merchant_key: MERCHANT_KEY, 
           draft_order_id: waDraftOrderId, 
-          shipping_address: payload.shipping_address, 
+          shipping_address: addr, 
           email: waEmail, 
           phone: waPhone,
           device_id: localStorage.getItem('fit11_device_id') || localStorage.getItem('wa_device_id'),
-          payment_method: payload.payment_method,
+          payment_method: payload.payment_method || waSelectedPayment,
           cashfree_order_id: payload.cashfree_order_id,
           wallet_credit_amount: (waWalletApplied && waWalletAppliedAmt > 0) ? waWalletAppliedAmt : 0
         })
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      
+      if (!res.ok) throw new Error(data.error || 'Failed to complete order.');
+
       // Clear Shopify Cart
       try {
         await fetch('/cart/clear.js', { method: 'POST' });
@@ -3037,34 +3063,34 @@ function renderPaymentMethods() {
       } catch(e) {}
 
       document.getElementById('wa-step-4').style.display = 'none';
-      document.getElementById('wa-steps-indicator').style.display = 'none';
+      const stepsInd = document.getElementById('wa-steps-indicator');
+      if (stepsInd) stepsInd.style.display = 'none';
       const sc = document.getElementById('wa-success-screen');
-      sc.style.display = 'flex';
+      if (sc) sc.style.display = 'flex';
       clearTimeout(timeoutId);
-      // 4. Fire Meta Pixel Purchase Event
+
+      // Fire Meta Pixel Purchase Event
       try {
         if (typeof fbq === 'function') {
-          let rawTotal = document.getElementById('wa-total').innerText.replace(/[^0-9.]/g, '');
-          let finalTotal = parseFloat(rawTotal) || 0;
           fbq('track', 'Purchase', {
-            value: finalTotal,
-            currency: 'INR',
-            content_type: 'product',
-            payment_type: payload.payment_method === 'cod' ? 'COD' : 'Prepaid'
-          }, { eventID: data.order_id });
+            value: data.order?.total_price || 0,
+            currency: 'INR'
+          });
         }
-      } catch(pixelErr) {
-        console.error('Meta Pixel Error:', pixelErr);
+      } catch(e) {}
+
+    } catch (err) {
+      clearTimeout(timeoutId);
+      console.error('Order Complete Error:', err);
+      if (errEl) {
+        errEl.innerText = 'Error: ' + (err.message || 'Failed to complete order. Please try again.');
+        errEl.style.display = 'block';
+        errEl.scrollIntoView({ behavior: 'smooth' });
       }
-    } catch (e) {
-      if (e.name === 'AbortError') {
-        alert('The server is taking too long to respond. Please try again or contact support.');
-      } else {
-        alert('Order placed but failed to confirm natively. Support will contact you. ' + e.message);
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<span id="wa-pay-btn-text">Pay Now</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
       }
-      const btn = document.getElementById('wa-cod-btn');
-      btn.disabled = false;
-      btn.innerHTML = '<span id="wa-pay-btn-text">Pay Now</span>';
     }
   }
 
