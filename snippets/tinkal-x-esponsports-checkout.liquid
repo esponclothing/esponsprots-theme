@@ -2984,7 +2984,17 @@ function renderPaymentMethods() {
       if (!e.target || !e.target.closest) return;
       // CRITICAL: Never intercept clicks inside the modal itself
       if (e.target.closest('#wa-otp-overlay')) return;
-      let target = e.target.closest('button[name="checkout"], a[href^="/checkout"], input[name="checkout"], #checkout, .cart__checkout-button');
+      let target = e.target.closest('button[name="checkout"], a[href*="/checkout"], input[name="checkout"], #checkout, .cart__checkout-button, .checkout-btn, .cart-drawer__checkout, .cart__submit, [data-checkout], form[action*="/cart"] [type="submit"], form[action*="/checkout"] [type="submit"]');
+      if (!target) {
+        const btnEl = e.target.closest('button, a, input[type="submit"]');
+        if (btnEl) {
+          const txt = (btnEl.innerText || btnEl.value || '').toLowerCase();
+          const href = (btnEl.getAttribute('href') || '').toLowerCase();
+          if (txt.includes('checkout') || txt.includes('check out') || href.includes('/checkout')) {
+            target = btnEl;
+          }
+        }
+      }
       if (target) {
         if (evt === 'touchstart') {
           if (!window._waModalOpening) {
