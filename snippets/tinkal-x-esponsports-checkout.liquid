@@ -3018,15 +3018,15 @@ function renderPaymentMethods() {
         }
       }
       if (target) {
+        e.preventDefault();
+        e.stopPropagation();
         if (evt === 'touchstart') {
           if (!window._waModalOpening) {
             window._waModalOpening = true;
-            e.preventDefault(); e.stopPropagation();
             openWaModal();
             setTimeout(() => window._waModalOpening = false, 500);
           }
         } else if (evt === 'click') {
-          e.preventDefault(); e.stopPropagation();
           if (!window._waModalOpening) openWaModal();
         }
       }
