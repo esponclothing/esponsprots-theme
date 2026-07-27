@@ -13,14 +13,8 @@
   }
 
   /* ── CASHFREE MODAL Z-INDEX FIX ── */
-  div[class*="cf-backdrop"], div[class*="cf-overlay"], div[class*="cashfree-backdrop"], div[class*="cashfree-overlay"], .cf-backdrop, .cf-overlay {
-    z-index: 2147483640 !important;
-  }
-  div[id*="cf-modal"], div[class*="cf-modal"], div[id*="cashfree-modal"], div[class*="cashfree-modal"], iframe[src*="cashfree.com"], #cf-modal {
+  div[id*="cf-"], div[class*="cf-"], div[id*="cashfree"], div[class*="cashfree"], iframe[src*="cashfree.com"] {
     z-index: 2147483647 !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
   }
 
   /* ── MAIN WRAPPER ── */
@@ -3236,7 +3230,9 @@ function renderPaymentMethods() {
   document.addEventListener('submit', function(e) {
     if (e.target.closest && e.target.closest('#wa-otp-overlay')) return;
     const action = (e.target.action || '').toLowerCase();
-    if (action.includes('/cart') || action.includes('/checkout') || e.target.querySelector('button[name="checkout"], input[name="checkout"]')) {
+    if (action.includes('cashfree') || action.includes('razorpay') || action.includes('paytm')) return;
+    const isShopifyCheckout = (action.includes('/cart') || action.includes('/checkout')) && !action.includes('cashfree');
+    if (isShopifyCheckout || e.target.querySelector('button[name="checkout"], input[name="checkout"]')) {
       e.preventDefault();
       e.stopPropagation();
       openWaModal();
@@ -3245,10 +3241,12 @@ function renderPaymentMethods() {
   const _origSubmit = HTMLFormElement.prototype.submit;
   HTMLFormElement.prototype.submit = function() {
     const action = (this.action || '').toLowerCase();
-    if (action.includes('/cart') || action.includes('/checkout')) {
-      openWaModal();
+    if (action.includes('cashfree') || action.includes('razorpay') || action.includes('paytm')) {
+      _origSubmit.apply(this, arguments);
       return;
     }
+    const ov = document.getElementById('wa-otp-overlay');
+    if (ov && window.getComputedStyle(ov).display !== 'none') return;
     _origSubmit.apply(this, arguments);
   };
 
