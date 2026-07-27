@@ -1374,6 +1374,48 @@ window._shopifyCustomer = {
       }
     }
 
+    // Always run identify to populate branding & waPaymentSettings
+    try {
+      const device_id = localStorage.getItem('fit11_device_id') || ('dev_' + Math.random().toString(36).substr(2, 9));
+      localStorage.setItem('fit11_device_id', device_id);
+      const res = await fetch(`${WA_API_BASE}/identify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ device_id, merchant_key: MERCHANT_KEY })
+      });
+      const data = await res.json();
+      if (data.payment_settings && Object.keys(data.payment_settings).length > 0) {
+        waPaymentSettings = data.payment_settings;
+        const _ps = data.payment_settings;
+        const _sv = (name, val, fb) => document.documentElement.style.setProperty(name, val || fb);
+        _sv('--wa-theme',      _ps.theme_color,    '#0f172a');
+        _sv('--wa-bg',         _ps.bg_main,        '#f1f5f9');
+        _sv('--wa-card-bg',    _ps.bg_card,        '#ffffff');
+        _sv('--wa-header-bg',  _ps.bg_header,      '#0f172a');
+        _sv('--wa-heading',    _ps.text_heading,   '#0f172a');
+        _sv('--wa-subheading', _ps.text_subheading,'#64748b');
+        _sv('--wa-label',      _ps.text_label,     '#374151');
+        _sv('--wa-success',    _ps.accent_success, '#16a34a');
+        _sv('--wa-border',     _ps.accent_border,  '#e2e8f0');
+
+        if (_ps.logo_url) {
+          const logoImg = `<img src="${_ps.logo_url}" alt="Store Logo" style="max-height:40px;max-width:150px;object-fit:contain;display:block;" />`;
+          const mobileBrand = document.getElementById('wa-brand-name-mobile');
+          if (mobileBrand) mobileBrand.innerHTML = logoImg;
+        }
+
+        const _emailInput = document.getElementById('wa-email');
+        const _emailBadge = document.getElementById('wa-email-badge');
+        if (_ps.email_required === true) {
+          if (_emailInput) { _emailInput.required = true; _emailInput.placeholder = 'you@example.com'; }
+          if (_emailBadge) { _emailBadge.textContent = '(Required)'; _emailBadge.style.color = '#f59e0b'; }
+        } else {
+          if (_emailInput) { _emailInput.required = false; _emailInput.placeholder = 'you@example.com (Optional)'; }
+          if (_emailBadge) { _emailBadge.textContent = '(Optional)'; _emailBadge.style.color = '#94a3b8'; }
+        }
+      }
+    } catch(e) { console.error('Identify error:', e); }
+
     // Auto-login if phone is verified or saved in browser
     if (cachedPhone) {
       waPhone = cachedPhone;
@@ -1391,33 +1433,8 @@ window._shopifyCustomer = {
       loadAddresses();
       calculateCheckoutTotals();
       fetchWalletBalance();
-      return; // Skip identify check completely!
+      return;
     }
-
-    // Check identity via device (for "Welcome Back" flow if no session cache)
-    try {
-      const device_id = localStorage.getItem('fit11_device_id');
-      const res = await fetch(`${WA_API_BASE}/identify`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ device_id, merchant_key: MERCHANT_KEY })
-      });
-      const data = await res.json();
-
-      // ── Apply branding & settings from identify response immediately ──────────
-      if (data.payment_settings && Object.keys(data.payment_settings).length > 0) {
-        waPaymentSettings = data.payment_settings;
-        const _ps = data.payment_settings;
-        const _sv = (name, val, fb) => document.documentElement.style.setProperty(name, val || fb);
-        _sv('--wa-theme',      _ps.theme_color,    '#0f172a');
-        _sv('--wa-bg',         _ps.bg_main,        '#f1f5f9');
-        _sv('--wa-card-bg',    _ps.bg_card,        '#ffffff');
-        _sv('--wa-header-bg',  _ps.bg_header,      '#0f172a');
-        _sv('--wa-heading',    _ps.text_heading,   '#0f172a');
-        _sv('--wa-subheading', _ps.text_subheading,'#64748b');
-        _sv('--wa-label',      _ps.text_label,     '#374151');
-        _sv('--wa-success',    _ps.accent_success, '#16a34a');
-        _sv('--wa-border',     _ps.accent_border,  '#e2e8f0');
 
         // Apply logo to BOTH left panel and mobile header
         if (_ps.logo_url) {
@@ -3202,19 +3219,23 @@ function renderPaymentMethods() {
   window.triggerFullCheckout = function() { openWaModal(); };
   window.openWaModal = openWaModal;
 
-  // Block ONLY the cart form from submitting while modal is open (not forms inside modal)
+  // Intercept cart form submit events outside modal and launch custom modal instead
   document.addEventListener('submit', function(e) {
-    // Skip if the form being submitted is inside the modal
     if (e.target.closest && e.target.closest('#wa-otp-overlay')) return;
-    const ov = document.getElementById('wa-otp-overlay');
-    if (ov && window.getComputedStyle(ov).display !== 'none') {
-      e.preventDefault(); e.stopPropagation();
+    const action = (e.target.action || '').toLowerCase();
+    if (action.includes('/cart') || action.includes('/checkout') || e.target.querySelector('button[name="checkout"], input[name="checkout"]')) {
+      e.preventDefault();
+      e.stopPropagation();
+      openWaModal();
     }
   }, true);
   const _origSubmit = HTMLFormElement.prototype.submit;
   HTMLFormElement.prototype.submit = function() {
-    const ov = document.getElementById('wa-otp-overlay');
-    if (ov && window.getComputedStyle(ov).display !== 'none') return;
+    const action = (this.action || '').toLowerCase();
+    if (action.includes('/cart') || action.includes('/checkout')) {
+      openWaModal();
+      return;
+    }
     _origSubmit.apply(this, arguments);
   };
 
