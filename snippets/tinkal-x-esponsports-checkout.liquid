@@ -383,7 +383,7 @@ window._shopifyCustomer = {
             {% endif %}
           </div>
 
-          <button onclick="closeWaModal()" style="background:#f1f5f9; border:none; width:36px; height:36px; border-radius:50%; font-size:18px; cursor:pointer; color:#64748b; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:0.2s; margin-left:auto; z-index:2;">&#x2715;</button>
+          <button id="wa-close-modal-btn" onclick="closeWaModal()" style="background:#f1f5f9; border:none; width:36px; height:36px; border-radius:50%; font-size:18px; cursor:pointer; color:#64748b; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:0.2s; margin-left:auto; z-index:2;">&#x2715;</button>
         </div>
       </div>
 
@@ -956,7 +956,8 @@ window._shopifyCustomer = {
         <div class="wa-success-screen" id="wa-success-screen">
           <div class="wa-success-checkmark">✓</div>
           <h2 class="wa-section-title">Order Placed!</h2>
-          <p class="wa-section-desc" style="max-width:320px; margin:0 auto 32px;">Your COD order has been successfully placed. You will receive a confirmation on WhatsApp shortly.</p>
+          <p class="wa-section-desc" id="wa-success-desc" style="max-width:320px; margin:0 auto 16px;">Your COD order has been successfully placed. You will receive a confirmation on WhatsApp shortly.</p>
+          <div id="wa-success-order-number" style="font-size:16px; font-weight:700; color:#0f172a; margin-bottom:32px; background:#f1f5f9; padding:8px 16px; border-radius:8px; display:none;">Order Number: <span id="wa-success-order-val"></span></div>
           <button type="button" class="wa-btn-primary" style="max-width:280px;" onclick="window.location.href='/'; setTimeout(() => window.location.reload(), 100);">Continue Shopping</button>
         </div>
 
@@ -1478,6 +1479,13 @@ window._shopifyCustomer = {
     document.getElementById('wa-step-3').style.display = 'none';
     document.getElementById('wa-success-screen').style.display = 'none';
     document.getElementById('wa-steps-indicator').style.display = 'flex';
+    
+    const closeBtn = document.getElementById('wa-close-modal-btn');
+    if (closeBtn) closeBtn.style.display = 'flex';
+    
+    const scBox = document.getElementById('wa-success-order-number');
+    if (scBox) scBox.style.display = 'none';
+    
     waSetStep(1);
   }
 
@@ -3132,6 +3140,18 @@ function renderPaymentMethods() {
       document.getElementById('wa-step-4').style.display = 'none';
       const stepsInd = document.getElementById('wa-steps-indicator');
       if (stepsInd) stepsInd.style.display = 'none';
+      
+      const closeBtn = document.getElementById('wa-close-modal-btn');
+      if (closeBtn) closeBtn.style.display = 'none';
+      
+      const scVal = document.getElementById('wa-success-order-val');
+      const scBox = document.getElementById('wa-success-order-number');
+      if (scVal && scBox && data.order_id) {
+        const oNum = String(data.order_id);
+        scVal.innerText = oNum.startsWith('#') ? oNum : '#' + oNum;
+        scBox.style.display = 'inline-block';
+      }
+
       const sc = document.getElementById('wa-success-screen');
       if (sc) sc.style.display = 'flex';
       clearTimeout(timeoutId);
