@@ -1436,33 +1436,6 @@ window._shopifyCustomer = {
       return;
     }
 
-        // Apply logo to BOTH left panel and mobile header
-        if (_ps.logo_url) {
-          const logoImg = `<img src="${_ps.logo_url}" alt="Store Logo" style="max-height:40px;max-width:150px;object-fit:contain;display:block;" />`;
-          const leftBrand = document.getElementById('wa-brand-name-left');
-          if (leftBrand) leftBrand.outerHTML = `<div id="wa-brand-name-left" style="display:flex; align-items:center; margin-bottom:24px;">
-          {% if settings.logo %}
-            <img src="{{ settings.logo | img_url: 'master' }}" alt="{{ shop.name }}" style="height:40px; max-width:150px; object-fit:contain; flex-shrink:1;">
-          {% else %}
-            <span id="wa-brand-text-left" style="font-weight:800; font-size:22px; text-transform:uppercase;">{{ shop.domain | remove: '.myshopify.com' }}</span>
-          {% endif %}
-        </div>`;
-          const mobileBrand = document.getElementById('wa-brand-name-mobile');
-          if (mobileBrand) mobileBrand.innerHTML = logoImg;
-        }
-
-        // Apply email required/optional
-        const _emailInput = document.getElementById('wa-email');
-        const _emailBadge = document.getElementById('wa-email-badge');
-        if (_ps.email_required === true) {
-          if (_emailInput) { _emailInput.required = true; _emailInput.placeholder = 'you@example.com'; }
-          if (_emailBadge) { _emailBadge.textContent = '(Required)'; _emailBadge.style.color = '#f59e0b'; }
-        } else {
-          if (_emailInput) { _emailInput.required = false; _emailInput.placeholder = 'you@example.com (Optional)'; }
-          if (_emailBadge) { _emailBadge.textContent = '(Optional)'; _emailBadge.style.color = '#94a3b8'; }
-        }
-      }
-
       
       if (data.identified && data.masked_phone) {
         const title1 = document.getElementById('wa-title-1');
