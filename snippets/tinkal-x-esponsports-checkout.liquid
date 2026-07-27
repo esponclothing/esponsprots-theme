@@ -1374,83 +1374,7 @@ window._shopifyCustomer = {
       }
     }
 
-    // Always run identify to populate branding & waPaymentSettings
-    try {
-      const device_id = localStorage.getItem('fit11_device_id') || ('dev_' + Math.random().toString(36).substr(2, 9));
-      localStorage.setItem('fit11_device_id', device_id);
-      const res = await fetch(`${WA_API_BASE}/identify`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ device_id, merchant_key: MERCHANT_KEY })
-      });
-      const data = await res.json();
-      if (data.payment_settings && Object.keys(data.payment_settings).length > 0) {
-        waPaymentSettings = data.payment_settings;
-        const _ps = data.payment_settings;
-        const _sv = (name, val, fb) => document.documentElement.style.setProperty(name, val || fb);
-        _sv('--wa-theme',      _ps.theme_color,    '#0f172a');
-        _sv('--wa-bg',         _ps.bg_main,        '#f1f5f9');
-        _sv('--wa-card-bg',    _ps.bg_card,        '#ffffff');
-        _sv('--wa-header-bg',  _ps.bg_header,      '#0f172a');
-        _sv('--wa-heading',    _ps.text_heading,   '#0f172a');
-        _sv('--wa-subheading', _ps.text_subheading,'#64748b');
-        _sv('--wa-label',      _ps.text_label,     '#374151');
-        _sv('--wa-success',    _ps.accent_success, '#16a34a');
-        _sv('--wa-border',     _ps.accent_border,  '#e2e8f0');
-
-        if (_ps.logo_url) {
-          const logoImg = `<img src="${_ps.logo_url}" alt="Store Logo" style="max-height:40px;max-width:150px;object-fit:contain;display:block;" />`;
-          const mobileBrand = document.getElementById('wa-brand-name-mobile');
-          if (mobileBrand) mobileBrand.innerHTML = logoImg;
-        }
-
-        const _emailInput = document.getElementById('wa-email');
-        const _emailBadge = document.getElementById('wa-email-badge');
-        if (_ps.email_required === true) {
-          if (_emailInput) { _emailInput.required = true; _emailInput.placeholder = 'you@example.com'; }
-          if (_emailBadge) { _emailBadge.textContent = '(Required)'; _emailBadge.style.color = '#f59e0b'; }
-        } else {
-          if (_emailInput) { _emailInput.required = false; _emailInput.placeholder = 'you@example.com (Optional)'; }
-          if (_emailBadge) { _emailBadge.textContent = '(Optional)'; _emailBadge.style.color = '#94a3b8'; }
-        }
-      }
-
-      if (data.identified && data.masked_phone && !cachedPhone) {
-        const title1 = document.getElementById('wa-title-1');
-        const desc1 = document.getElementById('wa-desc-1');
-        if (title1) title1.innerText = 'Welcome Back!';
-        if (desc1) desc1.innerText = 'Continue as ' + data.masked_phone + '?';
-        
-        if (!title1 && !document.getElementById('wa-dynamic-welcome')) {
-          const step1 = document.getElementById('wa-step-1');
-          if (step1) {
-             const welcomeHtml = `
-               <div id="wa-dynamic-welcome" style="margin-bottom:24px;">
-                 <h2 style="font-size:26px; font-weight:800; margin-bottom:8px; color:#0f172a; letter-spacing:-0.5px;">Welcome Back!</h2>
-                 <p style="font-size:15px; color:#475569;">Continue as <strong style="color:#0f172a;">${data.masked_phone}</strong>?</p>
-               </div>
-             `;
-             step1.insertAdjacentHTML('afterbegin', welcomeHtml);
-          }
-        }
-
-        const pCont = document.getElementById('wa-phone-container'); if(pCont) pCont.style.display = 'none';
-        const pSec = document.getElementById('wa-phone-input-section'); if(pSec) pSec.style.display = 'none';
-        const midTb = document.getElementById('wa-mid-trust-badges'); if(midTb) midTb.style.display = 'none';
-        const greenBox = document.getElementById('wa-green-otp-box'); if(greenBox) greenBox.style.display = 'none';
-        const switchAcc = document.getElementById('wa-switch-account'); if(switchAcc) switchAcc.style.display = 'block';
-        waPhone = 'MASKED';
-        if (data.storeCreditBalance) {
-          waWalletBalance = parseFloat(data.storeCreditBalance || 0);
-        }
-        if (data.email) {
-          const em = document.getElementById('wa-email');
-          if (em) em.value = data.email;
-        }
-      }
-    } catch(e) { console.error('Identify error:', e); }
-
-    // Auto-login if phone is verified or saved in browser
+    // Immediately jump to Step 3 if user is already logged in / cached
     if (cachedPhone) {
       waPhone = cachedPhone;
       waSavePhoneGlobally(cachedPhone);
@@ -1467,8 +1391,85 @@ window._shopifyCustomer = {
       loadAddresses();
       calculateCheckoutTotals();
       fetchWalletBalance();
-      return;
     }
+
+    // Run identify asynchronously in background so modal opens instantly
+    (async () => {
+      try {
+        const device_id = localStorage.getItem('fit11_device_id') || ('dev_' + Math.random().toString(36).substr(2, 9));
+        localStorage.setItem('fit11_device_id', device_id);
+        const res = await fetch(`${WA_API_BASE}/identify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ device_id, merchant_key: MERCHANT_KEY })
+        });
+        const data = await res.json();
+        if (data.payment_settings && Object.keys(data.payment_settings).length > 0) {
+          waPaymentSettings = data.payment_settings;
+          const _ps = data.payment_settings;
+          const _sv = (name, val, fb) => document.documentElement.style.setProperty(name, val || fb);
+          _sv('--wa-theme',      _ps.theme_color,    '#0f172a');
+          _sv('--wa-bg',         _ps.bg_main,        '#f1f5f9');
+          _sv('--wa-card-bg',    _ps.bg_card,        '#ffffff');
+          _sv('--wa-header-bg',  _ps.bg_header,      '#0f172a');
+          _sv('--wa-heading',    _ps.text_heading,   '#0f172a');
+          _sv('--wa-subheading', _ps.text_subheading,'#64748b');
+          _sv('--wa-label',      _ps.text_label,     '#374151');
+          _sv('--wa-success',    _ps.accent_success, '#16a34a');
+          _sv('--wa-border',     _ps.accent_border,  '#e2e8f0');
+
+          if (_ps.logo_url) {
+            const logoImg = `<img src="${_ps.logo_url}" alt="Store Logo" style="max-height:40px;max-width:150px;object-fit:contain;display:block;" />`;
+            const mobileBrand = document.getElementById('wa-brand-name-mobile');
+            if (mobileBrand) mobileBrand.innerHTML = logoImg;
+          }
+
+          const _emailInput = document.getElementById('wa-email');
+          const _emailBadge = document.getElementById('wa-email-badge');
+          if (_ps.email_required === true) {
+            if (_emailInput) { _emailInput.required = true; _emailInput.placeholder = 'you@example.com'; }
+            if (_emailBadge) { _emailBadge.textContent = '(Required)'; _emailBadge.style.color = '#f59e0b'; }
+          } else {
+            if (_emailInput) { _emailInput.required = false; _emailInput.placeholder = 'you@example.com (Optional)'; }
+            if (_emailBadge) { _emailBadge.textContent = '(Optional)'; _emailBadge.style.color = '#94a3b8'; }
+          }
+        }
+
+        if (data.identified && data.masked_phone && !cachedPhone) {
+          const title1 = document.getElementById('wa-title-1');
+          const desc1 = document.getElementById('wa-desc-1');
+          if (title1) title1.innerText = 'Welcome Back!';
+          if (desc1) desc1.innerText = 'Continue as ' + data.masked_phone + '?';
+          
+          if (!title1 && !document.getElementById('wa-dynamic-welcome')) {
+            const step1 = document.getElementById('wa-step-1');
+            if (step1) {
+               const welcomeHtml = `
+                 <div id="wa-dynamic-welcome" style="margin-bottom:24px;">
+                   <h2 style="font-size:26px; font-weight:800; margin-bottom:8px; color:#0f172a; letter-spacing:-0.5px;">Welcome Back!</h2>
+                   <p style="font-size:15px; color:#475569;">Continue as <strong style="color:#0f172a;">${data.masked_phone}</strong>?</p>
+                 </div>
+               `;
+               step1.insertAdjacentHTML('afterbegin', welcomeHtml);
+            }
+          }
+
+          const pCont = document.getElementById('wa-phone-container'); if(pCont) pCont.style.display = 'none';
+          const pSec = document.getElementById('wa-phone-input-section'); if(pSec) pSec.style.display = 'none';
+          const midTb = document.getElementById('wa-mid-trust-badges'); if(midTb) midTb.style.display = 'none';
+          const greenBox = document.getElementById('wa-green-otp-box'); if(greenBox) greenBox.style.display = 'none';
+          const switchAcc = document.getElementById('wa-switch-account'); if(switchAcc) switchAcc.style.display = 'block';
+          waPhone = 'MASKED';
+          if (data.storeCreditBalance) {
+            waWalletBalance = parseFloat(data.storeCreditBalance || 0);
+          }
+          if (data.email) {
+            const em = document.getElementById('wa-email');
+            if (em) em.value = data.email;
+          }
+        }
+      } catch(e) { console.error('Identify error:', e); }
+    })();
   }
 
   function waResetModal() {
@@ -2266,11 +2267,19 @@ window._shopifyCustomer = {
   }
 
   async function calculateCheckoutTotals(discountCode = null) {
-    const subT = document.getElementById('wa-subtotal'); if (subT) subT.innerText = 'Calculating...';
-    const totT = document.getElementById('wa-total'); if (totT) totT.innerText = '...';
+    const subT = document.getElementById('wa-subtotal');
+    const totT = document.getElementById('wa-total');
     try {
       const cartRes = await fetch('/cart.js');
       const cart = await cartRes.json();
+      
+      const initialTotal = (cart.total_price / 100).toFixed(2);
+      if (subT && (subT.innerText === 'Calculating...' || !subT.innerText)) subT.innerText = `₹${initialTotal}`;
+      if (totT && (totT.innerText === '...' || !totT.getAttribute('data-base-total'))) {
+        totT.innerText = `₹${initialTotal}`;
+        totT.setAttribute('data-base-total', initialTotal);
+      }
+
       const items = cart.items.map(i => ({ variant_id: i.variant_id, quantity: i.quantity }));
       const res = await fetch(`${WA_API_BASE}/checkout/calculate`, {
         method: 'POST',
