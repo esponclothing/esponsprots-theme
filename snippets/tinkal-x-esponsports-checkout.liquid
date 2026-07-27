@@ -2371,14 +2371,27 @@ window._shopifyCustomer = {
   function computeWalletUsable() {
     if (waWalletBalance <= 0) return 0;
     const ps = waPaymentSettings || {};
-    const baseTotal = parseFloat(document.getElementById('wa-total').getAttribute('data-base-total') || '0');
+    const baseTotal = parseFloat(document.getElementById('wa-total')?.getAttribute('data-base-total') || '0');
+    
+    let targetPayable = baseTotal;
+    if (waSelectedPayment === 'partial_cod') {
+      if (ps.partial_cod_type === 'percent') {
+        targetPayable = (baseTotal * ps.partial_cod_value) / 100;
+      } else if (ps.partial_cod_value > 0) {
+        targetPayable = ps.partial_cod_value;
+      }
+    } else if (waSelectedPayment === 'prepaid' && ps.prepaid_offer_enabled) {
+      let disc = ps.prepaid_offer_type === 'percent' ? (baseTotal * ps.prepaid_offer_value) / 100 : ps.prepaid_offer_value;
+      targetPayable = Math.max(0, baseTotal - Math.min(disc, baseTotal));
+    }
+
     let maxUsable = waWalletBalance;
     if (ps.store_credit_limit_type === 'percent' && ps.store_credit_limit_value > 0) {
       maxUsable = Math.min(waWalletBalance, (baseTotal * ps.store_credit_limit_value) / 100);
     } else if (ps.store_credit_limit_type === 'fixed' && ps.store_credit_limit_value > 0) {
       maxUsable = Math.min(waWalletBalance, ps.store_credit_limit_value);
     }
-    return Math.min(maxUsable, baseTotal); // can't exceed total
+    return Math.min(maxUsable, targetPayable);
   }
 
   function waUpdateTotalDisplay() {
