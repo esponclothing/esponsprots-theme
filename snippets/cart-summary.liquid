@@ -293,15 +293,15 @@
   {% endif %}
 
   <button
-    type="submit"
+    type="button"
     id="checkout"
     class="cart__checkout-button button"
     name="checkout"
+    onclick="event.preventDefault(); event.stopPropagation(); if (window.openWaModal) { window.openWaModal(); } else if (window.triggerFullCheckout) { window.triggerFullCheckout(); } return false;"
     {% if cart == empty or lock_checkout %}
       disabled
       {% if lock_checkout %}style="cursor:not-allowed; opacity:0.5;"{% endif %}
     {% endif %}
-    form="cart-form"
   >
     <span class="button-text">
       {% if lock_checkout %}LOCKED{% else %}Checkout Securely{% endif %}
