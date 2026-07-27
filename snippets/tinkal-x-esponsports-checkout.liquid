@@ -2377,7 +2377,7 @@ window._shopifyCustomer = {
     return Math.min(maxUsable, baseTotal); // can't exceed total
   }
 
-  function updateTotalDisplay() {
+  function waUpdateTotalDisplay() {
     const totalEl = document.getElementById('wa-total');
     if (!totalEl) return;
     let baseTotal = parseFloat(totalEl.getAttribute('data-base-total') || '0');
@@ -2444,7 +2444,7 @@ window._shopifyCustomer = {
     }
 
     // Re-compute display total (respecting payment method fee/discount too)
-    updateTotalDisplay();
+    waUpdateTotalDisplay();
     waRenderWalletSection();
     renderPaymentMethods();
   }
