@@ -2291,9 +2291,7 @@ window._shopifyCustomer = {
     renderPaymentMethods();
 
     // Fetch customer wallet balance (async, non-blocking)
-    if (waPaymentSettings && waPaymentSettings.store_credit_enabled) {
-      fetchWalletBalance().then(() => waRenderWalletSection());
-    }
+    fetchWalletBalance().then(() => waRenderWalletSection());
   }
   
   function waBackToAddress() {
@@ -2379,10 +2377,21 @@ window._shopifyCustomer = {
     return Math.min(maxUsable, baseTotal); // can't exceed total
   }
 
+  function updateTotalDisplay() {
+    const totalEl = document.getElementById('wa-total');
+    if (!totalEl) return;
+    let baseTotal = parseFloat(totalEl.getAttribute('data-base-total') || '0');
+    let finalPayable = baseTotal;
+    if (waWalletApplied && waWalletAppliedAmt > 0) {
+      finalPayable = Math.max(0, baseTotal - waWalletAppliedAmt);
+    }
+    totalEl.innerText = '₹' + finalPayable.toFixed(2);
+  }
+
   function waRenderWalletSection() {
     const section = document.getElementById('wa-wallet-section');
     const ps = waPaymentSettings || {};
-    if (!ps.store_credit_enabled || waWalletBalance <= 0) {
+    if (ps.store_credit_enabled === false || waWalletBalance <= 0) {
       if (section) section.style.display = 'none';
       return;
     }
@@ -2406,8 +2415,8 @@ window._shopifyCustomer = {
     const appliedRow = document.getElementById('wa-wallet-applied-row');
     const appliedAmt = document.getElementById('wa-wallet-applied-amt');
     if (waWalletApplied) {
-      if (card) { card.style.borderColor = 'var(--wa-primary)'; card.style.background = '#f0f9ff'; }
-      if (checkbox) { checkbox.style.borderColor = 'var(--wa-primary)'; checkbox.style.background = 'var(--wa-primary)'; }
+      if (card) { card.style.borderColor = 'var(--wa-primary, #0f172a)'; card.style.background = '#f0f9ff'; }
+      if (checkbox) { checkbox.style.borderColor = 'var(--wa-primary, #0f172a)'; checkbox.style.background = 'var(--wa-primary, #0f172a)'; }
       if (checkIcon) checkIcon.style.display = 'block';
       if (appliedRow) { appliedRow.style.display = 'flex'; appliedRow.style.background = '#eff6ff'; }
       if (appliedAmt) appliedAmt.innerText = `-₹${waWalletAppliedAmt.toFixed(2)}`;
@@ -2568,7 +2577,7 @@ function renderPaymentMethods() {
             advanceAmt = waPaymentSettings.partial_cod_value;
           }
           let payAmt = Math.max(0, advanceAmt - (waWalletApplied ? waWalletAppliedAmt : 0));
-          let remainingAmt = baseTotal - payAmt;
+          let remainingAmt = Math.max(0, baseTotal - advanceAmt);
           
           opt.className = `wa-pay-opt ${isSelected ? 'selected' : ''}`;
           
