@@ -3013,37 +3013,6 @@ function renderPaymentMethods() {
       if (waSelectedPayment === 'cod') {
         // Direct complete
         await finishOrderBackend({ payment_method: 'cod', shipping_address: addr });
-      } else if (waPaymentSettings.use_shopify_checkout_prepaid) {
-        // Shopify Native Checkout flow for Prepaid and Partial COD
-        try {
-          const res = await fetch(`${WA_API_BASE}/checkout/update-draft`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-              merchant_key: MERCHANT_KEY, 
-              draft_order_id: waDraftOrderId,
-              payment_method: waSelectedPayment,
-              customer_email: waEmail,
-              customer_phone: waPhone,
-              device_id: localStorage.getItem('fit11_device_id') || localStorage.getItem('wa_device_id'),
-              shipping_address: addr
-            })
-          });
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || 'Failed to update draft order');
-          
-          if (data.invoice_url) {
-             window.location.href = data.invoice_url;
-          } else {
-             throw new Error('No checkout URL returned from Shopify.');
-          }
-        } catch(e) {
-          errEl.innerText = 'Error: ' + e.message;
-          errEl.style.display = 'block';
-          errEl.scrollIntoView({ behavior: 'smooth' });
-          btn.disabled = false;
-          btn.innerHTML = '<span id="wa-pay-btn-text">Pay Now</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
-        }
       } else {
         // Cashfree flow (Partial COD or standard Prepaid)
         const walletDeduction = (waWalletApplied && waWalletAppliedAmt > 0) ? waWalletAppliedAmt : 0;
