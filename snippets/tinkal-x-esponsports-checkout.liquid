@@ -13,8 +13,14 @@
   }
 
   /* ── CASHFREE MODAL Z-INDEX FIX ── */
-  div[id*="cf-"], div[class*="cf-"], div[id*="cashfree"], div[class*="cashfree"], iframe[src*="cashfree.com"] {
+  div[class*="cf-backdrop"], div[class*="cf-overlay"], div[class*="cashfree-backdrop"], div[class*="cashfree-overlay"], .cf-backdrop, .cf-overlay {
+    z-index: 2147483640 !important;
+  }
+  div[id*="cf-modal"], div[class*="cf-modal"], div[id*="cashfree-modal"], div[class*="cashfree-modal"], iframe[src*="cashfree.com"], #cf-modal {
     z-index: 2147483647 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 
   /* ── MAIN WRAPPER ── */
@@ -3070,12 +3076,8 @@ function renderPaymentMethods() {
           };
           
           const overlay = document.getElementById('wa-otp-overlay');
-          const originalDisplay = overlay ? overlay.style.display : 'flex';
-          if (overlay) overlay.style.display = 'none';
           
           cashfreeObj.checkout(checkoutOptions).then(async (result) => {
-            if (overlay) overlay.style.display = originalDisplay;
-            
             if (result.error) {
               errEl.innerText = result.error.message || 'Payment failed or cancelled by user.';
               errEl.style.display = 'block';
@@ -3088,7 +3090,6 @@ function renderPaymentMethods() {
               }
             }
           }).catch((cfErr) => {
-            if (overlay) overlay.style.display = originalDisplay;
             errEl.innerText = 'Payment gateway error: ' + (cfErr.message || cfErr);
             errEl.style.display = 'block';
             errEl.scrollIntoView({ behavior: 'smooth' });
