@@ -1205,6 +1205,7 @@ window._shopifyCustomer = {
       waSetStep(3);
       loadAddresses();
       calculateCheckoutTotals();
+      fetchWalletBalance();
       return; // Skip identify check completely!
     }
 
@@ -2136,6 +2137,9 @@ window._shopifyCustomer = {
       }
       
       waPaymentSettings = data.payment_settings || {};
+      if (data.storeCreditBalance) {
+        waWalletBalance = parseFloat(data.storeCreditBalance || 0);
+      }
 
       // Apply Branding — inject all theme CSS variables from admin settings
       const _ps = waPaymentSettings;
@@ -2275,7 +2279,7 @@ window._shopifyCustomer = {
     await calculateCheckoutTotals();
   }
 
-  function waProceedToPayment() {
+  async function waProceedToPayment() {
     if (!waSelectedAddress) {
       alert('Please select a delivery address first.');
       return;
@@ -2288,10 +2292,10 @@ window._shopifyCustomer = {
     waWalletApplied = false;
     waWalletAppliedAmt = 0;
 
-    renderPaymentMethods();
-
     // Fetch customer wallet balance (async, non-blocking)
-    fetchWalletBalance().then(() => waRenderWalletSection());
+    await fetchWalletBalance();
+    renderPaymentMethods();
+    waRenderWalletSection();
   }
   
   function waBackToAddress() {
