@@ -1414,6 +1414,40 @@ window._shopifyCustomer = {
           if (_emailBadge) { _emailBadge.textContent = '(Optional)'; _emailBadge.style.color = '#94a3b8'; }
         }
       }
+
+      if (data.identified && data.masked_phone && !cachedPhone) {
+        const title1 = document.getElementById('wa-title-1');
+        const desc1 = document.getElementById('wa-desc-1');
+        if (title1) title1.innerText = 'Welcome Back!';
+        if (desc1) desc1.innerText = 'Continue as ' + data.masked_phone + '?';
+        
+        if (!title1 && !document.getElementById('wa-dynamic-welcome')) {
+          const step1 = document.getElementById('wa-step-1');
+          if (step1) {
+             const welcomeHtml = `
+               <div id="wa-dynamic-welcome" style="margin-bottom:24px;">
+                 <h2 style="font-size:26px; font-weight:800; margin-bottom:8px; color:#0f172a; letter-spacing:-0.5px;">Welcome Back!</h2>
+                 <p style="font-size:15px; color:#475569;">Continue as <strong style="color:#0f172a;">${data.masked_phone}</strong>?</p>
+               </div>
+             `;
+             step1.insertAdjacentHTML('afterbegin', welcomeHtml);
+          }
+        }
+
+        const pCont = document.getElementById('wa-phone-container'); if(pCont) pCont.style.display = 'none';
+        const pSec = document.getElementById('wa-phone-input-section'); if(pSec) pSec.style.display = 'none';
+        const midTb = document.getElementById('wa-mid-trust-badges'); if(midTb) midTb.style.display = 'none';
+        const greenBox = document.getElementById('wa-green-otp-box'); if(greenBox) greenBox.style.display = 'none';
+        const switchAcc = document.getElementById('wa-switch-account'); if(switchAcc) switchAcc.style.display = 'block';
+        waPhone = 'MASKED';
+        if (data.storeCreditBalance) {
+          waWalletBalance = parseFloat(data.storeCreditBalance || 0);
+        }
+        if (data.email) {
+          const em = document.getElementById('wa-email');
+          if (em) em.value = data.email;
+        }
+      }
     } catch(e) { console.error('Identify error:', e); }
 
     // Auto-login if phone is verified or saved in browser
@@ -1435,42 +1469,6 @@ window._shopifyCustomer = {
       fetchWalletBalance();
       return;
     }
-
-      
-      if (data.identified && data.masked_phone) {
-        const title1 = document.getElementById('wa-title-1');
-        const desc1 = document.getElementById('wa-desc-1');
-        if (title1) title1.innerText = 'Welcome Back!';
-        if (desc1) desc1.innerText = 'Continue as ' + data.masked_phone + '?';
-        
-        // If we previously deleted the title/desc, inject a clean welcome message so the user isn't confused
-        if (!title1 && !document.getElementById('wa-dynamic-welcome')) {
-          const step1 = document.getElementById('wa-step-1');
-          if (step1) {
-             const welcomeHtml = `
-               <div id="wa-dynamic-welcome" style="margin-bottom:24px;">
-                 <h2 style="font-size:26px; font-weight:800; margin-bottom:8px; color:#0f172a; letter-spacing:-0.5px;">Welcome Back!</h2>
-                 <p style="font-size:15px; color:#475569;">Continue as <strong style="color:#0f172a;">${data.masked_phone}</strong>?</p>
-               </div>
-             `;
-             step1.insertAdjacentHTML('afterbegin', welcomeHtml);
-          }
-        }
-
-        const pCont = document.getElementById('wa-phone-container'); if(pCont) pCont.style.display = 'none';
-        const pSec = document.getElementById('wa-phone-input-section'); if(pSec) pSec.style.display = 'none';
-        const midTb = document.getElementById('wa-mid-trust-badges'); if(midTb) midTb.style.display = 'none';
-        const greenBox = document.getElementById('wa-green-otp-box'); if(greenBox) greenBox.style.display = 'none';
-        document.getElementById('wa-switch-account').style.display = 'block';
-        waPhone = 'MASKED';
-        if (data.storeCreditBalance) {
-          waWalletBalance = parseFloat(data.storeCreditBalance || 0);
-        }
-        if (data.email) {
-          document.getElementById('wa-email').value = data.email;
-        }
-      }
-    } catch (e) { /* Silent fail */ }
   }
 
   function waResetModal() {
@@ -1779,6 +1777,8 @@ window._shopifyCustomer = {
               unique[existingIdx] = a; // Replace local with shopify equivalent
           }
         }
+      }
+
       if (data.email) {
         waSaveEmailGlobally(data.email);
         const emailInput = document.getElementById('wa-email');
