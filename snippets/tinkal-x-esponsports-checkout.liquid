@@ -6,12 +6,15 @@
     width: 100% !important; height: 100% !important;
     z-index: 2147483647 !important; display: none;
     overflow-y: auto !important;
-    background: rgba(15, 23, 42, 0.6) !important;
-    backdrop-filter: blur(6px) !important;
-    -webkit-backdrop-filter: blur(6px) !important;
+    background: rgba(15, 23, 42, 0.75) !important;
     align-items: flex-start !important;
     justify-content: center !important;
     padding: 0 !important;
+  }
+
+  /* ── CASHFREE MODAL Z-INDEX FIX ── */
+  div[id*="cf-"], div[class*="cf-"], div[id*="cashfree"], div[class*="cashfree"], iframe[src*="cashfree.com"] {
+    z-index: 2147483647 !important;
   }
 
   /* ── MAIN WRAPPER ── */
@@ -1334,7 +1337,7 @@ window._shopifyCustomer = {
     if (overlay.parentNode !== document.body) {
       document.body.appendChild(overlay);
     }
-    overlay.style.cssText = 'position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;z-index:2147483647!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;overflow-y:auto!important;padding:0!important;background:rgba(15,23,42,0.6)!important;backdrop-filter:blur(6px)!important;-webkit-backdrop-filter:blur(6px)!important;';
+    overlay.style.cssText = 'position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;z-index:2147483647!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;overflow-y:auto!important;padding:0!important;background:rgba(15,23,42,0.75)!important;';
     document.body.style.overflow = 'hidden';
     waResetModal();
 
@@ -3051,15 +3054,19 @@ function renderPaymentMethods() {
           const data = await res.json();
           if (!res.ok) throw new Error(data.error);
           
-          if (!cashfreeObj) throw new Error('Payment gateway failed to load.');
+          if (!cashfreeObj && typeof Cashfree !== 'undefined') {
+            try {
+              cashfreeObj = Cashfree({ mode: waPaymentSettings.cashfree_env || 'production' });
+            } catch(cfInitErr) {
+              console.error('Cashfree init error:', cfInitErr);
+            }
+          }
+          if (!cashfreeObj) throw new Error('Payment gateway SDK failed to load. Please refresh the page and try again.');
 
           // Open Cashfree Modal
           let checkoutOptions = {
             paymentSessionId: data.payment_session_id,
-            redirectTarget: "_modal",
-            appearance: {
-              color: waPaymentSettings.theme_color || '#0f172a'
-            }
+            redirectTarget: "_modal"
           };
           
           const overlay = document.getElementById('wa-otp-overlay');
@@ -3080,6 +3087,13 @@ function renderPaymentMethods() {
                 await finishOrderBackend({ payment_method: waSelectedPayment, shipping_address: addr, cashfree_order_id: data.order_id });
               }
             }
+          }).catch((cfErr) => {
+            if (overlay) overlay.style.display = originalDisplay;
+            errEl.innerText = 'Payment gateway error: ' + (cfErr.message || cfErr);
+            errEl.style.display = 'block';
+            errEl.scrollIntoView({ behavior: 'smooth' });
+            btn.disabled = false;
+            btn.innerHTML = '<span id="wa-pay-btn-text">Pay Now</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
           });
   
         } catch(e) {
