@@ -157,7 +157,7 @@
       
       <div class="wa-otp-input-group">
         <label>WhatsApp Number</label>
-        <input type="tel" id="wa-phone" class="wa-otp-input" placeholder="e.g. 9876543210">
+        <input type="tel" id="wa-phone" name="tel" autocomplete="tel" inputmode="tel" class="wa-otp-input" placeholder="e.g. 9876543210" oninput="waCleanPhoneInput(this)" onchange="waCleanPhoneInput(this)" onpaste="setTimeout(() => waCleanPhoneInput(this), 50)">
         <div class="wa-error" id="wa-phone-error">Please enter a valid number.</div>
       </div>
       
@@ -224,6 +224,24 @@
     sendWaOtp();
   }
 
+  function waCleanPhoneInput(el) {
+    if (!el) return '';
+    let val = el.value || '';
+    let digits = val.replace(/\D/g, '');
+    if (digits.length > 10 && digits.startsWith('91')) {
+      digits = digits.slice(2);
+    } else if (digits.length > 10 && digits.startsWith('0')) {
+      digits = digits.slice(1);
+    }
+    digits = digits.slice(0, 10);
+    el.value = digits;
+    if (digits.length === 10) {
+      localStorage.setItem('wa_saved_phone', digits);
+      localStorage.setItem('fit11_user_phone', digits);
+    }
+    return digits;
+  }
+
   function openWaModal(checkoutType, buttonElement) {
     waTargetCheckoutType = checkoutType;
     waTargetButton = buttonElement;
@@ -231,6 +249,15 @@
     document.getElementById('wa-step-1').style.display = 'block';
     document.getElementById('wa-step-2').style.display = 'none';
     document.body.style.overflow = 'hidden';
+
+    const phoneInput = document.getElementById('wa-phone');
+    if (phoneInput && !phoneInput.value) {
+      const saved = localStorage.getItem('wa_saved_phone') || localStorage.getItem('fit11_user_phone');
+      if (saved) {
+        phoneInput.value = saved;
+        waCleanPhoneInput(phoneInput);
+      }
+    }
   }
 
   function closeWaModal() {
@@ -241,12 +268,14 @@
 
   async function sendWaOtp() {
     const phoneInput = document.getElementById('wa-phone');
-    const phone = phoneInput.value.trim();
+    const phone = waCleanPhoneInput(phoneInput);
     if (phone.length < 10) {
       document.getElementById('wa-phone-error').style.display = 'block';
       return;
     }
     document.getElementById('wa-phone-error').style.display = 'none';
+    localStorage.setItem('wa_saved_phone', phone);
+    localStorage.setItem('fit11_user_phone', phone);
     
     const btn = document.getElementById('wa-send-btn');
     btn.disabled = true;

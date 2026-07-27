@@ -443,7 +443,7 @@ window._shopifyCustomer = {
                 <div class="wa-phone-prefix" style="padding:16px; background:#f8fafc; border-right:1px solid #e2e8f0; font-weight:700; color:#0f172a; font-size:15px; display:flex; align-items:center; gap:6px;">
                   IN +91 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
                 </div>
-                <input type="tel" id="wa-phone" class="wa-input" placeholder="98765 43210" maxlength="10" style="border:none; padding:16px; font-size:16px; font-weight:500; color:#0f172a; flex:1; outline:none;" oninput="this.value=this.value.replace(/\D/g,'')">
+                <input type="tel" id="wa-phone" name="tel" autocomplete="tel" inputmode="tel" class="wa-input" placeholder="98765 43210" style="border:none; padding:16px; font-size:16px; font-weight:500; color:#0f172a; flex:1; outline:none;" oninput="waCleanPhoneInput(this)" onchange="waCleanPhoneInput(this)" onpaste="setTimeout(() => waCleanPhoneInput(this), 50)">
               </div>
             </div>
             
@@ -1129,6 +1129,24 @@ window._shopifyCustomer = {
     }
   }
   
+  function waCleanPhoneInput(el) {
+    if (!el) return '';
+    let val = el.value || '';
+    let digits = val.replace(/\D/g, '');
+    if (digits.length > 10 && digits.startsWith('91')) {
+      digits = digits.slice(2);
+    } else if (digits.length > 10 && digits.startsWith('0')) {
+      digits = digits.slice(1);
+    }
+    digits = digits.slice(0, 10);
+    el.value = digits;
+    if (digits.length === 10) {
+      localStorage.setItem('wa_saved_phone', digits);
+      localStorage.setItem('fit11_user_phone', digits);
+    }
+    return digits;
+  }
+
   async function openWaModal() {
     const overlay = document.getElementById('wa-otp-overlay');
     if (!overlay) return;
@@ -1139,14 +1157,22 @@ window._shopifyCustomer = {
     document.body.style.overflow = 'hidden';
     waResetModal();
 
-    // Pre-fill from Shopify logged-in customer data
+    // Pre-fill phone from localStorage or Shopify customer
+    const phoneInput = document.getElementById('wa-phone');
     const sc = window._shopifyCustomer;
-    if (sc && sc.logged_in) {
-      // Pre-fill phone if available
-      if (sc.phone) {
-        const cleanPhone = sc.phone.replace(/\D/g, '').replace(/^91/, '');
-        document.getElementById('wa-phone').value = cleanPhone;
+    if (sc && sc.logged_in && sc.phone) {
+      if (phoneInput) {
+        phoneInput.value = sc.phone;
+        waCleanPhoneInput(phoneInput);
       }
+    } else if (phoneInput && !phoneInput.value) {
+      const savedPhone = localStorage.getItem('wa_saved_phone') || localStorage.getItem('fit11_user_phone');
+      if (savedPhone) {
+        phoneInput.value = savedPhone;
+        waCleanPhoneInput(phoneInput);
+      }
+    }
+    if (sc && sc.logged_in) {
       // Pre-fill email
       if (sc.email) {
         document.getElementById('wa-email').value = sc.email;
@@ -1185,7 +1211,7 @@ window._shopifyCustomer = {
     // Check identity via device (for "Welcome Back" flow if no session cache)
     try {
       const device_id = localStorage.getItem('fit11_device_id');
-      const res = await fetch(`${WA_API_BASE}/wallet-balance`, {
+      const res = await fetch(`${WA_API_BASE}/identify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ device_id, merchant_key: MERCHANT_KEY })
@@ -1423,10 +1449,13 @@ window._shopifyCustomer = {
   }
 
   async function sendWaOtp() {
-    let phoneInput = document.getElementById('wa-phone').value.trim();
+    let phoneInputEl = document.getElementById('wa-phone');
+    let phoneInput = phoneInputEl ? waCleanPhoneInput(phoneInputEl) : '';
     if (waPhone !== 'MASKED') {
       if (phoneInput.length < 10) return alert('Please enter a valid 10-digit mobile number');
       waPhone = phoneInput;
+      localStorage.setItem('wa_saved_phone', waPhone);
+      localStorage.setItem('fit11_user_phone', waPhone);
     }
     // Validation moved to final checkout / address save
     const btn = document.getElementById('wa-send-btn');
