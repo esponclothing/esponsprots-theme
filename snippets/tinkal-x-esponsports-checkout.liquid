@@ -1129,6 +1129,106 @@ window._shopifyCustomer = {
     }
   }
   
+  function waSavePhoneGlobally(phone) {
+    if (!phone) return;
+    let digits = String(phone).replace(/\D/g, '');
+    if (digits.length > 10 && (digits.startsWith('91') || digits.startsWith('0'))) {
+      digits = digits.slice(-10);
+    }
+    digits = digits.slice(0, 10);
+    if (digits.length === 10) {
+      try {
+        localStorage.setItem('wa_saved_phone', digits);
+        localStorage.setItem('wa_user_phone', digits);
+        localStorage.setItem('espon_user_phone', digits);
+        localStorage.setItem('fit11_user_phone', digits);
+        localStorage.setItem('notify_phone_number', digits);
+        sessionStorage.setItem('wa_verified_phone', digits);
+        sessionStorage.setItem('fit11_verified_phone', digits);
+        document.cookie = `wa_saved_phone=${digits}; path=/; max-age=2592000`; // 30 days
+      } catch(e) {}
+    }
+  }
+
+  function waGetSavedPhone() {
+    let phone = '';
+
+    // 1. Check window._shopifyCustomer
+    const sc = window._shopifyCustomer;
+    if (sc && sc.logged_in && sc.phone) {
+      phone = sc.phone;
+    }
+
+    // 2. Check localStorage & sessionStorage keys
+    if (!phone) {
+      const keys = [
+        'wa_saved_phone',
+        'wa_user_phone',
+        'espon_user_phone',
+        'fit11_user_phone',
+        'tinkal_user_phone',
+        'notify_phone_number',
+        'wa_verified_phone',
+        'fit11_verified_phone',
+        'espon_verified_phone'
+      ];
+      for (let k of keys) {
+        try {
+          let v = localStorage.getItem(k) || sessionStorage.getItem(k);
+          if (v) { phone = v; break; }
+        } catch(e) {}
+      }
+    }
+
+    // 3. Check base64 notifyph if present
+    if (!phone) {
+      try {
+        let nph = localStorage.getItem('notifyph');
+        if (nph) {
+          let decoded = atob(nph);
+          if (decoded && decoded !== '0000000000') phone = decoded;
+        }
+      } catch(e) {}
+    }
+
+    // 4. Check Cookies
+    if (!phone) {
+      try {
+        const cookies = document.cookie.split('; ');
+        for (let c of cookies) {
+          let [name, val] = c.split('=');
+          if (name === 'wa_saved_phone' || name === 'notify_phone_number' || name === 'user_phone') {
+            if (val) { phone = decodeURIComponent(val); break; }
+          }
+        }
+      } catch(e) {}
+    }
+
+    // 5. Check DOM inputs on the page (autofilled or typed inputs)
+    if (!phone) {
+      const telInputs = document.querySelectorAll('input[type="tel"], input[name*="phone"], input[name*="mobile"]');
+      for (let inp of telInputs) {
+        if (inp && inp.value && inp.id !== 'wa-phone') {
+          let digits = inp.value.replace(/\D/g, '');
+          if (digits.length > 10 && (digits.startsWith('91') || digits.startsWith('0'))) {
+            digits = digits.slice(-10);
+          }
+          if (digits.length === 10) { phone = digits; break; }
+        }
+      }
+    }
+
+    if (phone) {
+      let digits = String(phone).replace(/\D/g, '');
+      if (digits.length > 10 && (digits.startsWith('91') || digits.startsWith('0'))) {
+        digits = digits.slice(-10);
+      }
+      digits = digits.slice(0, 10);
+      if (digits.length === 10) return digits;
+    }
+    return '';
+  }
+
   function waCleanPhoneInput(el) {
     if (!el) return '';
     let val = el.value || '';
@@ -1141,8 +1241,7 @@ window._shopifyCustomer = {
     digits = digits.slice(0, 10);
     el.value = digits;
     if (digits.length === 10) {
-      localStorage.setItem('wa_saved_phone', digits);
-      localStorage.setItem('fit11_user_phone', digits);
+      waSavePhoneGlobally(digits);
     }
     return digits;
   }
@@ -1157,27 +1256,19 @@ window._shopifyCustomer = {
     document.body.style.overflow = 'hidden';
     waResetModal();
 
-    // Pre-fill phone from localStorage or Shopify customer
+    // Auto-fetch saved or cached phone from browser
     const phoneInput = document.getElementById('wa-phone');
-    const sc = window._shopifyCustomer;
-    if (sc && sc.logged_in && sc.phone) {
-      if (phoneInput) {
-        phoneInput.value = sc.phone;
-        waCleanPhoneInput(phoneInput);
-      }
-    } else if (phoneInput && !phoneInput.value) {
-      const savedPhone = localStorage.getItem('wa_saved_phone') || localStorage.getItem('fit11_user_phone');
-      if (savedPhone) {
-        phoneInput.value = savedPhone;
-        waCleanPhoneInput(phoneInput);
-      }
+    const cachedPhone = waGetSavedPhone();
+
+    if (phoneInput && cachedPhone) {
+      phoneInput.value = cachedPhone;
     }
+
+    const sc = window._shopifyCustomer;
     if (sc && sc.logged_in) {
-      // Pre-fill email
       if (sc.email) {
         document.getElementById('wa-email').value = sc.email;
       }
-      // Pre-load Shopify addresses (merge with network_addresses later)
       if (sc.addresses && sc.addresses.length > 0) {
         waAddresses = sc.addresses.map(a => ({
           id: 'shopify_' + a.id,
@@ -1193,15 +1284,17 @@ window._shopifyCustomer = {
       }
     }
 
-    // Check if they already verified in this tab session
-    const cachedPhone = sessionStorage.getItem('fit11_verified_phone');
+    // Auto-login if phone is verified or saved in browser
     if (cachedPhone) {
       waPhone = cachedPhone;
+      waSavePhoneGlobally(cachedPhone);
       document.getElementById('wa-step-1').style.display = 'none';
       document.getElementById('wa-step-2').style.display = 'none';
       document.getElementById('wa-step-3').style.display = 'block';
-      const cachedEmail = sessionStorage.getItem('fit11_verified_email');
-      if (cachedEmail) document.getElementById('wa-email').value = cachedEmail;
+      const cachedEmail = sessionStorage.getItem('fit11_verified_email') || localStorage.getItem('wa_saved_email');
+      if (cachedEmail && document.getElementById('wa-email')) {
+        document.getElementById('wa-email').value = cachedEmail;
+      }
       waSetStep(3);
       loadAddresses();
       calculateCheckoutTotals();
