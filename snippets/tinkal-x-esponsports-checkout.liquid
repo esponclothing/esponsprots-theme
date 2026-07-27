@@ -3058,16 +3058,19 @@ function renderPaymentMethods() {
             })
           });
           const data = await res.json();
-          if (!res.ok) throw new Error(data.error);
+          if (!res.ok || !data || !data.payment_session_id) {
+            throw new Error(data.error || data.message || 'Payment server failed to generate Cashfree session.');
+          }
           
           if (!cashfreeObj && typeof Cashfree !== 'undefined') {
             try {
               cashfreeObj = Cashfree({ mode: waPaymentSettings.cashfree_env || 'production' });
             } catch(cfInitErr) {
               console.error('Cashfree init error:', cfInitErr);
+              throw new Error('Cashfree SDK init error: ' + (cfInitErr.message || cfInitErr));
             }
           }
-          if (!cashfreeObj) throw new Error('Payment gateway SDK failed to load. Please refresh the page and try again.');
+          if (!cashfreeObj) throw new Error('Payment gateway SDK failed to load from sdk.cashfree.com/js/v3/cashfree.js. Please check network/ad-blocker settings.');
 
           // Open Cashfree Modal
           let checkoutOptions = {
@@ -3075,12 +3078,23 @@ function renderPaymentMethods() {
             redirectTarget: "_modal"
           };
           
+          // CRITICAL FIX (matching 11fit): Hide our custom modal overlay so the Cashfree modal is visible!
           const overlay = document.getElementById('wa-otp-overlay');
+          const originalDisplay = overlay ? overlay.style.display : 'flex';
+          if (overlay) overlay.style.display = 'none';
           
           cashfreeObj.checkout(checkoutOptions).then(async (result) => {
+            if (overlay) overlay.style.display = originalDisplay;
+            
             if (result.error) {
-              errEl.innerText = result.error.message || 'Payment failed or cancelled by user.';
+              const exactErr = result.error.message || result.error.code || (typeof result.error === 'string' ? result.error : JSON.stringify(result.error)) || 'Payment failed or cancelled by user.';
+              errEl.innerText = 'Payment Error: ' + exactErr;
               errEl.style.display = 'block';
+              errEl.style.padding = '12px';
+              errEl.style.background = '#fef2f2';
+              errEl.style.border = '1px solid #f87171';
+              errEl.style.borderRadius = '8px';
+              errEl.style.color = '#dc2626';
               errEl.scrollIntoView({ behavior: 'smooth' });
               btn.disabled = false;
               btn.innerHTML = '<span id="wa-pay-btn-text">Pay Now</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
@@ -3090,8 +3104,15 @@ function renderPaymentMethods() {
               }
             }
           }).catch((cfErr) => {
-            errEl.innerText = 'Payment gateway error: ' + (cfErr.message || cfErr);
+            if (overlay) overlay.style.display = originalDisplay;
+            const exactErr = (cfErr && cfErr.message) ? cfErr.message : (typeof cfErr === 'string' ? cfErr : JSON.stringify(cfErr));
+            errEl.innerText = 'Payment Gateway Error: ' + exactErr;
             errEl.style.display = 'block';
+            errEl.style.padding = '12px';
+            errEl.style.background = '#fef2f2';
+            errEl.style.border = '1px solid #f87171';
+            errEl.style.borderRadius = '8px';
+            errEl.style.color = '#dc2626';
             errEl.scrollIntoView({ behavior: 'smooth' });
             btn.disabled = false;
             btn.innerHTML = '<span id="wa-pay-btn-text">Pay Now</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
@@ -3101,8 +3122,14 @@ function renderPaymentMethods() {
           const overlay = document.getElementById('wa-otp-overlay');
           if (overlay && overlay.style.display === 'none') overlay.style.display = 'flex';
           
-          errEl.innerText = 'Error: ' + e.message;
+          const exactErr = (e && e.message) ? e.message : (typeof e === 'string' ? e : JSON.stringify(e));
+          errEl.innerText = 'Payment Error: ' + exactErr;
           errEl.style.display = 'block';
+          errEl.style.padding = '12px';
+          errEl.style.background = '#fef2f2';
+          errEl.style.border = '1px solid #f87171';
+          errEl.style.borderRadius = '8px';
+          errEl.style.color = '#dc2626';
           errEl.scrollIntoView({ behavior: 'smooth' });
           btn.disabled = false;
           btn.innerHTML = '<span id="wa-pay-btn-text">Pay Now</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
