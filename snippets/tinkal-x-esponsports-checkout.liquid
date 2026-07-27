@@ -1229,6 +1229,87 @@ window._shopifyCustomer = {
     return '';
   }
 
+  function waSaveEmailGlobally(email) {
+    if (!email || !email.trim()) return;
+    let cleanEmail = email.trim();
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      try {
+        localStorage.setItem('wa_saved_email', cleanEmail);
+        localStorage.setItem('wa_user_email', cleanEmail);
+        localStorage.setItem('espon_user_email', cleanEmail);
+        localStorage.setItem('fit11_user_email', cleanEmail);
+        localStorage.setItem('notify_email', cleanEmail);
+        sessionStorage.setItem('fit11_verified_email', cleanEmail);
+        sessionStorage.setItem('wa_verified_email', cleanEmail);
+        document.cookie = `wa_saved_email=${encodeURIComponent(cleanEmail)}; path=/; max-age=2592000`; // 30 days
+      } catch(e) {}
+    }
+  }
+
+  function waGetSavedEmail() {
+    let email = '';
+
+    // 1. Check window._shopifyCustomer
+    const sc = window._shopifyCustomer;
+    if (sc && sc.logged_in && sc.email) {
+      email = sc.email;
+    }
+
+    // 2. Check localStorage & sessionStorage
+    if (!email) {
+      const keys = [
+        'wa_saved_email',
+        'wa_user_email',
+        'espon_user_email',
+        'fit11_user_email',
+        'fit11_verified_email',
+        'wa_verified_email',
+        'notify_email'
+      ];
+      for (let k of keys) {
+        try {
+          let v = localStorage.getItem(k) || sessionStorage.getItem(k);
+          if (v && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())) {
+            email = v.trim();
+            break;
+          }
+        } catch(e) {}
+      }
+    }
+
+    // 3. Check Cookies
+    if (!email) {
+      try {
+        const cookies = document.cookie.split('; ');
+        for (let c of cookies) {
+          let [name, val] = c.split('=');
+          if (name === 'wa_saved_email' || name === 'notify_email' || name === 'user_email') {
+            if (val && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(decodeURIComponent(val).trim())) {
+              email = decodeURIComponent(val).trim();
+              break;
+            }
+          }
+        }
+      } catch(e) {}
+    }
+
+    // 4. Check DOM email inputs on page
+    if (!email) {
+      const emailInputs = document.querySelectorAll('input[type="email"], input[name*="email"]');
+      for (let inp of emailInputs) {
+        if (inp && inp.value && inp.id !== 'wa-email') {
+          let val = inp.value.trim();
+          if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+            email = val;
+            break;
+          }
+        }
+      }
+    }
+
+    return email;
+  }
+
   function waCleanPhoneInput(el) {
     if (!el) return '';
     let val = el.value || '';
@@ -1256,18 +1337,27 @@ window._shopifyCustomer = {
     document.body.style.overflow = 'hidden';
     waResetModal();
 
-    // Auto-fetch saved or cached phone from browser
+    // Auto-fetch saved or cached phone & email from browser
     const phoneInput = document.getElementById('wa-phone');
+    const emailInput = document.getElementById('wa-email');
+
     const cachedPhone = waGetSavedPhone();
+    const cachedEmail = waGetSavedEmail();
 
     if (phoneInput && cachedPhone) {
       phoneInput.value = cachedPhone;
     }
+    if (emailInput && cachedEmail) {
+      emailInput.value = cachedEmail;
+      waEmail = cachedEmail;
+    }
 
     const sc = window._shopifyCustomer;
     if (sc && sc.logged_in) {
-      if (sc.email) {
-        document.getElementById('wa-email').value = sc.email;
+      if (sc.email && emailInput) {
+        emailInput.value = sc.email;
+        waEmail = sc.email;
+        waSaveEmailGlobally(sc.email);
       }
       if (sc.addresses && sc.addresses.length > 0) {
         waAddresses = sc.addresses.map(a => ({
@@ -1291,9 +1381,11 @@ window._shopifyCustomer = {
       document.getElementById('wa-step-1').style.display = 'none';
       document.getElementById('wa-step-2').style.display = 'none';
       document.getElementById('wa-step-3').style.display = 'block';
-      const cachedEmail = sessionStorage.getItem('fit11_verified_email') || localStorage.getItem('wa_saved_email');
-      if (cachedEmail && document.getElementById('wa-email')) {
-        document.getElementById('wa-email').value = cachedEmail;
+      
+      const activeEmail = cachedEmail || (emailInput ? emailInput.value : '');
+      if (activeEmail && emailInput) {
+        emailInput.value = activeEmail;
+        waEmail = activeEmail;
       }
       waSetStep(3);
       loadAddresses();
@@ -1696,6 +1788,13 @@ window._shopifyCustomer = {
           if (existingIdx !== -1 && !String(unique[existingIdx].id).startsWith('shopify_')) {
               unique[existingIdx] = a; // Replace local with shopify equivalent
           }
+        }
+      if (data.email) {
+        waSaveEmailGlobally(data.email);
+        const emailInput = document.getElementById('wa-email');
+        if (emailInput && (!emailInput.value || !emailInput.value.trim())) {
+          emailInput.value = data.email;
+          waEmail = data.email;
         }
       }
       
