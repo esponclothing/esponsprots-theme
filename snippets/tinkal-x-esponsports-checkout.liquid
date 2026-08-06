@@ -2708,7 +2708,8 @@ function renderPaymentMethods() {
       }
       
       if (!waSelectedPayment || !methods.find(m => m.id === waSelectedPayment)) {
-        waSelectedPayment = methods[0].id;
+        const prepaidMethod = methods.find(m => m.id === 'prepaid');
+        waSelectedPayment = prepaidMethod ? 'prepaid' : methods[0].id;
       }
       
       const uniqueCss = `
@@ -2756,11 +2757,18 @@ function renderPaymentMethods() {
                        <div>
                          <div style="font-weight:700; color:#1e293b; font-size:16px;">Pay Online (UPI, Cards)</div>
                          <div style="font-size:12px; color:#64748b; margin-top:2px;">Fast, secure & hassle-free</div>
-                         ${disc > 0 ? `<div style="margin-top:6px;">
-                           <span style="display:inline-flex; align-items:center; color:#059669; font-weight:800; font-size:10px; background: #ecfdf5; padding:3px 8px; border-radius:4px; border:1px dashed #10b981; letter-spacing:0.5px; text-transform:uppercase;">
+                         ${(disc > 0 || (waPaymentSettings.cashback_enabled && waPaymentSettings.cashback_value > 0)) ? `<div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                           ${disc > 0 ? `<span style="display:inline-flex; align-items:center; color:#059669; font-weight:800; font-size:10px; background: #ecfdf5; padding:3px 8px; border-radius:4px; border:1px dashed #10b981; letter-spacing:0.5px; text-transform:uppercase;">
                              <svg width="12" height="12" style="margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
                              YOU SAVE ₹${Math.round(disc)}
-                           </span>
+                           </span>` : ''}
+                           ${(waPaymentSettings.cashback_enabled && waPaymentSettings.cashback_value > 0) ? (function(){
+                             let cbAmt = waPaymentSettings.cashback_type === 'percent' ? Math.round((baseTotal * waPaymentSettings.cashback_value) / 100) : Math.round(waPaymentSettings.cashback_value);
+                             return `<span style="display:inline-flex; align-items:center; color:#4f46e5; font-weight:800; font-size:10px; background: #e0e7ff; padding:3px 8px; border-radius:4px; border:1px dashed #6366f1; letter-spacing:0.5px; text-transform:uppercase;">
+                             <svg width="12" height="12" style="margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M18 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/></svg>
+                             + ₹${cbAmt} CASHBACK
+                           </span>`;
+                           })() : ''}
                          </div>` : ''}
                        </div>
                     </div>
@@ -3006,6 +3014,37 @@ function renderPaymentMethods() {
       if (waSelectedPayment === 'cod') {
         // Direct complete
         await finishOrderBackend({ payment_method: 'cod', shipping_address: addr });
+      } else if (waSelectedPayment === 'prepaid' && waPaymentSettings.use_shopify_checkout_prepaid) {
+        try {
+          const res = await fetch(`${WA_API_BASE}/checkout/update-draft`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              merchant_key: MERCHANT_KEY, 
+              draft_order_id: waDraftOrderId,
+              payment_method: waSelectedPayment,
+              customer_email: waEmail,
+              customer_phone: waPhone,
+              device_id: localStorage.getItem('fit11_device_id') || localStorage.getItem('wa_device_id'),
+              shipping_address: addr
+            })
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Failed to update draft order');
+          
+          if (data.invoice_url) {
+             window.location.href = data.invoice_url;
+          } else {
+             throw new Error('No checkout URL returned from Shopify.');
+          }
+        } catch(e) {
+          errEl.innerText = 'Error: ' + e.message;
+          errEl.style.display = 'block';
+          errEl.scrollIntoView({ behavior: 'smooth' });
+          btn.disabled = false;
+          btn.innerHTML = '<span id="wa-pay-btn-text">Pay Now</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+        }
+        return;
       } else {
         // Cashfree flow (Partial COD or standard Prepaid)
         const walletDeduction = (waWalletApplied && waWalletAppliedAmt > 0) ? waWalletAppliedAmt : 0;
