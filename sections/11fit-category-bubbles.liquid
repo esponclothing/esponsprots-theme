@@ -1,0 +1,352 @@
+{% schema %}
+{
+  "name": "Luxe Category Arches",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#FBF9F6",
+      "info": "An elegant ivory or muted dark tone works best."
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent / Border Color",
+      "default": "#C5A059",
+      "info": "Used for the delicate outer ring and hover states."
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "font_size_desktop",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Desktop Font Size",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "font_size_mobile",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Mobile Font Size",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Letter Spacing",
+      "default": 2
+    },
+    {
+      "type": "select",
+      "id": "text_transform",
+      "label": "Text Capitalization",
+      "options": [
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "capitalize", "label": "Capitalize" },
+        { "value": "none", "label": "Normal" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "header",
+      "content": "Layout & Animation"
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Vertical Padding",
+      "default": 40
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_autoplay",
+      "label": "Enable Auto-Scroll",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "sec",
+      "label": "Auto-Scroll Speed",
+      "default": 4
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category Arch",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Category Image",
+          "info": "Upload a portrait or square image."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Category Name",
+          "default": "COLLECTION"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Category Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Luxe Category Arches",
+      "blocks": [
+        { "type": "category" },
+        { "type": "category" },
+        { "type": "category" },
+        { "type": "category" },
+        { "type": "category" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+  .luxe-wrapper {
+    background-color: {{ section.settings.bg_color }};
+    padding: {{ section.settings.padding_vertical }}px 0;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    font-family: {{ settings.type_header_font.family | default: 'sans-serif' }};
+  }
+
+  .luxe-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 20px 24px; 
+    gap: 24px; 
+    scroll-snap-type: x mandatory;
+  }
+
+  .luxe-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .luxe-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none !important; /* Force override theme link underlines */
+    flex: 0 0 auto;
+    width: 90px;
+    scroll-snap-align: start;
+    cursor: pointer;
+  }
+
+  .luxe-ring {
+    width: 90px;
+    height: 120px;
+    border-radius: 45px;
+    border: 1px solid {{ section.settings.accent_color | color_modify: 'alpha', 0.4 }};
+    padding: 4px;
+    margin-bottom: 16px;
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .luxe-image-wrap {
+    width: 100%;
+    height: 100%;
+    border-radius: 40px;
+    overflow: hidden;
+    background-color: #EFEFEF;
+    position: relative;
+    transform: translateZ(0); 
+  }
+
+  .luxe-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* Added stronger specificity and !important to force the color change */
+  .luxe-wrapper .luxe-item .luxe-title {
+    color: {{ section.settings.text_color }} !important;
+    font-size: {{ section.settings.font_size_mobile }}px;
+    font-weight: 400; 
+    text-align: center;
+    text-transform: {{ section.settings.text_transform }};
+    letter-spacing: {{ section.settings.letter_spacing }}px;
+    line-height: 1.4;
+    width: 100%;
+    display: block; 
+    word-wrap: break-word;
+    transition: color 0.4s ease;
+  }
+
+  /* PC Refinements */
+  @media (min-width: 769px) {
+    .luxe-track {
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 60px;
+      padding: 40px 20px;
+    }
+    .luxe-item { width: 120px; }
+    .luxe-ring { width: 120px; height: 160px; border-radius: 60px; padding: 6px; margin-bottom: 24px; }
+    .luxe-image-wrap { border-radius: 54px; }
+    
+    .luxe-wrapper .luxe-item .luxe-title { 
+      font-size: {{ section.settings.font_size_desktop }}px; 
+    }
+    
+    .luxe-item:hover .luxe-ring {
+      border-color: {{ section.settings.accent_color }};
+      transform: translateY(-5px);
+    }
+    
+    .luxe-item:hover .luxe-image-wrap img {
+      transform: scale(1.08);
+    }
+    
+    /* Force the hover color specifically for the title */
+    .luxe-wrapper .luxe-item:hover .luxe-title {
+      color: {{ section.settings.accent_color }} !important;
+    }
+  }
+</style>
+
+<div class="luxe-wrapper" id="luxeWrapper-{{ section.id }}" data-speed="{{ section.settings.autoplay_speed | times: 1000 }}" data-autoplay="{{ section.settings.enable_autoplay }}">
+  <div class="luxe-track" id="luxeTrack-{{ section.id }}">
+    {% for block in section.blocks %}
+      <a href="{{ block.settings.link | default: '#' }}" class="luxe-item" {{ block.shopify_attributes }}>
+        <div class="luxe-ring">
+          <div class="luxe-image-wrap">
+            {% if block.settings.image %}
+              <img src="{{ block.settings.image | img_url: '300x400', crop: 'center' }}" alt="{{ block.settings.title | escape }}" loading="lazy">
+            {% else %}
+              <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                <span style="font-size: 10px; color: #A0AEC0; letter-spacing: 1px;">IMG</span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="luxe-title">{{ block.settings.title }}</div>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const track = document.getElementById('luxeTrack-{{ section.id }}');
+    const wrapper = document.getElementById('luxeWrapper-{{ section.id }}');
+    if (!track || !wrapper) return;
+
+    const speed = parseInt(wrapper.getAttribute('data-speed')) || 4000;
+    const enableAutoplay = wrapper.getAttribute('data-autoplay') === 'true';
+    let autoPlayInterval;
+
+    function scrollToNextLuxe() {
+      if (track.scrollWidth <= track.clientWidth) return;
+      
+      const item = track.querySelector('.luxe-item');
+      if (!item) return;
+      
+      const itemWidth = item.offsetWidth + parseInt(window.getComputedStyle(track).gap || 24);
+      const maxScroll = track.scrollWidth - track.clientWidth;
+
+      if (track.scrollLeft >= maxScroll - 10) {
+        track.scrollTo({ left: 0, behavior: 'smooth' }); 
+      } else {
+        track.scrollBy({ left: itemWidth, behavior: 'smooth' });
+      }
+    }
+
+    function playLuxe() {
+      if (!enableAutoplay) return;
+      clearInterval(autoPlayInterval);
+      autoPlayInterval = setInterval(scrollToNextLuxe, speed);
+    }
+
+    function pauseLuxe() {
+      clearInterval(autoPlayInterval);
+    }
+
+
+
+    let isDragging = false;
+    let startX, startY;
+
+    const items = track.querySelectorAll('.luxe-item');
+    items.forEach(item => {
+      item.addEventListener('touchstart', (e) => {
+        if (enableAutoplay) pauseLuxe();
+        isDragging = false;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      }, { passive: true });
+
+      item.addEventListener('touchmove', (e) => {
+        if (!startX || !startY) return;
+        let deltaX = Math.abs(e.touches[0].clientX - startX);
+        let deltaY = Math.abs(e.touches[0].clientY - startY);
+        if (deltaX > 8 || deltaY > 8) {
+          isDragging = true;
+        }
+      }, { passive: true });
+
+      item.addEventListener('touchend', (e) => {
+        if (enableAutoplay) playLuxe();
+        
+        if (!isDragging) {
+          const href = item.getAttribute('href');
+          if (href && href !== '#' && href !== '') {
+            window.location.href = href;
+          }
+        }
+      });
+    });
+    
+    if (enableAutoplay) playLuxe();
+  });
+</script>

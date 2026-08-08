@@ -1,1 +1,114 @@
-{"type":"footer","name":"Footer","sections":{"espon_b2b_footer_GWPNyr":{"type":"espon-b2b-footer","name":"Espon B2B Footer","settings":{"footer_desc":"India's leading B2B sportswear partner. We empower 5,000+ retailers and wholesalers with direct factory access, eliminating middlemen to guarantee 50% retail margins.","col1_title":"Quick Access","col1_link1_text":"Browse Inventory","col1_link1_url":"shopify:\/\/collections","col1_link2_text":"Dealer Login","col1_link2_url":"https:\/\/account.esponsports.com\/","col1_link3_text":"Factory Profile","col1_link3_url":"shopify:\/\/pages\/contact","col1_link4_text":"Help & FAQs","col1_link4_url":"shopify:\/\/pages\/faq","col2_title":"Legal","col2_link1_text":"Shipping Policy","col2_link1_url":"shopify:\/\/pages\/shipping-policy","col2_link2_text":"Returns & Refunds","col2_link2_url":"shopify:\/\/pages\/refund-return-policy","col2_link3_text":"Payment Terms","col2_link3_url":"shopify:\/\/pages\/partial-payment-policy","col2_link4_text":"Privacy Policy","col2_link4_url":"shopify:\/\/pages\/privacy-policy","col2_link5_text":"About Us","col2_link5_url":"shopify:\/\/pages\/about-us","contact_title":"Contact Us","contact_address":"Sco-71A, 2nd Floor, Ashoka Plaza, Rohtak, Haryana - 124001","contact_map_link":"https:\/\/share.google\/vlEyQMWbCR1lQ7b4g","contact_email":"support@espon.in","contact_phone":"+919896507407","social_instagram":"https:\/\/www.instagram.com\/esponindia\/","social_facebook":"https:\/\/www.facebook.com\/Esponsports","social_google":"https:\/\/share.google\/vlEyQMWbCR1lQ7b4g","copyright_text":"Espon Clothing Private Limited","enable_wa_widget":true,"ai_widget_text":"Talk with Espon","wa_widget_position":"right","wa_bottom_desktop":150,"wa_bottom_mobile":80,"wa_widget_number":"919896507407","wa_widget_message":"Hello! Can I get more info on this?"}}},"order":["espon_b2b_footer_GWPNyr"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.footer.name",
+  "type": "footer",
+  "sections": {
+    "whatsapp_floating_button_TVMFb9": {
+      "type": "whatsapp-floating-button",
+      "name": "WhatsApp Button",
+      "settings": {
+        "phone_number": "917494961428",
+        "prefilled_text": "Hey i have some query about 11 fit",
+        "bg_color": "#c5a059",
+        "icon_color": "#ffffff",
+        "horizontal_placement": "right",
+        "offset_x": 30,
+        "offset_y": 36,
+        "offset_x_mobile": 8,
+        "offset_y_mobile": 80
+      }
+    },
+    "11fit_footer_6AeTLz": {
+      "type": "11fit-footer",
+      "name": "11 fit Footer",
+      "settings": {
+        "heading_font": "work_sans_n7",
+        "body_font": "work_sans_n4",
+        "font_size_desktop": 14,
+        "font_size_mobile": 13,
+        "bg_color": "#ffffff",
+        "bg_light": "#f1f5f9",
+        "text_color": "#0f172a",
+        "text_muted": "#475569",
+        "accent_color": "#c5a059",
+        "accent_hover": "#c5a059",
+        "border_light": "#e2e8f0",
+        "border_dark": "#cbd5e1",
+        "footer_pad_top": 40,
+        "footer_pad_bottom": 25,
+        "footer_grid_gap": 50,
+        "footer_logo": "shopify://shop_images/ChatGPT_Image_May_29__2026__11_26_22_AM-removebg-preview.png",
+        "footer_desc": "India's premier marketplace for electronics, smartwatches, and fast chargers. High quality. Unbeatable margins.",
+        "col1_title": "Quick Access",
+        "col1_link1_text": "Categories",
+        "col1_link1_icon": "fa-solid fa-bolt",
+        "col1_link1_url": "shopify://collections",
+        "col1_link2_text": "Accessories",
+        "col1_link2_icon": "fa-solid fa-stopwatch",
+        "col1_link2_url": "",
+        "col1_link3_text": "Track Order",
+        "col1_link3_icon": "fa-solid fa-truck-fast",
+        "col1_link3_url": "",
+        "col1_link4_text": "Help & FAQs",
+        "col1_link4_icon": "fa-solid fa-circle-question",
+        "col1_link4_url": "shopify://pages/faq",
+        "col2_title": "Legal",
+        "col2_link1_text": "Shipping Policy",
+        "col2_link1_icon": "fa-solid fa-box",
+        "col2_link1_url": "shopify://policies/shipping-policy",
+        "col2_link2_text": "Returns & Refunds",
+        "col2_link2_icon": "fa-solid fa-rotate-left",
+        "col2_link2_url": "shopify://policies/refund-policy",
+        "col2_link3_text": "Payment Terms",
+        "col2_link3_icon": "fa-solid fa-credit-card",
+        "col2_link3_url": "shopify://policies/terms-of-service",
+        "col2_link4_text": "Privacy Policy",
+        "col2_link4_icon": "fa-solid fa-shield-halved",
+        "col2_link4_url": "shopify://policies/privacy-policy",
+        "col2_link5_text": "About Us",
+        "col2_link5_icon": "fa-solid fa-circle-info",
+        "col2_link5_url": "shopify://pages/about-us",
+        "contact_title": "Contact Us",
+        "contact_address": "Sco-71A, 2nd Floor, Ashoka Plaza, Rohtak, Haryana - 124001",
+        "contact_map_link": "",
+        "contact_email": "11fitsports@gmail.com",
+        "contact_phone": "+91 7494961428",
+        "social_instagram": "",
+        "social_facebook": "",
+        "social_google": "",
+        "copyright_text": "ELEVENFIT CLOTHING PRIVATE LIMITED"
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "disabled": true,
+      "settings": {
+        "color_scheme": "scheme-1",
+        "newsletter_enable": true,
+        "newsletter_heading": "Subscribe to our emails",
+        "enable_follow_on_shop": true,
+        "show_social": true,
+        "enable_country_selector": true,
+        "enable_language_selector": true,
+        "payment_enable": true,
+        "show_policy": true,
+        "margin_top": 0,
+        "padding_top": 24,
+        "padding_bottom": 24
+      }
+    }
+  },
+  "order": [
+    "whatsapp_floating_button_TVMFb9",
+    "11fit_footer_6AeTLz",
+    "footer"
+  ]
+}

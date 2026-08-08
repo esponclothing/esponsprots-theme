@@ -1,0 +1,383 @@
+{% comment %}
+  ============================================================
+  11FIT — trending-products.liquid (ELEGANT AUTO-SWIPER)
+  Drop this file into: sections/trending-products.liquid
+  ============================================================
+{% endcomment %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+
+<style>
+  .fit11-trend-wrapper {
+    background-color: {{ section.settings.bg_color }};
+    padding: 60px 20px;
+    font-family: 'Outfit', sans-serif;
+    overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  
+  .fit11-trend-wrapper * {
+    box-sizing: border-box;
+  }
+
+  /* ── HEADER & TYPOGRAPHY ── */
+  .fit11-trend-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+
+  .fit11-trend-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: {{ section.settings.accent_color }};
+    margin: 0 0 10px 0;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .fit11-trend-subtitle {
+    font-size: 11px;
+    font-weight: 500;
+    color: {{ section.settings.accent_color }};
+    margin: 0;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+
+  /* ── CAROUSEL TRACK ── */
+  .fit11-trend-carousel-wrap {
+    max-width: 400px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .fit11-trend-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    gap: 20px;
+    padding-bottom: 10px;
+  }
+
+  .fit11-trend-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ── PRODUCT CARD ── */
+  .fit11-trend-card {
+    flex: 0 0 calc(50% - 10px);
+    scroll-snap-align: start;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: opacity 0.3s ease;
+  }
+
+  .fit11-trend-img-wrap {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    background: #f8fafc;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .fit11-trend-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .fit11-trend-prod-title {
+    font-family: 'Playfair Display', serif;
+    color: {{ section.settings.accent_color }};
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.3;
+    margin: 0 0 12px 0;
+    padding: 0 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .fit11-trend-price {
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: #111;
+  }
+
+  /* ── DOTS PAGINATION ── */
+  .fit11-trend-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .fit11-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .fit11-dot.active {
+    background: {{ section.settings.accent_color }};
+    transform: scale(1.2);
+  }
+
+  /* ── MOBILE OVERRIDES ── */
+  @media (max-width: 767px) {
+    .fit11-trend-wrapper { padding: 40px 16px; }
+    .fit11-trend-title { font-size: 28px; }
+    .fit11-trend-prod-title { font-size: 18px; }
+  }
+
+  /* ── PC REFINEMENTS ── */
+  @media (min-width: 768px) {
+    .fit11-trend-wrapper {
+      background: radial-gradient(circle at top, #ffffff 0%, {{ section.settings.bg_color }} 100%);
+      padding: 80px 20px;
+    }
+    .fit11-trend-carousel-wrap {
+      max-width: 1200px;
+    }
+    .fit11-trend-card {
+      flex: 0 0 calc(25% - 15px); /* 4 items with 20px gap */
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+      border-radius: 12px;
+      padding-bottom: 20px;
+    }
+    .fit11-trend-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+      background: #ffffff;
+    }
+    .fit11-trend-img-wrap img {
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .fit11-trend-card:hover .fit11-trend-img-wrap img {
+      transform: scale(1.06);
+    }
+  }
+</style>
+
+{%- assign has_custom_products = false -%}
+{%- if section.blocks.size > 0 -%}
+  {%- assign has_custom_products = true -%}
+{%- endif -%}
+
+{%- if has_custom_products -%}
+  {%- assign product_list = section.blocks -%}
+{%- else -%}
+  {%- assign fallback_collection = collections['all'] | default: collections.first -%}
+  {%- assign product_list = fallback_collection.products | limit: 8 -%}
+{%- endif -%}
+
+<div class="fit11-trend-wrapper pc-reveal" id="11fitTrendWrapper-{{ section.id }}" data-speed="{{ section.settings.autoplay_speed | times: 1000 }}">
+  
+  <div class="fit11-trend-header pc-reveal">
+    <h2 class="fit11-trend-title">{{ section.settings.heading }}</h2>
+    <p class="fit11-trend-subtitle">{{ section.settings.subheading }}</p>
+  </div>
+
+  <div class="fit11-trend-carousel-wrap">
+    <div class="fit11-trend-track pc-reveal-stagger" id="11fitTrendTrack-{{ section.id }}">
+      {%- for item in product_list -%}
+        {%- if has_custom_products -%}
+          {%- assign product = item.settings.product -%}
+        {%- else -%}
+          {%- assign product = item -%}
+        {%- endif -%}
+        {%- if product == blank %}{% continue %}{% endif -%}
+        
+        <a href="{{ product.url | default: '#' }}" class="fit11-trend-card" {% if has_custom_products %}{{ item.shopify_attributes }}{% endif %}>
+          <div class="fit11-trend-img-wrap">
+            {%- if product.featured_image != blank -%}
+              <img src="{{ product.featured_image | img_url: '600x750', crop: 'center' }}" alt="{{ product.title | escape }}" loading="lazy">
+            {%- else -%}
+              <span style="font-size:12px; color:#94a3b8; font-family:'Outfit', sans-serif;">Select Product</span>
+            {%- endif -%}
+          </div>
+
+          <h3 class="fit11-trend-prod-title">
+            {{ product.title }}
+          </h3>
+          
+          <div class="fit11-trend-price">
+            {{ product.price | money_without_trailing_zeros }}
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+
+    {%- if product_list.size > 1 -%}
+      <div class="fit11-trend-dots" id="11fitTrendDots-{{ section.id }}">
+        {%- for item in product_list -%}
+          <div class="fit11-dot {% if forloop.first %}active{% endif %}" data-index="{{ forloop.index0 }}"></div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    // --- CAROUSEL AUTO-SWIPE & DOTS SYNC LOGIC ---
+    const track = document.getElementById('11fitTrendTrack-{{ section.id }}');
+    const dotsWrap = document.getElementById('11fitTrendDots-{{ section.id }}');
+    const wrapper = document.getElementById('11fitTrendWrapper-{{ section.id }}');
+    
+    if (!track) return;
+
+    const dots = dotsWrap ? dotsWrap.querySelectorAll('.fit11-dot') : [];
+    const totalItems = dots.length;
+    let currentIndex = 0;
+    
+    const speed = parseInt(wrapper.getAttribute('data-speed')) || 3000;
+    let autoPlayInterval;
+
+    // 1. Sync dots when user manually scrolls
+    track.addEventListener('scroll', function() {
+      if(totalItems === 0) return;
+      const scrollPos = track.scrollLeft;
+      const cardWidth = track.clientWidth;
+      const newIndex = Math.round(scrollPos / cardWidth);
+
+      if (newIndex !== currentIndex && newIndex >= 0 && newIndex < totalItems) {
+        dots[currentIndex].classList.remove('active');
+        currentIndex = newIndex;
+        dots[currentIndex].classList.add('active');
+      }
+    });
+
+    // 2. Click a dot to jump to that product
+    if(totalItems > 0) {
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', function() {
+          const cardWidth = track.clientWidth;
+          track.scrollTo({ left: cardWidth * i, behavior: 'smooth' });
+        });
+      });
+    }
+
+    // 3. Auto-swipe function
+    function scrollToNextItem() {
+      const cardWidth = track.clientWidth;
+      const maxScroll = track.scrollWidth - track.clientWidth;
+
+      // Reset to beginning if at the end
+      if (track.scrollLeft >= maxScroll - 10) {
+        track.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        track.scrollBy({ left: cardWidth, behavior: 'smooth' });
+      }
+    }
+
+    function startAutoPlay() {
+      if(totalItems > 1) {
+        autoPlayInterval = setInterval(scrollToNextItem, speed);
+      }
+    }
+
+    function stopAutoPlay() {
+      clearInterval(autoPlayInterval);
+    }
+
+    // 4. Pause swiping when user interacts
+    wrapper.addEventListener('touchstart', stopAutoPlay, {passive: true});
+    wrapper.addEventListener('touchend', startAutoPlay, {passive: true});
+    wrapper.addEventListener('mouseenter', stopAutoPlay);
+    wrapper.addEventListener('mouseleave', startAutoPlay);
+
+    // Start immediately
+    startAutoPlay();
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Trending Products",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Luxury Accent Color",
+      "default": "#9A7B4F",
+      "info": "Used for headings and product titles."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "TRENDING PRODUCTS"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "DISCOVER OUR BESTSELLERS"
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "unit": "sec",
+      "label": "Auto-Swipe Speed",
+      "default": 3,
+      "info": "How fast the products scroll automatically."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product_item",
+      "name": "Trending Product",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trending Products (Elegant)",
+      "blocks": [
+        { "type": "product_item" },
+        { "type": "product_item" },
+        { "type": "product_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}

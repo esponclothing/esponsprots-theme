@@ -1,0 +1,441 @@
+{% comment %}
+  11FIT SUPPORT & FAQ SECTION v3
+  - Question font, question size, answer font, answer size: all editable in Theme Editor
+  - Default sizes bumped +2pt from v2
+  - Mobile optimized, 3D accordion, scroll reveal
+  - Justified text alignment (desktop) / Left align questions (mobile) / Justified answers (mobile)
+  - Fixed mobile hanging indent (text aligns under text, not under number)
+{% endcomment %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&family=Montserrat:wght@400;600;700;800&family=Poppins:wght@400;500;600;700&family=Raleway:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+{% style %}
+  .fit-faq-section {
+    --black: #080808;
+    --white: #ffffff;
+    --gold: #C5A059;
+    --off-white: #F4F4F4;
+    --text-grey: #666666;
+
+    /* Theme-editor controlled font & size variables */
+    --faq-q-font: {{ section.settings.question_font | default: 'Outfit' }}, sans-serif;
+    --faq-q-size: {{ section.settings.question_font_size | default: 18 }}px;
+    --faq-a-font: {{ section.settings.answer_font | default: 'Outfit' }}, sans-serif;
+    --faq-a-size: {{ section.settings.answer_font_size | default: 17 }}px;
+
+    font-family: 'Outfit', sans-serif;
+    padding: 90px 40px;
+    background: {{ section.settings.bg_color }};
+    width: 100%; box-sizing: border-box;
+  }
+  .fit-faq-section * { box-sizing: border-box; }
+
+  /* ── Section Header ── */
+  .fit-faq-header { text-align: center; margin-bottom: 60px; }
+  .fit-faq-title {
+    font-size: 3.5rem; font-weight: 800; text-transform: uppercase;
+    letter-spacing: -1px; margin: 0; line-height: 0.9;
+    color: {{ section.settings.title_color }};
+  }
+  .fit-faq-subtitle {
+    color: var(--text-grey); margin-top: 12px; font-size: 0.9rem;
+    text-transform: uppercase; letter-spacing: 3px; font-weight: 500;
+  }
+
+  /* ── Scroll reveal ── */
+  .fit-faq-reveal { opacity: 0; transform: translateY(40px); transition: all 0.9s cubic-bezier(0.165,0.84,0.44,1); }
+  .fit-faq-reveal.active { opacity: 1; transform: translateY(0); }
+
+  /* ── 50/50 layout ── */
+  .fit-faq-wrapper {
+    max-width: 1300px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 55px; align-items: stretch;
+  }
+
+  /* ── Left image ── */
+  .fit-faq-image-wrap {
+    width: 100%; height: 100%; min-height: 520px;
+    position: relative; border-radius: 20px; overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.14);
+    animation: fit-floaty 7s ease-in-out infinite;
+  }
+  @keyframes fit-floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+  .fit-faq-image {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: brightness({{ section.settings.image_brightness | default: 65 }}%);
+  }
+  .fit-faq-img-overlay {
+    position: absolute; bottom: 40px; left: 40px; color: white;
+    text-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  }
+  .fit-faq-img-overlay h3 {
+    font-size: 3rem; font-weight: 800; text-transform: uppercase;
+    margin: 0; line-height: 1; color: var(--gold);
+  }
+  .fit-faq-img-overlay p {
+    font-size: 1.1rem; font-weight: 500; margin-top: 6px;
+    text-transform: uppercase; letter-spacing: 2px;
+  }
+
+  /* ── FAQ Accordion ── */
+  .fit-faq-list { display: flex; flex-direction: column; gap: 16px; perspective: 1000px; }
+
+  .fit-faq-item {
+    background: var(--white); border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05); cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25,1,0.5,1);
+    transform-style: preserve-3d; border: 1px solid rgba(0,0,0,0.06);
+  }
+  .fit-faq-item:hover {
+    transform: translateZ(8px) translateY(-4px);
+    box-shadow: 0 14px 38px rgba(197,160,89,0.14); border-color: var(--gold);
+  }
+
+  /* Question Structure */
+  .fit-faq-question {
+    padding: 22px 28px;
+    font-family: var(--faq-q-font);
+    font-size: var(--faq-q-size);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+    display: flex; justify-content: space-between; align-items: center;
+    color: var(--black); transition: color 0.3s; user-select: none; gap: 15px;
+  }
+  
+  /* Flex wrapper to keep the number separated from the wrapping text */
+  .faq-text-wrapper {
+    display: flex;
+    gap: 8px; /* Space between number and text */
+    flex: 1;
+    align-items: flex-start;
+    text-align: justify; /* Justified on desktop */
+  }
+  .faq-num {
+    flex-shrink: 0; /* Prevents the number from squishing */
+  }
+  .faq-text {
+    flex: 1;
+  }
+
+  .fit-faq-icon {
+    font-size: 1.3rem; color: var(--gold);
+    transition: transform 0.45s cubic-bezier(0.25,1,0.5,1); flex-shrink: 0;
+  }
+
+  .fit-faq-answer-wrap { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.25,1,0.5,1); }
+
+  /* Answer Structure */
+  .fit-faq-answer {
+    padding: 0 28px 25px;
+    font-family: var(--faq-a-font);
+    font-size: var(--faq-a-size);
+    line-height: 1.7;
+    color: var(--text-grey); font-weight: 400;
+    transform-origin: top; transform: rotateX(-85deg); opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.25,1,0.5,1), opacity 0.45s;
+    text-align: justify; 
+  }
+
+  /* Active states */
+  .fit-faq-item.active { border-left: 5px solid var(--gold); background: #fafafa; }
+  .fit-faq-item.active .fit-faq-question { color: var(--gold); }
+  .fit-faq-item.active .fit-faq-icon { transform: rotate(135deg); color: var(--black); }
+  .fit-faq-item.active .fit-faq-answer-wrap { max-height: 500px; }
+  .fit-faq-item.active .fit-faq-answer { transform: rotateX(0); opacity: 1; }
+
+  /* ── TABLET ── */
+  @media (max-width: 1024px) {
+    .fit-faq-wrapper { grid-template-columns: 1fr !important; gap: 35px !important; }
+    .fit-faq-image-wrap { height: 340px !important; min-height: unset !important; animation: none !important; }
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    .fit-faq-section { padding: 45px 0 55px !important; }
+    .fit-faq-header { margin-bottom: 30px !important; padding: 0 16px; }
+    .fit-faq-title { font-size: 2.2rem !important; letter-spacing: -0.5px !important; }
+    .fit-faq-subtitle { font-size: 0.82rem !important; letter-spacing: 2px !important; margin-top: 10px !important; }
+
+    .fit-faq-wrapper { gap: 20px !important; padding: 0 16px !important; }
+
+    .fit-faq-image-wrap { height: 220px !important; border-radius: 14px !important; }
+    .fit-faq-img-overlay { bottom: 20px !important; left: 20px !important; }
+    .fit-faq-img-overlay h3 { font-size: 2rem !important; }
+    .fit-faq-img-overlay p { font-size: 0.95rem !important; letter-spacing: 1.5px !important; margin-top: 5px !important; }
+
+    .fit-faq-list { gap: 12px !important; }
+
+    .fit-faq-question {
+      padding: 18px 18px !important;
+      font-size: min(var(--faq-q-size), 18px) !important;
+      letter-spacing: 0.2px !important;
+      line-height: 1.4 !important;
+    }
+    
+    /* Forces left alignment on mobile for questions to avoid massive gaps, keeps hanging indent */
+    .faq-text-wrapper {
+      text-align: left !important;
+      gap: 6px !important;
+    }
+
+    .fit-faq-answer {
+      padding: 0 18px 18px !important;
+      font-size: min(var(--faq-a-size), 17px) !important;
+      line-height: 1.65 !important;
+      text-align: justify !important; /* Made answers justified on mobile */
+    }
+    .fit-faq-icon { font-size: 1.2rem !important; }
+    .fit-faq-item.active { border-left-width: 4px !important; }
+  }
+
+  @media (max-width: 400px) {
+    .fit-faq-wrapper { padding: 0 12px !important; }
+    .fit-faq-title { font-size: 1.9rem !important; }
+    .fit-faq-question { font-size: min(var(--faq-q-size), 16px) !important; padding: 16px 14px !important; }
+    .fit-faq-answer { font-size: min(var(--faq-a-size), 15px) !important; padding: 0 14px 14px !important; }
+  }
+{% endstyle %}
+
+<section class="fit-faq-section" id="fit-faq-{{ section.id }}">
+
+  <div class="fit-faq-header fit-faq-reveal">
+    <h2 class="fit-faq-title">{{ section.settings.section_title }}</h2>
+    <p class="fit-faq-subtitle">{{ section.settings.section_subtitle }}</p>
+  </div>
+
+  <div class="fit-faq-wrapper fit-faq-reveal">
+
+    <div class="fit-faq-image-wrap">
+      {% if section.settings.faq_image != blank %}
+        <img
+          src="{{ section.settings.faq_image | img_url: '800x1000', crop: 'center' }}"
+          class="fit-faq-image"
+          alt="{{ section.settings.overlay_heading }}">
+      {% else %}
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1a1a 0%,#3a3a3a 100%);"></div>
+      {% endif %}
+      <div class="fit-faq-img-overlay">
+        <h3>{{ section.settings.overlay_heading }}</h3>
+        <p>{{ section.settings.overlay_subtext }}</p>
+      </div>
+    </div>
+
+    <div class="fit-faq-list">
+      {% for block in section.blocks %}
+        {% if block.type == 'faq_item' %}
+          <div class="fit-faq-item" {{ block.shopify_attributes }}>
+            
+            <div class="fit-faq-question">
+              <div class="faq-text-wrapper">
+                <span class="faq-num">{{ forloop.index }}.</span>
+                <span class="faq-text">{{ block.settings.question }}</span>
+              </div>
+              <i class="fa fa-plus fit-faq-icon"></i>
+            </div>
+            
+            <div class="fit-faq-answer-wrap">
+              <div class="fit-faq-answer">{{ block.settings.answer }}</div>
+            </div>
+            
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function() {
+  var sectionId = {{ section.id | json }};
+  document.addEventListener("DOMContentLoaded", function() {
+    var sectionEl = document.getElementById('fit-faq-' + sectionId);
+    if (!sectionEl) return;
+
+    var revealObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('active'); revealObs.unobserve(e.target); }
+      });
+    }, { threshold: 0.08 });
+    sectionEl.querySelectorAll('.fit-faq-reveal').forEach(function(el) { revealObs.observe(el); });
+
+    var items = sectionEl.querySelectorAll('.fit-faq-item');
+    items.forEach(function(item) {
+      item.querySelector('.fit-faq-question').addEventListener('click', function() {
+        var isActive = item.classList.contains('active');
+        items.forEach(function(el) { el.classList.remove('active'); });
+        if (!isActive) item.classList.add('active');
+      });
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "11FIT Support & FAQ",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Header"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Support & FAQ"
+    },
+    {
+      "type": "text",
+      "id": "section_subtitle",
+      "label": "Section Subtitle",
+      "default": "Everything You Need To Know"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#F4F4F4"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#080808"
+    },
+    {
+      "type": "header",
+      "content": "Question Font"
+    },
+    {
+      "type": "select",
+      "id": "question_font",
+      "label": "Question Font Family",
+      "options": [
+        { "value": "Outfit", "label": "Outfit (Default)" },
+        { "value": "Montserrat", "label": "Montserrat" },
+        { "value": "Poppins", "label": "Poppins" },
+        { "value": "Raleway", "label": "Raleway" },
+        { "value": "Inter", "label": "Inter" },
+        { "value": "Oswald", "label": "Oswald" },
+        { "value": "Nunito", "label": "Nunito" }
+      ],
+      "default": "Outfit"
+    },
+    {
+      "type": "range",
+      "id": "question_font_size",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Question Font Size",
+      "default": 18,
+      "info": "Default is 18px (+2pt from base). Mobile auto-adjusts."
+    },
+    {
+      "type": "header",
+      "content": "Answer Font"
+    },
+    {
+      "type": "select",
+      "id": "answer_font",
+      "label": "Answer Font Family",
+      "options": [
+        { "value": "Outfit", "label": "Outfit (Default)" },
+        { "value": "Montserrat", "label": "Montserrat" },
+        { "value": "Poppins", "label": "Poppins" },
+        { "value": "Raleway", "label": "Raleway" },
+        { "value": "Inter", "label": "Inter" },
+        { "value": "Oswald", "label": "Oswald" },
+        { "value": "Nunito", "label": "Nunito" }
+      ],
+      "default": "Outfit"
+    },
+    {
+      "type": "range",
+      "id": "answer_font_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Answer Font Size",
+      "default": 17,
+      "info": "Default is 17px (+2pt from base). Mobile auto-adjusts."
+    },
+    {
+      "type": "header",
+      "content": "Left Side Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "faq_image",
+      "label": "Image",
+      "info": "Portrait orientation recommended (2:3 ratio)"
+    },
+    {
+      "type": "range",
+      "id": "image_brightness",
+      "min": 30,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Image Brightness",
+      "default": 65
+    },
+    {
+      "type": "text",
+      "id": "overlay_heading",
+      "label": "Overlay Heading",
+      "default": "Premium"
+    },
+    {
+      "type": "text",
+      "id": "overlay_subtext",
+      "label": "Overlay Sub-text",
+      "default": "Engineered For Athletes"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "What fabric is used in 11FIT products?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "All our products use premium imported fabrics including Four-Way Lycra (250+ GSM), NS Terry Lycra, and Air-Lite NS — highly stretchable, breathable, and built for performance."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "11FIT Support & FAQ",
+      "blocks": [
+        { "type": "faq_item", "settings": { "question": "What fabric is used in 11FIT products?", "answer": "We use premium quality sportswear fabrics. Our activewear features Imported Four-Way Lycra, which is highly stretchable, breathable, and has a heavy 250+ GSM for a rich feel. For casual wear we offer lightweight NS fabrics, NS Terry Lycra, and Air-Lite NS." } },
+        { "type": "faq_item", "settings": { "question": "How do I find my correct size?", "answer": "We offer sizes from M to XXL. For track pants: Medium fits a 28–30 inch waist, Large fits 30–32 inches, XL fits 32–34 inches, and XXL fits 34–36 inches. Detailed size charts are available on every product page." } },
+        { "type": "faq_item", "settings": { "question": "Which courier services do you use?", "answer": "We provide doorstep delivery across India using trusted courier partners including Blue Dart, DTDC, Delhivery, and Xpressbees — ensuring your gear arrives quickly and safely." } },
+        { "type": "faq_item", "settings": { "question": "What is your return and refund policy?", "answer": "We want you to train in gear you love! If there is a sizing issue or you are not completely satisfied, we offer a hassle-free return and refund within 7 days of receiving your order." } },
+        { "type": "faq_item", "settings": { "question": "What payment methods do you accept?", "answer": "We offer a variety of secure payment options. You can pay via Cash on Delivery (COD), or use prepaid options including UPI, GPay, Paytm, PhonePe, and Credit/Debit Cards." } },
+        { "type": "faq_item", "settings": { "question": "Is free shipping available?", "answer": "Yes! We offer free shipping on all orders above ₹499. Orders below this amount will have a nominal delivery charge applied at checkout." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,96 @@
+{% assign campaign = product.metafields.custom.active_campaign.value %}
+{% assign ui = shop.metafields.custom.campaign_ui.value %}
+{% assign bg_color = ui.bg_color | default: '#ffdf00' %}
+{% assign text_color = ui.text_color | default: '#1a202c' %}
+{% assign accent_color = ui.accent_color | default: '#d9480f' %}
+
+{% assign current_time = 'now' | date: '%s' | plus: 0 %}
+{% assign start_time = campaign.starts_at | date: '%s' | plus: 0 %}
+{% assign end_time = campaign.ends_at | date: '%s' | plus: 0 %}
+
+{% assign show_campaign = true %}
+{% if campaign.starts_at != blank and current_time < start_time %}
+  {% assign show_campaign = false %}
+{% endif %}
+{% if campaign.ends_at != blank and current_time > end_time %}
+  {% assign show_campaign = false %}
+{% endif %}
+
+{% if campaign and campaign.campaignId != blank and show_campaign %}
+  <div id="campaign-banner-{{ campaign.campaignId }}" data-starts-at="{{ campaign.starts_at }}" data-ends-at="{{ campaign.ends_at }}" class="fit11-offer-card" style="{% if inline_card %}scroll-snap-align: start;{% else %}margin: 16px 0; width: 100%; min-width: 100%;{% endif %} border-color: {{ accent_color }}; background-color: {{ bg_color }}; cursor: default; flex-direction: column; padding: 16px;">
+    <script>
+      (function() {
+        var checkTime = function() {
+          var banner = document.getElementById('campaign-banner-{{ campaign.campaignId }}');
+          if (!banner) return;
+          var endsAt = banner.getAttribute('data-ends-at');
+          var startsAt = banner.getAttribute('data-starts-at');
+          var now = new Date().getTime();
+          
+          if (startsAt) {
+            var startMs = new Date(startsAt).getTime();
+            if (now < startMs) { banner.style.display = 'none'; return; }
+          }
+          if (endsAt) {
+            var endMs = new Date(endsAt).getTime();
+            if (now > endMs) { banner.style.display = 'none'; return; }
+          }
+          banner.style.display = 'flex';
+        };
+        checkTime();
+        setInterval(checkTime, 60000); // Check every minute
+      })();
+    </script>
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+      <div class="fit11-offer-code" style="font-size: 14px; font-weight: 600; color: {{ text_color }}; text-transform: uppercase;">
+        {{ campaign.campaignName | escape }}
+      </div>
+      <div style="background: #198754; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase;">Auto Applied</div>
+    </div>
+    
+    <div style="display: flex; gap: 8px; align-items: flex-start; margin-top: 4px;">
+      <img src="{{ '11fit-discount-icon.gif' | asset_url }}" alt="Discount" style="width: 24px; height: 24px; object-fit: contain;">
+      <div class="fit11-offer-desc" style="font-size: 13px; color: {{ text_color }}; font-weight: 500;">
+        {% if campaign.discountType == 'FLAT_RATE' %}
+          Buy {{ campaign.minQuantity }} items for
+          <span style="color: #198754; font-weight: 700;">FLAT ₹{{ campaign.discountValue }}</span>
+        {% elsif campaign.minQuantity > 1 %}
+          Buy {{ campaign.minQuantity }} items for
+          <span style="color: #198754; font-weight: 700;">₹{{ campaign.discountValue }}</span>
+        {% else %}
+          Get
+          <span style="color: #198754; font-weight: 700;">
+            {% if campaign.discountType == 'PERCENTAGE' %}
+              {{ campaign.discountValue }}% OFF
+            {% else %}
+              ₹{{ campaign.discountValue }} OFF
+            {% endif %}
+          </span>
+        {% endif %}
+      </div>
+    </div>
+    
+    <div class="fit11-offer-desc" style="font-weight: 600; color: {{ accent_color }}; margin-top: 6px; font-size: 13px;">
+      🔥 Limited Time Deal!
+    </div>
+    {% if campaign.ends_at != blank %}
+      <div style="font-size: 11px; color: {{ accent_color }}; margin-top: 4px; font-weight: 500;">
+        <span id="banner-timer-{{ campaign.campaignId }}"></span>
+      </div>
+      <script>
+        (function() {
+          var timerEl = document.getElementById('banner-timer-{{ campaign.campaignId }}');
+          var endsAt = new Date('{{ campaign.ends_at }}');
+          if (timerEl && endsAt) {
+             timerEl.innerText = 'Ends on ' + endsAt.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+          }
+        })();
+      </script>
+    {% endif %}
+    
+    <div style="border-top: 1px dashed #cbd5e0; margin-top: 12px; padding-top: 10px; display: flex; justify-content: space-between; font-size: 11px; font-weight: 500; color: #718096;">
+      <span style="color: #198754; display: flex; align-items: center; gap: 4px;">&#x1F69A; Free Delivery Eligible</span>
+      <span>No Coupon Needed</span>
+    </div>
+  </div>
+{% endif %}

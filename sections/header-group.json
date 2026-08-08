@@ -8,111 +8,75 @@
  * ------------------------------------------------------------
  */
 {
+  "name": "t:sections.header.name",
   "type": "header",
-  "name": "Header",
   "sections": {
-    "header_section": {
-      "type": "header",
+    "11fit_marquee1_PC6iEd": {
+      "type": "11fit-marquee1",
       "blocks": {
-        "header-logo": {
-          "type": "_header-logo",
-          "static": true,
+        "announcement_f4heYr": {
+          "type": "announcement",
           "settings": {
-            "hide_logo_on_home_page": false,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "header-menu": {
-          "type": "_header-menu",
-          "static": true,
-          "settings": {
-            "menu": "main-menu",
-            "color_scheme": "",
-            "type_font_primary_size": "0.875rem",
-            "menu_font_style": "inverse",
-            "type_font_primary_link": "body",
-            "type_case_primary_link": "none",
-            "menu_style": "featured_products",
-            "featured_products_aspect_ratio": "4 / 5",
-            "featured_collections_aspect_ratio": "16 / 9",
-            "image_border_radius": 0,
-            "navigation_bar": false,
-            "color_scheme_navigation_bar": "",
-            "drawer_accordion": true,
-            "drawer_accordion_expand_first": false,
-            "drawer_dividers": false
-          },
-          "blocks": {}
-        }
-      },
-      "settings": {
-        "logo_position": "left",
-        "menu_position": "left",
-        "menu_row": "top",
-        "show_search": true,
-        "search_position": "right",
-        "search_row": "top",
-        "show_country": true,
-        "country_selector_style": false,
-        "show_language": true,
-        "localization_font": "heading",
-        "localization_font_size": "0.875rem",
-        "localization_position": "right",
-        "localization_row": "top",
-        "section_width": "page-width",
-        "section_height": "standard",
-        "enable_sticky_header": "always",
-        "divider_width": 0,
-        "divider_size": "page-width",
-        "border_width": 1,
-        "color_scheme_top": "scheme-1",
-        "color_scheme_bottom": "",
-        "color_scheme_transparent": "scheme-6",
-        "enable_transparent_header_home": false,
-        "home_color_scheme": "inverse",
-        "enable_transparent_header_product": false,
-        "product_color_scheme": "default",
-        "enable_transparent_header_collection": false,
-        "collection_color_scheme": "default"
-      }
-    },
-    "espon_marquee": {
-      "type": "espon-marquee",
-      "settings": {
-        "bg_color": "#000000",
-        "text_color": "#ffffff",
-        "speed": 15,
-        "make_sticky": true,
-        "icon_color": "#ca8a04"
-      },
-      "blocks": {
-        "block_1": {
-          "type": "text",
-          "settings": {
-            "text": "FREE SHIPPING ON ALL ORDERS",
-            "icon": "fas fa-truck"
+            "text": "FLAT 50% OFF ON FAST CHARGERS!",
+            "icon": "fa-solid fa-bolt"
           }
         },
-        "block_2": {
-          "type": "text",
+        "announcement_QHAGMt": {
+          "type": "announcement",
           "settings": {
-            "text": "GET 5% CASHBACK (WALLET)",
-            "icon": "fas fa-coins"
+            "text": "FREE SHIPPING ON ORDERS OVER ₹499",
+            "icon": "fa-solid fa-truck-fast"
+          }
+        },
+        "announcement_zHBnYF": {
+          "type": "announcement",
+          "settings": {
+            "text": "CASH ON DELIVERY AVAILABLE",
+            "icon": "fa-solid fa-wallet"
           }
         }
       },
       "block_order": [
-        "block_1",
-        "block_2"
-      ]
+        "announcement_f4heYr",
+        "announcement_QHAGMt",
+        "announcement_zHBnYF"
+      ],
+      "name": "11fit  Marquee",
+      "settings": {
+        "bg_color": "#c5a059",
+        "text_color": "#ffffff",
+        "marquee_font": "work_sans_n7",
+        "font_size_desktop": 10,
+        "font_size_mobile": 10,
+        "text_bold": true,
+        "text_uppercase": true,
+        "speed": 10,
+        "direction": "normal",
+        "padding_y": 5
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo_position": "middle-left",
+        "mobile_logo_position": "center",
+        "menu": "main-menu",
+        "menu_type_desktop": "dropdown",
+        "sticky_header_type": "on-scroll-up",
+        "show_line_separator": true,
+        "color_scheme": "scheme-1",
+        "menu_color_scheme": "scheme-1",
+        "enable_country_selector": true,
+        "enable_language_selector": true,
+        "enable_customer_avatar": true,
+        "margin_bottom": 0,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
     }
   },
   "order": [
-    "espon_marquee",
-    "header_section"
+    "11fit_marquee1_PC6iEd",
+    "header"
   ]
 }

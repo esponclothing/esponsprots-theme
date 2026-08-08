@@ -1,0 +1,293 @@
+{% schema %}
+{
+  "name": "Refined Trust Grid",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Typography Customization"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading Font",
+      "default": "serif"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body Font",
+      "default": "sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "title_letter_spacing",
+      "min": 0,
+      "max": 6,
+      "step": 0.5,
+      "unit": "px",
+      "label": "Title Letter Spacing",
+      "default": 1.5
+    },
+    {
+      "type": "header",
+      "content": "Sizing & Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "label": "Section Vertical Padding",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "label": "Cards per row (Desktop)",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Professional Palette"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background",
+      "default": "#f9f9f9"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Elegant Accent",
+      "default": "#C5A059",
+      "info": "Hover border and icon color"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Heading Text",
+      "default": "#1a202c"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Body Text",
+      "default": "#718096"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "trust_badge",
+      "name": "Trust Pillar",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "html",
+          "id": "icon_svg",
+          "label": "SVG Icon Code",
+          "info": "Leave blank to use the fallback symbol below."
+        },
+        {
+          "type": "text",
+          "id": "icon_text",
+          "label": "Fallback Symbol",
+          "default": "✦"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "PREMIUM QUALITY"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Description",
+          "default": "Crafted with uncompromising attention to detail."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Refined Trust Grid",
+      "blocks": [
+        { "type": "trust_badge", "settings": { "icon_text": "✦", "title": "Priority Dispatch", "subtitle": "Complimentary premium shipping on all orders" } },
+        { "type": "trust_badge", "settings": { "icon_text": "✧", "title": "Secure Checkout", "subtitle": "Encrypted transactions for your peace of mind" } },
+        { "type": "trust_badge", "settings": { "icon_text": "◎", "title": "Dedicated Support", "subtitle": "Direct access to our concierge team" } },
+        { "type": "trust_badge", "settings": { "icon_text": "⟡", "title": "Finest Materials", "subtitle": "Sourced globally for exceptional performance" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+  {{ section.settings.heading_font | font_face: font_display: 'swap' }}
+  {{ section.settings.body_font | font_face: font_display: 'swap' }}
+
+  .premium-trust-section {
+    background-color: {{ section.settings.bg_color }};
+    padding: {{ section.settings.padding_vertical }}px 20px;
+    width: 100%;
+  }
+
+  .premium-trust-container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* Desktop Grid Layout */
+  .premium-trust-grid {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.columns_desktop }}, 1fr);
+    gap: 30px;
+    align-items: stretch;
+  }
+
+  /* Clean Professional Card */
+  .premium-trust-card {
+    background: {{ section.settings.card_bg }};
+    padding: 40px 30px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    overflow: hidden;
+  }
+
+  /* Elegant Hover Top Accent */
+  .premium-trust-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0%;
+    height: 3px;
+    background-color: {{ section.settings.accent_color }};
+    transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  .premium-trust-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+  }
+
+  .premium-trust-card:hover::before {
+    width: 100%;
+  }
+
+  /* Icon Styling */
+  .premium-icon-wrap {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 24px;
+    color: {{ section.settings.accent_color }};
+    fill: {{ section.settings.accent_color }};
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.4s ease;
+  }
+
+  .premium-trust-card:hover .premium-icon-wrap {
+    transform: scale(1.1);
+  }
+
+  .premium-icon-wrap svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* Typography */
+  .premium-card-title {
+    font-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
+    font-weight: {{ section.settings.heading_font.weight | default: 600 }};
+    font-style: {{ section.settings.heading_font.style }};
+    color: {{ section.settings.title_color }};
+    font-size: 15px;
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: {{ section.settings.title_letter_spacing }}px;
+    line-height: 1.3;
+  }
+
+  .premium-card-subtitle {
+    font-family: {{ section.settings.body_font.family }}, {{ section.settings.body_font.fallback_families }};
+    font-weight: {{ section.settings.body_font.weight | default: 400 }};
+    font-style: {{ section.settings.body_font.style }};
+    color: {{ section.settings.subtitle_color }};
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Mobile Swipe Carousel */
+  @media screen and (max-width: 989px) {
+    .premium-trust-grid {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none; /* Firefox */
+      -webkit-overflow-scrolling: touch;
+      gap: 16px;
+      padding-bottom: 10px;
+    }
+    
+    .premium-trust-grid::-webkit-scrollbar {
+      display: none; /* Chrome/Safari */
+    }
+
+    .premium-trust-card {
+      min-width: 280px;
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      padding: 30px 20px;
+    }
+  }
+</style>
+
+<div class="premium-trust-section" id="PremiumTrust-{{ section.id }}">
+  <div class="premium-trust-container">
+    <div class="premium-trust-grid">
+      
+      {% for block in section.blocks %}
+        <div class="premium-trust-card" {{ block.shopify_attributes }}>
+          
+          <div class="premium-icon-wrap">
+            {% if block.settings.icon_svg != blank %}
+              {{ block.settings.icon_svg }}
+            {% else %}
+              <span>{{ block.settings.icon_text }}</span>
+            {% endif %}
+          </div>
+          
+          <h3 class="premium-card-title">{{ block.settings.title }}</h3>
+          <p class="premium-card-subtitle">{{ block.settings.subtitle }}</p>
+          
+        </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</div>

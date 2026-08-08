@@ -1,0 +1,1280 @@
+{{ 'component-cart.css' | asset_url | stylesheet_tag }}
+{{ 'component-cart-items.css' | asset_url | stylesheet_tag }}
+{{ 'component-totals.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-discounts.css' | asset_url | stylesheet_tag }}
+{{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+
+<script>
+  window._lxComboConfigMap = {};
+  {% for c in collections.all.products limit: 100 %}
+    {% if c.metafields.price_editor.combo_config != blank %}
+      {% assign c_val = c.metafields.price_editor.combo_config.value | default: c.metafields.price_editor.combo_config %}
+      {% if c_val != blank %}
+      window._lxComboConfigMap[{{ c.id | json }}] = {
+        count: {{ c_val.count | default: 0 | json }},
+        price: {{ c_val.price | default: 0 | json }}
+      };
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+
+  window.applyLxComboConfig = function(p) {
+    var comboData = window._lxComboConfigMap[p.id];
+    if (comboData && comboData.count > 0) {
+      if (p.title.indexOf(' - Pack of ') === -1) {
+        p.title = p.title + ' - Pack of ' + comboData.count;
+      }
+      p.price = comboData.price * 100;
+      if (p.compare_at_price) p.compare_at_price = p.compare_at_price * comboData.count;
+      if (p.variants && p.variants.length > 0) {
+        p.variants.forEach(function(v) {
+          v.price = comboData.price * 100;
+          if (v.compare_at_price) v.compare_at_price = v.compare_at_price * comboData.count;
+        });
+      }
+    }
+  };
+</script>
+
+{%- style -%}
+/* ═══════════════════════════════════════════════════
+   LUXURY CART
+   ═══════════════════════════════════════════════════ */
+:root {
+  --lx-bg:          #F8F7F4;
+  --lx-surface:     #FFFFFF;
+  --lx-surface2:    #F3F2EF;
+  --lx-text:        #1A202C;
+  --lx-text-light:  #6B7280;
+  --lx-text-xlight: #9CA3AF;
+  --lx-border:      #E5E7EB;
+  --lx-border-soft: #F0EDE8;
+  --lx-gold:        #B89356;
+  --lx-gold-light:  #F5EED9;
+  --lx-success:     #16A34A;
+  --lx-success-bg:  #F0FDF4;
+  --lx-success-bdr: #BBF7D0;
+  --lx-danger:      #DC2626;
+  --lx-danger-bg:   #FEF2F2;
+  --lx-warn:        #D97706;
+  --lx-warn-bg:     #FFFBEB;
+  --lx-radius:      14px;
+  --lx-radius-sm:   8px;
+  --lx-radius-xs:   5px;
+  --lx-shadow:      0 2px 12px rgba(0,0,0,0.06);
+  --lx-shadow-md:   0 8px 32px rgba(0,0,0,0.10);
+  --font:           'Outfit', sans-serif;
+  --transition:     0.22s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ── RESET ── */
+.lx-cart * { box-sizing: border-box; }
+.lx-cart { font-family: var(--font); background: var(--lx-bg); min-height: 80vh; color: var(--lx-text); }
+
+/* ── SECTION PADDING ── */
+.section-{{ section.id }}-padding { padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px; padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px; }
+@media (min-width: 750px) { .section-{{ section.id }}-padding { padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px; } }
+
+/* ── RESPONSIVE HELPERS ── */
+@media (max-width: 989px) { .lx-desktop { display: none !important; } }
+@media (min-width: 990px) { .lx-mobile  { display: none !important; } }
+
+/* ═══════════════ EMPTY STATE ═══════════════ */
+.cart__warnings { display: none; text-align: center; padding: 80px 24px; }
+.is-empty .cart__warnings { display: block; }
+.is-empty .cart__contents { display: none; }
+.lx-empty-icon { font-size: 56px; color: var(--lx-gold); margin-bottom: 20px; display: block; }
+.lx-empty-title { font-size: 26px; font-weight: 700; color: var(--lx-text); margin-bottom: 10px; }
+.lx-empty-sub { font-size: 15px; color: var(--lx-text-light); margin-bottom: 28px; }
+.lx-empty-btn { display: inline-block; background: var(--lx-text); color: #fff; padding: 14px 36px; border-radius: var(--lx-radius); font-size: 15px; font-weight: 600; text-decoration: none; letter-spacing: 0.3px; transition: background var(--transition); }
+.lx-empty-btn:hover { background: #374151; }
+
+/* ═══════════════ LAYOUT ═══════════════ */
+.lx-container { max-width: 1240px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: 1fr; gap: 28px; }
+@media (min-width: 990px) { .lx-container { grid-template-columns: 1fr 400px; align-items: start; } }
+
+/* ── HEADER ── */
+.lx-cart-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; }
+.lx-cart-title { font-size: 22px; font-weight: 700; color: var(--lx-text); margin: 0; letter-spacing: -0.3px; }
+.lx-cart-count { font-size: 13px; font-weight: 500; color: var(--lx-text-light); background: var(--lx-surface2); padding: 3px 10px; border-radius: 20px; margin-left: 10px; }
+.lx-continue { font-size: 13px; color: var(--lx-gold); text-decoration: none; display: flex; align-items: center; gap: 4px; font-weight: 500; }
+.lx-continue:hover { opacity: 0.75; }
+
+/* ═══════════════ CART ITEMS ═══════════════ */
+.lx-item-list { display: flex; flex-direction: column; gap: 14px; }
+
+.lx-cart-item {
+  background: var(--lx-surface);
+  border: 1px solid var(--lx-border);
+  border-radius: var(--lx-radius);
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+  position: relative;
+  width: 100%;
+  box-shadow: var(--lx-shadow);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+.lx-cart-item:hover { box-shadow: var(--lx-shadow-md); transform: translateY(-1px); }
+
+/* Image */
+.lx-item-img { width: 90px; height: 118px; flex-shrink: 0; border-radius: var(--lx-radius-sm); overflow: hidden; background: var(--lx-surface2); position: relative; }
+.lx-item-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Product Badges */
+.lx-item-badges { position: absolute; top: 6px; left: 6px; display: flex; flex-direction: column; gap: 4px; z-index: 2; }
+.lx-badge { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.4; }
+.lx-badge--sale     { background: var(--lx-danger); color: #fff; }
+.lx-badge--new      { background: var(--lx-gold); color: #fff; }
+.lx-badge--bestsell { background: var(--lx-text); color: #fff; }
+.lx-badge--limited  { background: #7C3AED; color: #fff; }
+
+/* Details */
+.lx-item-details { flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
+.lx-item-brand { font-size: 10px; font-weight: 600; color: var(--lx-gold); text-transform: uppercase; letter-spacing: 0.8px; margin: 0 0 3px; }
+.lx-item-title { font-size: 14px; font-weight: 600; color: var(--lx-text); margin: 0 0 4px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-decoration: none; }
+.lx-item-title:hover { color: var(--lx-gold); }
+.lx-item-variant { font-size: 11.5px; color: var(--lx-text-light); margin: 0 0 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Price breakdown */
+.lx-compact-price { display: flex; align-items: baseline; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.lx-final-price { font-size: 16px; font-weight: 700; color: var(--lx-text); }
+.lx-original-price { font-size: 13px; color: var(--lx-text-xlight); text-decoration: line-through; }
+.lx-discount-pct { font-size: 12px; font-weight: 600; color: var(--lx-success); }
+
+/* Actions row */
+.lx-item-actions { display: flex; align-items: center; justify-content: space-between; }
+.lx-qty-control { display: flex; align-items: center; border: 1.5px solid var(--lx-border); border-radius: var(--lx-radius-xs); height: 32px; background: #fff; width: max-content; transition: border-color var(--transition); }
+.lx-qty-control:focus-within { border-color: var(--lx-gold); }
+.lx-qty-btn { width: 32px; height: 100%; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--lx-text); padding: 0; transition: color var(--transition); }
+.lx-qty-btn:hover { color: var(--lx-gold); }
+.lx-qty-input { width: 36px; height: 100%; border: none; border-left: 1.5px solid var(--lx-border); border-right: 1.5px solid var(--lx-border); text-align: center; font-size: 13px; font-weight: 600; font-family: var(--font); padding: 0; color: var(--lx-text); -moz-appearance: textfield; }
+.lx-qty-input::-webkit-outer-spin-button, .lx-qty-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.lx-remove-btn { background: none; border: none; color: var(--lx-text-xlight); font-size: 12px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 0; transition: color var(--transition); text-decoration: none; }
+.lx-remove-btn:hover { color: var(--lx-danger); }
+cart-remove-button .button { min-width: auto; min-height: auto; }
+
+/* ═══════════════ SIDEBAR / SUMMARY ═══════════════ */
+.lx-summary-outer { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 14px; }
+
+.lx-summary-card { background: var(--lx-surface); border: 1px solid var(--lx-border); border-radius: var(--lx-radius); padding: 20px; box-shadow: var(--lx-shadow); }
+.lx-summary-heading { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; margin: 0 0 18px; padding-bottom: 14px; border-bottom: 1px solid var(--lx-border); display: flex; align-items: center; gap: 8px; }
+.lx-summary-heading i { color: var(--lx-gold); font-size: 18px; }
+
+/* ── PROGRESS BARS ── */
+.lx-progress-block { margin-bottom: 18px; }
+.lx-progress-label { font-size: 12px; font-weight: 500; color: var(--lx-text); margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+.lx-progress-pct { font-size: 10.5px; color: var(--lx-text-light); }
+.lx-progress-track { width: 100%; height: 5px; background: var(--lx-border); border-radius: 3px; overflow: hidden; }
+.lx-progress-fill { height: 100%; border-radius: 3px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+.lx-progress-fill--ship { background: linear-gradient(90deg, var(--lx-success), #4ADE80); }
+.lx-progress-fill--vip  { background: linear-gradient(90deg, var(--lx-gold), #F5D078); }
+.lx-progress-unlocked { font-size: 12px; font-weight: 600; color: var(--lx-success); display: flex; align-items: center; gap: 5px; }
+
+/* ── COUPON SECTION ── */
+.lx-coupon-section { margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--lx-border-soft); }
+.lx-coupon-label { font-size: 12px; font-weight: 600; color: var(--lx-text); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.lx-coupon-label i { color: var(--lx-gold); font-size: 15px; }
+
+/* Input row */
+.lx-coupon-input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.lx-coupon-input { flex: 1; border: 1.5px solid var(--lx-border); border-radius: var(--lx-radius-sm); padding: 9px 13px; font-size: 13px; font-weight: 500; text-transform: uppercase; font-family: var(--font); letter-spacing: 1px; color: var(--lx-text); outline: none; min-width: 0; transition: border-color var(--transition); background: #fff; }
+.lx-coupon-input:focus { border-color: var(--lx-gold); }
+.lx-coupon-input::placeholder { letter-spacing: 0; text-transform: none; color: var(--lx-text-xlight); font-weight: 400; }
+.lx-coupon-apply-btn { background: var(--lx-text); color: #fff; border: none; border-radius: var(--lx-radius-sm); padding: 0 18px; font-size: 13px; font-weight: 600; cursor: pointer; flex-shrink: 0; font-family: var(--font); transition: background var(--transition); }
+.lx-coupon-apply-btn:hover { background: var(--lx-gold); }
+
+/* Message */
+#lx-coupon-msg { font-size: 11.5px; font-weight: 500; min-height: 18px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; transition: all var(--transition); }
+
+/* Applied state */
+.lx-applied-coupon { background: var(--lx-success-bg); border: 1px solid var(--lx-success-bdr); border-radius: var(--lx-radius-sm); padding: 12px 14px; display: none; justify-content: space-between; align-items: center; margin-bottom: 10px; animation: slideIn 0.3s ease; }
+.lx-applied-coupon.show { display: flex; }
+.lx-applied-left { display: flex; flex-direction: column; gap: 2px; }
+.lx-applied-code { font-size: 13px; font-weight: 700; color: var(--lx-success); display: flex; align-items: center; gap: 5px; }
+.lx-applied-time { font-size: 10.5px; color: var(--lx-text-light); }
+.lx-applied-savings { font-size: 12px; font-weight: 600; color: var(--lx-success); }
+.lx-remove-coupon-btn { background: none; border: 1px solid #FCA5A5; border-radius: 4px; color: var(--lx-danger); font-size: 11px; font-weight: 600; cursor: pointer; padding: 4px 10px; transition: all var(--transition); }
+.lx-remove-coupon-btn:hover { background: var(--lx-danger-bg); }
+
+/* Offers scroll */
+.lx-offers-label { font-size: 11px; font-weight: 600; color: var(--lx-text-light); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.lx-offers-scroll { display: flex; flex-direction: column; gap: 7px; max-height: 180px; overflow-y: auto; padding-right: 4px; }
+.lx-offers-scroll::-webkit-scrollbar { width: 3px; }
+.lx-offers-scroll::-webkit-scrollbar-thumb { background: var(--lx-border); border-radius: 4px; }
+
+.lx-offer-card { border: 1.5px dashed var(--lx-border); border-radius: var(--lx-radius-sm); padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; background: var(--lx-surface2); cursor: pointer; transition: border-color var(--transition), background var(--transition); gap: 8px; }
+.lx-offer-card:hover { border-color: var(--lx-gold); background: var(--lx-gold-light); }
+.lx-offer-card.best-offer { border-color: var(--lx-gold); background: var(--lx-gold-light); position: relative; }
+.lx-offer-card.best-offer::before { content: 'BEST'; position: absolute; top: -1px; right: 8px; background: var(--lx-gold); color: #fff; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 0 0 4px 4px; }
+.lx-offer-details { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.lx-offer-code { font-size: 12px; font-weight: 700; color: var(--lx-text); display: flex; align-items: center; gap: 5px; }
+.lx-offer-desc { font-size: 10.5px; color: var(--lx-text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lx-offer-apply-btn { font-size: 11px; font-weight: 700; color: var(--lx-gold); background: none; border: 1px solid var(--lx-gold); border-radius: 4px; cursor: pointer; padding: 3px 10px; white-space: nowrap; transition: all var(--transition); }
+.lx-offer-apply-btn:hover { background: var(--lx-gold); color: #fff; }
+.lx-offer-locked-msg { font-size: 10px; color: var(--lx-text-xlight); white-space: nowrap; }
+
+/* ── TOTALS TABLE ── */
+.lx-totals-section { margin-bottom: 16px; }
+.lx-totals-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 13px; }
+.lx-totals-row-label { color: var(--lx-text-light); }
+.lx-totals-row-value { font-weight: 500; color: var(--lx-text); }
+.lx-totals-row--discount .lx-totals-row-label,
+.lx-totals-row--discount .lx-totals-row-value { color: var(--lx-success); }
+.lx-totals-divider { border: none; border-top: 1px dashed var(--lx-border); margin: 8px 0; }
+.lx-totals-row--grand { padding: 12px 0 4px; }
+.lx-totals-row--grand .lx-totals-row-label { font-size: 15px; font-weight: 700; color: var(--lx-text); }
+.lx-totals-row--grand .lx-totals-row-value { font-size: 18px; font-weight: 700; color: var(--lx-text); }
+
+/* VIP Discount Row */
+.lx-vip-discount-row { background: linear-gradient(90deg, #fffbeb, #fef3c7); border: 1px solid #fcd34d; border-radius: 8px; padding: 8px 12px; margin: 4px 0; }
+.lx-vip-discount-row .lx-totals-row-label { color: #92400e; font-weight: 600; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.lx-vip-badge { background: linear-gradient(135deg, #b45309, #d97706); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; letter-spacing: 0.5px; white-space: nowrap; }
+.lx-vip-amount { font-weight: 700 !important; font-size: 15px !important; color: #b45309 !important; }
+
+
+/* Total savings pill */
+.lx-total-savings-banner { background: var(--lx-success-bg); border: 1px solid var(--lx-success-bdr); border-radius: var(--lx-radius-sm); padding: 10px 14px; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.lx-total-savings-banner i { color: var(--lx-success); font-size: 18px; }
+.lx-savings-text { font-size: 12.5px; font-weight: 600; color: var(--lx-success); }
+
+/* Tax note */
+.lx-tax-note { font-size: 11px; color: var(--lx-text-xlight); text-align: center; line-height: 1.5; margin-top: 10px; }
+
+/* ── CHECKOUT BUTTON ── */
+.lx-checkout-wrap { margin-top: 16px; }
+.lx-checkout-btn,
+#main-cart-footer button#checkout.cart__checkout-button.button {
+  width: 100% !important;
+  background: var(--lx-text) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border: none !important;
+  border-radius: var(--lx-radius) !important;
+  padding: 16px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  font-family: var(--font) !important;
+  letter-spacing: 0.4px !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition) !important;
+  box-shadow: 0 4px 20px rgba(26,32,44,0.25) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.lx-checkout-btn::after,
+#main-cart-footer button#checkout.cart__checkout-button.button::after { display: none !important; }
+.lx-checkout-btn::before,
+#main-cart-footer button#checkout.cart__checkout-button.button::before { display: none !important; }
+.lx-checkout-btn:hover,
+#main-cart-footer button#checkout.cart__checkout-button.button:hover {
+  background: var(--lx-gold) !important;
+  box-shadow: 0 6px 24px rgba(184,147,86,0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Trust badges */
+.lx-trust-badges { display: flex; justify-content: center; gap: 20px; margin-top: 14px; flex-wrap: wrap; }
+.lx-trust-item { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--lx-text-light); }
+.lx-trust-item i { font-size: 14px; color: var(--lx-gold); }
+
+/* Dynamic checkout */
+.cart__dynamic-checkout-buttons { margin-top: 12px; }
+
+/* ── CROSS SELL ── */
+.lx-cross-sell { background: var(--lx-surface); border: 1px solid var(--lx-border); border-radius: var(--lx-radius); padding: 18px; box-shadow: var(--lx-shadow); margin-top: 4px; }
+.lx-cross-sell-title { font-size: 13px; font-weight: 700; letter-spacing: 0.3px; margin: 0 0 14px; color: var(--lx-text); text-transform: uppercase; }
+.lx-cs-scroll { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+.lx-cs-scroll::-webkit-scrollbar { display: none; }
+.lx-cs-item { min-width: 120px; max-width: 120px; flex-shrink: 0; }
+.lx-cs-img { height: 150px; background: var(--lx-surface2); border-radius: var(--lx-radius-sm); margin-bottom: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--lx-text-xlight); overflow: hidden; }
+.lx-cs-img img { width: 100%; height: 100%; object-fit: cover; }
+.lx-cs-img-link { display: block; height: 150px; border-radius: var(--lx-radius-sm); overflow: hidden; margin-bottom: 8px; background: var(--lx-surface2); }
+.lx-cs-img-real { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+.lx-cs-img-link:hover .lx-cs-img-real { transform: scale(1.04); }
+.lx-cs-name { font-size: 11.5px; font-weight: 500; margin: 0 0 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--lx-text); text-decoration: none; display: block; }
+.lx-cs-name:hover { color: var(--lx-gold); }
+.lx-cs-price { font-size: 12px; font-weight: 700; margin: 0 0 7px; color: var(--lx-text); }
+.lx-cs-compare { font-size: 10.5px; font-weight: 400; color: var(--lx-text-xlight); text-decoration: line-through; margin-left: 4px; }
+.lx-cs-add-btn { width: 100%; background: var(--lx-surface2); border: 1px solid var(--lx-border); color: var(--lx-text); border-radius: 5px; padding: 5px; font-size: 11px; font-weight: 600; cursor: pointer; font-family: var(--font); transition: all var(--transition); }
+.lx-cs-add-btn:hover { background: var(--lx-text); color: #fff; }
+.lx-cs-loading { display: flex; gap: 12px; }
+.lx-cs-placeholder { min-width: 120px; height: 190px; background: linear-gradient(90deg, var(--lx-surface2) 25%, #e9e8e4 50%, var(--lx-surface2) 75%); background-size: 200% 100%; border-radius: var(--lx-radius-sm); animation: lxShimmer 1.4s infinite; }
+@keyframes lxShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+
+/* ═══════════════ MOBILE STICKY BAR ═══════════════ */
+@media (max-width: 989px) {
+  .lx-cart { padding-bottom: 110px; }
+  .lx-mobile-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--lx-surface);
+    border-top: 1px solid var(--lx-border);
+    padding: 12px 18px;
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 -6px 24px rgba(0,0,0,0.10);
+    z-index: 9999;
+    gap: 14px;
+  }
+  .lx-mob-total { display: flex; flex-direction: column; gap: 1px; }
+  .lx-mob-total-label { font-size: 10.5px; color: var(--lx-text-light); }
+  .lx-mob-total-val { font-size: 20px; font-weight: 700; color: var(--lx-text); line-height: 1; }
+  .lx-mob-savings { font-size: 10px; color: var(--lx-success); font-weight: 500; }
+  .lx-mobile-bar .lx-checkout-btn { width: auto !important; flex: 1 !important; padding: 13px 20px !important; font-size: 15px !important; margin-top: 0 !important; }
+}
+
+/* ═══════════════ ANIMATIONS ═══════════════ */
+@keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes successPop { 0% { transform: scale(1); } 30% { transform: scale(1.04); } 100% { transform: scale(1); } }
+.lx-coupon-success-anim { animation: successPop 0.4s ease; }
+
+/* ═══════════════ QUANTITY POPOVER OVERRIDES ═══════════════ */
+.lx-qty-control.quantity { display: flex !important; align-items: center !important; border: 1.5px solid var(--lx-border) !important; border-radius: var(--lx-radius-xs) !important; height: 32px !important; background: #fff !important; }
+
+{%- endstyle -%}
+
+<script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
+
+<cart-items class="lx-cart isolate{% if cart == empty %} is-empty{% endif %} section-{{ section.id }}-padding">
+
+  <div class="cart__warnings">
+    <i class="ti ti-shopping-cart-off lx-empty-icon"></i>
+    <h1 class="lx-empty-title">{{ 'sections.cart.empty' | t }}</h1>
+    <p class="lx-empty-sub">Looks like you haven't added anything yet.</p>
+    <a href="{{ routes.all_products_collection_url }}" class="lx-empty-btn" style="margin-bottom: 30px;">
+      {{ 'general.continue_shopping' | t }}
+    </a>
+
+    <!-- Suggestions for Empty Cart -->
+    <div class="lx-empty-cross-sell" style="margin-top: 40px; text-align: left; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 20px;">
+      <h4 class="lx-cross-sell-title" style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; color: var(--lx-text); text-align: center;">You May Also Like</h4>
+      <div class="lx-cs-scroll" id="lx-empty-cs-products" style="display:flex; gap:16px; overflow-x:auto; scrollbar-width:none; padding-bottom:10px; justify-content: center; -webkit-overflow-scrolling:touch;">
+        <div class="lx-cs-loading" style="display:flex; gap:16px;">
+          <div class="lx-cs-placeholder" style="width: 140px; height: 210px; background: linear-gradient(90deg, var(--lx-surface2) 25%, #e9e8e4 50%, var(--lx-surface2) 75%); background-size: 200% 100%; border-radius: var(--lx-radius-sm); animation: lxShimmer 1.4s infinite;"></div>
+          <div class="lx-cs-placeholder" style="width: 140px; height: 210px; background: linear-gradient(90deg, var(--lx-surface2) 25%, #e9e8e4 50%, var(--lx-surface2) 75%); background-size: 200% 100%; border-radius: var(--lx-radius-sm); animation: lxShimmer 1.4s infinite;"></div>
+          <div class="lx-cs-placeholder" style="width: 140px; height: 210px; background: linear-gradient(90deg, var(--lx-surface2) 25%, #e9e8e4 50%, var(--lx-surface2) 75%); background-size: 200% 100%; border-radius: var(--lx-radius-sm); animation: lxShimmer 1.4s infinite;"></div>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+    (function() {
+      var products = [
+        {%- assign empty_col = section.settings.empty_cart_collection | default: collections.all -%}
+        {%- assign count = 0 -%}
+        {%- for p in empty_col.products -%}
+          {%- if p.featured_image != blank -%}
+            {%- if count > 0 -%},{%- endif -%}
+            {{ p | json }}
+            {%- assign count = count | plus: 1 -%}
+            {%- if count >= 6 -%}{%- break -%}{%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      ];
+
+      var container = document.getElementById('lx-empty-cs-products');
+      if (!container) return;
+      if (!products || products.length === 0) {
+        document.querySelector('.lx-empty-cross-sell').style.display = 'none';
+        return;
+      }
+      
+      window._lxProducts = window._lxProducts || {};
+      var html = '';
+      products.forEach(function(p) {
+            // Normalize products.json format to match recommendations API format for the modal
+            if (!p.featured_image && p.images && p.images.length > 0) {
+              p.featured_image = typeof p.images[0] === 'object' ? p.images[0].src : p.images[0];
+            }
+            if (p.price === undefined && p.variants && p.variants.length > 0) {
+              p.price = parseFloat(p.variants[0].price) * 100; // Convert string "999.00" to integer cents 99900
+            }
+            if (p.options && p.options.length > 0 && typeof p.options[0] === 'object') {
+               // options are already objects like {name: 'Color'}
+            } else if (p.options) {
+               // map string array to object array
+               p.options = p.options.map(function(optName) { return { name: optName }; });
+            }
+
+            if (window.applyLxComboConfig) window.applyLxComboConfig(p);
+            window._lxProducts[p.id] = p;
+            var imgSrc = '';
+            if (p.featured_image) {
+              imgSrc = typeof p.featured_image === 'object' ? (p.featured_image.src || '') : p.featured_image;
+            } else if (p.images && p.images[0]) {
+              imgSrc = p.images[0].src || '';
+            }
+            if (imgSrc && imgSrc.indexOf('?') === -1) imgSrc += '?width=400';
+            var productUrl = p.url || ('/products/' + p.handle);
+            var firstVariant = p.variants && p.variants[0];
+            var priceVal = firstVariant ? (parseFloat(firstVariant.price) / 100) : 0;
+            var comparePriceVal = firstVariant && firstVariant.compare_at_price ? (parseFloat(firstVariant.compare_at_price) / 100) : 0;
+            
+            var price = priceVal.toLocaleString('en-IN',{style:'currency',currency:'INR',minimumFractionDigits:0});
+            var comparePrice = '';
+            if(comparePriceVal > priceVal){
+              comparePrice = '<span style="font-size:10.5px;color:#9CA3AF;text-decoration:line-through;margin-left:4px;">'+comparePriceVal.toLocaleString('en-IN',{style:'currency',currency:'INR',minimumFractionDigits:0})+'</span>';
+            }
+            var hasOnlyDefault = p.variants && p.variants.length === 1 && p.variants[0].title === 'Default Title';
+            var variantId = p.variants && p.variants[0] ? p.variants[0].id : '';
+            
+            html += '<div style="min-width:140px;max-width:140px;flex-shrink:0;text-align:left;">';
+            html += '<a href="'+productUrl+'" style="display:block;height:170px;border-radius:10px;overflow:hidden;margin-bottom:8px;background:#F3F2EF;">';
+            if(imgSrc) html += '<img src="'+imgSrc+'" alt="'+p.title+'" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">';
+            html += '</a>';
+            html += '<a href="'+productUrl+'" style="font-size:11.5px;font-weight:500;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#1A202C;text-decoration:none;margin-bottom:3px;">'+p.title+'</a>';
+            html += '<p style="font-size:12px;font-weight:700;margin:0 0 7px;color:#1A202C;">'+price+comparePrice+'</p>';
+            if(hasOnlyDefault){
+              html += '<button type="button" onclick="lxDirectAdd(this,\''+variantId+'\')" style="width:100%;background:#F3F2EF;border:1px solid #E5E7EB;color:#1A202C;border-radius:5px;padding:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">+ Quick Add</button>';
+            } else {
+              html += '<button type="button" onclick="lxOpenVariantModal(\'' + p.id + '\')" style="width:100%;background:#F3F2EF;border:1px solid #E5E7EB;color:#1A202C;border-radius:5px;padding:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">+ Quick Add</button>';
+            }
+            html += '</div>';
+          });
+          container.innerHTML = html;
+          if (products.length > 2) {
+            container.style.justifyContent = 'flex-start';
+          }
+    })();
+    </script>
+  </div>
+
+  <form action="{{ routes.cart_url }}" class="cart__contents critical-hidden" method="post" id="cart">
+    <div id="main-cart-items" data-id="{{ section.id }}">
+      
+      <div class="js-contents">
+        {%- if cart != empty -%}
+          <div class="lx-container">
+            
+            <div class="lx-cart-main">
+              <div class="lx-cart-header">
+                <h1 class="lx-cart-title">
+                  Shopping Cart
+                  <span class="lx-cart-count">{{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }}</span>
+                </h1>
+                <a href="{{ routes.all_products_collection_url }}" class="lx-continue lx-desktop">
+                  <i class="ti ti-arrow-left" style="font-size:13px;"></i> Continue Shopping
+                </a>
+              </div>
+
+              <div class="lx-item-list">
+                {%- assign total_item_savings = 0 -%}
+
+                {%- for item in cart.items -%}
+                  {%- assign line_saving = item.original_line_price | minus: item.final_line_price -%}
+                  {%- assign total_item_savings = total_item_savings | plus: line_saving -%}
+
+                  {%- assign show_sale    = false -%}
+                  {%- assign show_new     = false -%}
+                  {%- assign show_best    = false -%}
+                  {%- assign show_limited = false -%}
+                  {%- for tag in item.product.tags -%}
+                    {%- assign tag_down = tag | downcase -%}
+                    {%- if tag_down == 'sale'              -%}{%- assign show_sale    = true -%}{%- endif -%}
+                    {%- if tag_down == 'new arrival'       -%}{%- assign show_new     = true -%}{%- endif -%}
+                    {%- if tag_down == 'best seller'       -%}{%- assign show_best    = true -%}{%- endif -%}
+                    {%- if tag_down == 'limited edition'   -%}{%- assign show_limited = true -%}{%- endif -%}
+                  {%- endfor -%}
+
+                  {%- assign line_index = item.index -%}
+
+                  <div class="lx-cart-item cart-item" id="CartItem-{{ item.key }}">
+
+                    <div class="lx-item-img">
+                      {%- if show_sale or show_new or show_best or show_limited -%}
+                        <div class="lx-item-badges">
+                          {%- if show_sale    -%}<span class="lx-badge lx-badge--sale">Sale</span>{%- endif -%}
+                          {%- if show_new     -%}<span class="lx-badge lx-badge--new">New</span>{%- endif -%}
+                          {%- if show_best    -%}<span class="lx-badge lx-badge--bestsell">Best Seller</span>{%- endif -%}
+                          {%- if show_limited -%}<span class="lx-badge lx-badge--limited">Limited</span>{%- endif -%}
+                        </div>
+                      {%- endif -%}
+                      {% if item.image %}
+                        <a href="{{ item.url }}">
+                          <img src="{{ item.image | image_url: width: 220 }}" alt="{{ item.image.alt | escape }}" loading="lazy" width="90" height="118">
+                        </a>
+                      {% endif %}
+                    </div>
+
+                    <div class="lx-item-details">
+                      <div>
+                        <p class="lx-item-brand">{{ item.product.vendor | escape }}</p>
+                        <a href="{{ item.url }}" class="lx-item-title">{{ item.product.title | escape }}</a>
+
+                        {%- if item.product.has_only_default_variant == false -%}
+                          <div class="lx-direct-picker" data-item-key="{{ item.key }}" data-qty="{{ item.quantity }}" data-product-id="{{ item.product.id }}" style="margin-top: 8px; font-family: inherit;">
+                            {%- for option in item.product.options_with_values -%}
+                              {%- assign option_index = forloop.index0 -%}
+                              {%- assign selected_value = item.variant.options[option_index] -%}
+                              <div class="lx-direct-option-row" style="margin-top: 4px; display: flex; align-items: center; gap: 6px;">
+                                <span style="font-size: 11px; color: #6B7280; text-transform: uppercase; font-weight: 600; font-family: inherit; width: 55px; display: inline-block;">{{ option.name }}:</span>
+                                <select class="lx-direct-option-select" data-option-index="{{ option_index }}" onchange="lxDirectChangeVariant(this)" style="font-size: 12px; padding: 3px 6px; border-radius: 4px; border: 1px solid #E5E7EB; background: #fff; font-family: inherit; cursor: pointer; color: #1A202C;">
+                                  {%- for value in option.values -%}
+                                    <option value="{{ value | escape }}" {% if value == selected_value %}selected{% endif %}>{{ value }}</option>
+                                  {%- endfor -%}
+                                </select>
+                              </div>
+                            {%- endfor -%}
+                            <script type="application/json" class="lx-direct-variants-json">
+                              {{ item.product.variants | json }}
+                            </script>
+                          </div>
+                        {%- endif -%}
+
+                        <div class="lx-compact-price">
+                          <span class="lx-final-price">{{ item.final_line_price | money }}</span>
+                          {%- if line_saving > 0 -%}
+                            <span class="lx-original-price">{{ item.original_line_price | money }}</span>
+                            {%- assign disc_pct = item.original_line_price | minus: item.final_line_price | times: 100.0 | divided_by: item.original_line_price | round -%}
+                            <span class="lx-discount-pct">({{ disc_pct }}% OFF)</span>
+                          {%- endif -%}
+                        </div>
+                      </div>
+
+                      <div class="lx-item-actions">
+                        <quantity-input class="lx-qty-control quantity">
+                          <button class="lx-qty-btn quantity__button" name="minus" type="button" aria-label="Decrease quantity">
+                            <i class="ti ti-minus" style="font-size:13px;"></i>
+                          </button>
+                          <input class="lx-qty-input quantity__input"
+                                 type="number"
+                                 name="updates[]"
+                                 value="{{ item.quantity }}"
+                                 min="0"
+                                 step="1"
+                                 data-index="{{ item.key }}"
+                                 data-quantity-variant-id="{{ item.variant.id }}"
+                                 id="Quantity-{{ item.key }}">
+                          <button class="lx-qty-btn quantity__button" name="plus" type="button" aria-label="Increase quantity">
+                            <i class="ti ti-plus" style="font-size:13px;"></i>
+                          </button>
+                        </quantity-input>
+
+                        <button type="button" class="lx-remove-btn" aria-label="Remove {{ item.product.title | escape }}" onclick="lxRemoveCartItem('{{ item.key }}', this)">
+                          <i class="ti ti-trash" style="font-size:14px;"></i> Remove
+                        </button>
+                      </div>
+                    </div>
+
+                  </div>
+                {%- endfor -%}
+              </div>
+
+
+              {%- if cart.item_count > 0 -%}
+              <div class="lx-cross-sell lx-desktop" style="margin-top: 20px;" id="lx-cross-sell-wrapper">
+                <h4 class="lx-cross-sell-title">You May Also Like</h4>
+                <div class="lx-cs-scroll" id="lx-cs-products">
+                  <div class="lx-cs-loading">
+                    <div class="lx-cs-placeholder"></div>
+                    <div class="lx-cs-placeholder"></div>
+                    <div class="lx-cs-placeholder"></div>
+                  </div>
+                </div>
+              </div>
+
+              <script>
+              (function() {
+                var productId = {{ cart.items.first.product_id | json }};
+                var limit = 6;
+                var url = window.Shopify.routes.root + 'recommendations/products.json?product_id=' + productId + '&limit=' + limit + '&intent=related';
+
+                fetch(url)
+                  .then(function(res) { return res.json(); })
+                  .then(function(data) {
+                    var container = document.getElementById('lx-cs-products');
+                    if (!container) return;
+
+                    var products = data.products;
+                    if (!products || products.length === 0) {
+                      document.getElementById('lx-cross-sell-wrapper').style.display = 'none';
+                      return;
+                    }
+
+                    window._lxProducts = window._lxProducts || {};
+                    var html = '';
+                    products.forEach(function(p) {
+                      if (window.applyLxComboConfig) window.applyLxComboConfig(p);
+                      window._lxProducts[p.id] = p;
+                      // featured_image can be an object {src:...} or a plain URL string
+                      var imgSrc = '';
+                      if (p.featured_image) {
+                        imgSrc = typeof p.featured_image === 'object' ? (p.featured_image.src || '') : p.featured_image;
+                      }
+                      // build CDN URL with width param for performance
+                      if (imgSrc && imgSrc.indexOf('?') === -1) imgSrc += '?width=400';
+                      var productUrl = p.url || ('/products/' + p.handle);
+                      var price = (p.price / 100).toLocaleString('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 });
+                      var comparePrice = '';
+                      if (p.compare_at_price && p.compare_at_price > p.price) {
+                        comparePrice = '<span class="lx-cs-compare">' + (p.compare_at_price / 100).toLocaleString('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }) + '</span>';
+                      }
+                      var hasOnlyDefault = p.variants && p.variants.length === 1 && p.variants[0].title === 'Default Title';
+                      var variantId = p.variants && p.variants[0] ? p.variants[0].id : '';
+                      html += '<div class="lx-cs-item">';
+                      html += '<a href="' + productUrl + '" class="lx-cs-img-link">';
+                      if (imgSrc) {
+                        html += '<img src="' + imgSrc + '" alt="' + p.title + '" class="lx-cs-img-real" loading="lazy">';
+                      } else {
+                        html += '<div class="lx-cs-img">No Image</div>';
+                      }
+                      html += '</a>';
+                      html += '<a href="' + productUrl + '" class="lx-cs-name">' + p.title + '</a>';
+                      html += '<p class="lx-cs-price">' + price + ' ' + comparePrice + '</p>';
+                      if (hasOnlyDefault) {
+                        html += '<button type="button" class="lx-cs-add-btn" onclick="lxDirectAdd(this,\'' + variantId + '\')">+ Quick Add</button>';
+                      } else {
+                        html += '<button type="button" class="lx-cs-add-btn" onclick="lxOpenVariantModal(\'' + p.id + '\')">+ Quick Add</button>';
+                      }
+                      html += '</div>';
+                    });
+
+                    container.innerHTML = html;
+                  })
+                  .catch(function() {
+                    var wrapper = document.getElementById('lx-cross-sell-wrapper');
+                    if (wrapper) wrapper.style.display = 'none';
+                  });
+              })();
+              </script>
+              {%- endif -%}
+
+            </div>
+
+            <div class="lx-cart-sidebar lx-summary-outer">
+              {%- assign cart_total = cart.total_price -%}
+              {%- assign free_ship_threshold = section.settings.free_shipping_threshold | times: 100 -%}
+              {%- assign vip_threshold = section.settings.vip_threshold | times: 100 -%}
+
+              {%- assign vip_code = section.settings.vip_discount_code | default: 'PURCHASE1999' | upcase -%}
+              {%- assign total_mrp_discount = 0 -%}
+              {%- assign total_vip_discount = 0 -%}
+              {%- assign total_other_discount = 0 -%}
+
+              {%- for item in cart.items -%}
+                {%- assign item_compare = item.variant.compare_at_price | default: item.variant.price -%}
+                {%- assign item_mrp_discount = item_compare | minus: item.variant.price | times: item.quantity -%}
+                {%- assign total_mrp_discount = total_mrp_discount | plus: item_mrp_discount -%}
+
+                {%- for allocation in item.line_level_discount_allocations -%}
+                  {%- assign alloc_title_upper = allocation.discount_application.title | upcase -%}
+                  {%- if alloc_title_upper == vip_code -%}
+                    {%- assign total_vip_discount = total_vip_discount | plus: allocation.amount -%}
+                  {%- else -%}
+                    {%- assign total_other_discount = total_other_discount | plus: allocation.amount -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endfor -%}
+
+              {%- for discount in cart.cart_level_discount_applications -%}
+                {%- assign disc_title_upper = discount.title | upcase -%}
+                {%- if disc_title_upper == vip_code -%}
+                  {%- assign total_vip_discount = total_vip_discount | plus: discount.total_allocated_amount -%}
+                {%- else -%}
+                  {%- assign total_other_discount = total_other_discount | plus: discount.total_allocated_amount -%}
+                {%- endif -%}
+              {%- endfor -%}
+
+              {%- assign total_cart_savings = total_mrp_discount | plus: total_vip_discount | plus: total_other_discount -%}
+
+              <div class="lx-summary-card">
+                <h2 class="lx-summary-heading">
+                  <i class="ti ti-receipt"></i> Order Summary
+                </h2>
+
+                <div id="lx-vip-error-notice" style="display:none !important; color: var(--lx-danger); font-size: 11px; margin-bottom: 12px; background: var(--lx-danger-bg); padding: 8px; border-radius: 5px; border: 1px solid var(--lx-danger);">
+                  ⚠️ VIP Code rejected by Shopify. Make sure the code exists and is active in your Admin.
+                </div>
+
+                <div class="lx-progress-block">
+                  {%- if cart_total >= free_ship_threshold -%}
+                    <div class="lx-progress-unlocked">
+                      <i class="ti ti-truck" style="color:var(--lx-success);font-size:16px;"></i>
+                      🎉 Free Shipping Unlocked!
+                    </div>
+                  {%- else -%}
+                    {%- assign ship_diff   = free_ship_threshold | minus: cart_total | divided_by: 100.0 -%}
+                    {%- assign ship_pct    = cart_total | times: 100 | divided_by: free_ship_threshold -%}
+                    <div class="lx-progress-label">
+                      <span>🚚 Add <strong>₹{{ ship_diff | round }}</strong> more for Free Shipping</span>
+                      <span class="lx-progress-pct">{{ ship_pct }}%</span>
+                    </div>
+                    <div class="lx-progress-track">
+                      <div class="lx-progress-fill lx-progress-fill--ship" style="width: {{ ship_pct }}%;"></div>
+                    </div>
+                  {%- endif -%}
+                </div>
+
+                <div class="lx-progress-block">
+                  {%- if cart_total >= vip_threshold -%}
+                    <div class="lx-progress-unlocked">
+                      <i class="ti ti-crown" style="color:var(--lx-gold);font-size:16px;"></i>
+                      👑 VIP Discount Unlocked!
+                    </div>
+                  {%- else -%}
+                    {%- assign vip_diff = vip_threshold | minus: cart_total | divided_by: 100.0 -%}
+                    {%- assign vip_pct  = cart_total | times: 100 | divided_by: vip_threshold -%}
+                    <div class="lx-progress-label">
+                      <span>👑 Add <strong>₹{{ vip_diff | round }}</strong> more for VIP Discount</span>
+                      <span class="lx-progress-pct">{{ vip_pct }}%</span>
+                    </div>
+                    <div class="lx-progress-track">
+                      <div class="lx-progress-fill lx-progress-fill--vip" style="width: {{ vip_pct }}%;"></div>
+                    </div>
+                  {%- endif -%}
+                </div>
+
+                {% if section.blocks.size > 0 and section.settings.show_coupon_section %}
+                <div class="lx-coupon-section">
+                  <p class="lx-coupon-label"><i class="ti ti-tag"></i> {{ section.settings.coupon_title | default: 'Coupons & Offers' }}</p>
+
+                  <div class="lx-applied-coupon" id="lx-applied-coupon">
+                    <div class="lx-applied-left">
+                      <div class="lx-applied-code">
+                        <i class="ti ti-circle-check-filled" style="font-size:16px;"></i>
+                        <span id="lx-applied-code-label"></span>
+                      </div>
+                      <span class="lx-applied-time" id="lx-applied-time"></span>
+                    </div>
+                    <button type="button" class="lx-remove-coupon-btn" onclick="lxRemoveCoupon()">Remove</button>
+                  </div>
+
+                  <div id="lx-coupon-picker">
+                    <div class="lx-coupon-input-row">
+                      <input type="text" id="lx-code-input" class="lx-coupon-input" placeholder="Enter coupon code" autocomplete="off">
+                      <button type="button" class="lx-coupon-apply-btn" onclick="lxApplyCoupon(document.getElementById('lx-code-input').value)">Apply</button>
+                    </div>
+                    <div id="lx-coupon-msg"></div>
+
+                    {% assign has_coupons = false %}
+                    {% for block in section.blocks %}
+                      {% if block.type == 'coupon' %}{% assign has_coupons = true %}{% endif %}
+                    {% endfor %}
+
+                    {% if has_coupons and section.settings.show_available_offers %}
+                      <p class="lx-offers-label">{{ section.settings.offers_label | default: 'Available Offers' }}</p>
+                      <div class="lx-offers-scroll">
+                        {%- assign best_coupon_code = '' -%}
+                        {%- assign best_coupon_min  = 9999999 -%}
+                        {%- for block in section.blocks -%}
+                          {%- if block.type == 'coupon' -%}
+                            {%- assign min_paise = block.settings.min_spend | times: 100 -%}
+                            {%- if cart_total >= min_paise and min_paise < best_coupon_min -%}
+                              {%- assign best_coupon_min  = min_paise -%}
+                              {%- assign best_coupon_code = block.settings.code -%}
+                            {%- endif -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+
+                        {% for block in section.blocks %}
+                          {% if block.type == 'coupon' %}
+                            {% assign min_paise = block.settings.min_spend | times: 100 %}
+                            {% assign is_eligible = false %}
+                            {% if cart_total >= min_paise %}{% assign is_eligible = true %}{% endif %}
+                            {% assign is_best = false %}
+                            {% if block.settings.code == best_coupon_code and best_coupon_code != '' %}{% assign is_best = true %}{% endif %}
+                            <div class="lx-offer-card{% if is_best %} best-offer{% endif %}{% if block.settings.highlight %} highlight-offer{% endif %}" {{ block.shopify_attributes }}>
+                              <div class="lx-offer-details">
+                                <span class="lx-offer-code">
+                                  <i class="ti ti-tag" style="font-size:12px;color:var(--lx-gold);"></i>
+                                  {{ block.settings.code }}
+                                </span>
+                                <span class="lx-offer-desc">{{ block.settings.desc }}</span>
+                              </div>
+                              {% if is_eligible %}
+                                <button type="button" class="lx-offer-apply-btn" onclick="lxApplyCoupon('{{ block.settings.code }}')">APPLY</button>
+                              {% else %}
+                                {% assign diff_paise = min_paise | minus: cart_total | divided_by: 100.0 | round %}
+                                <span class="lx-offer-locked-msg">🔒 Add ₹{{ diff_paise }}</span>
+                              {% endif %}
+                            </div>
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+                {% endif %}
+
+                <div class="lx-totals-section">
+                  <div class="lx-totals-row">
+                    <span class="lx-totals-row-label">Total MRP</span>
+                    <span class="lx-totals-row-value">{{ cart.original_total_price | money }}</span>
+                  </div>
+
+                  {% if total_mrp_discount > 0 %}
+                  <div class="lx-totals-row lx-totals-row--discount">
+                    <span class="lx-totals-row-label">Discount on MRP <span style="font-size:10px;font-weight:400;opacity:0.7;">(product offer)</span></span>
+                    <span class="lx-totals-row-value">-{{ total_mrp_discount | money }}</span>
+                  </div>
+                  {% endif %}
+
+                  {%- for discount in cart.discount_applications -%}
+                    {%- assign disc_title_upper = discount.title | upcase -%}
+                    {%- if disc_title_upper == vip_code -%}
+                      <div class="lx-totals-row" style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-size:13px; color:#92400e; width: 100%; box-sizing: border-box;">
+                        <span class="lx-totals-row-label" style="font-weight:600; display:flex; align-items:center; gap:4px; color:#92400e; font-family: inherit;">
+                          <span>👑 VIP Discount ({{ discount.title }})</span>
+                        </span>
+                        <span class="lx-totals-row-value lx-vip-amount" style="font-weight:700; font-size:13px; color:#92400e; white-space: nowrap; flex-shrink: 0; margin-left: auto;">-{{ discount.total_allocated_amount | money }}</span>
+                      </div>
+                    {%- else -%}
+                      <div class="lx-totals-row lx-totals-row--discount" style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-size:13px; color:#16A34A;">
+                        <span class="lx-totals-row-label" style="color:#16A34A;">Discount ({{ discount.title }})</span>
+                        <span class="lx-totals-row-value" style="white-space: nowrap; flex-shrink: 0;">-{{ discount.total_allocated_amount | money }}</span>
+                      </div>
+                    {%- endif -%}
+                  {%- endfor -%}
+
+                  <div class="lx-totals-row">
+                    <span class="lx-totals-row-label">Shipping</span>
+                    <span class="lx-totals-row-value" {% if cart_total >= free_ship_threshold %}style="color:var(--lx-success);"{% endif %}>
+                      {% if cart_total >= free_ship_threshold %}FREE{% else %}Calculated at checkout{% endif %}
+                    </span>
+                  </div>
+
+                  <hr class="lx-totals-divider">
+
+                  <div class="lx-totals-row lx-totals-row--grand totals">
+                    <span class="lx-totals-row-label">Total Amount</span>
+                    <span class="lx-totals-row-value totals__total-value">{{ cart.total_price | money }}</span>
+                  </div>
+                </div>
+
+                {% if total_cart_savings > 0 %}
+                <div class="lx-total-savings-banner">
+                  <i class="ti ti-pig-money"></i>
+                  <span class="lx-savings-text">You're saving {{ total_cart_savings | money }} on this order!</span>
+                </div>
+                {% endif %}
+
+                <p class="lx-tax-note">
+                  {%- if cart.duties_included and cart.taxes_included -%}
+                    {%- if shop.shipping_policy.body == blank -%}{{ 'sections.cart.duties_and_taxes_included_shipping_at_checkout_without_policy' | t }}{%- else -%}{{ 'sections.cart.duties_and_taxes_included_shipping_at_checkout_with_policy_html' | t: link: shop.shipping_policy.url }}{%- endif -%}
+                  {%- elsif cart.taxes_included -%}
+                    {%- if shop.shipping_policy.body == blank -%}{{ 'sections.cart.taxes_included_shipping_at_checkout_without_policy' | t }}{%- else -%}{{ 'sections.cart.taxes_included_shipping_at_checkout_with_policy_html' | t: link: shop.shipping_policy.url }}{%- endif -%}
+                  {%- else -%}
+                    {%- if shop.shipping_policy.body == blank -%}{{ 'sections.cart.taxes_at_checkout_shipping_at_checkout_without_policy' | t }}{%- else -%}{{ 'sections.cart.taxes_at_checkout_shipping_at_checkout_with_policy_html' | t: link: shop.shipping_policy.url }}{%- endif -%}
+                  {%- endif -%}
+                </p>
+
+                <div class="lx-checkout-wrap lx-desktop">
+                  <button type="button" id="checkout" class="lx-checkout-btn cart__checkout-button button" name="checkout" onclick="event.preventDefault();if(window.openWaModal)window.openWaModal();">
+                    <i class="ti ti-lock" style="font-size:16px;"></i>
+                    {{ 'sections.cart.checkout' | t }}
+                    <i class="ti ti-arrow-right" style="font-size:16px;"></i>
+                  </button>
+
+                  {%- if additional_checkout_buttons -%}
+                    <div class="cart__dynamic-checkout-buttons additional-checkout-buttons">
+                      {{ content_for_additional_checkout_buttons }}
+                    </div>
+                  {%- endif -%}
+
+                  <div class="lx-trust-badges">
+                    <span class="lx-trust-item"><i class="ti ti-shield-check"></i> Secure Payment</span>
+                    <span class="lx-trust-item"><i class="ti ti-truck-delivery"></i> Fast Shipping</span>
+                    <span class="lx-trust-item"><i class="ti ti-refresh"></i> Easy Returns</span>
+                  </div>
+                </div>
+
+                <div id="cart-errors"></div>
+              </div>
+            </div>
+            
+          </div>
+
+          {%- if cart.item_count > 0 -%}
+          <div class="lx-mobile" style="margin: 0 0 120px 0; padding: 0 16px;" id="lx-mobile-cross-sell-wrapper">
+            <h4 class="lx-cross-sell-title" style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;margin:20px 0 12px;color:#1A202C;">You May Also Like</h4>
+            <div class="lx-cs-scroll" id="lx-cs-products-mobile" style="display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;-webkit-overflow-scrolling:touch;">
+              <div class="lx-cs-loading" style="display:flex;gap:12px;">
+                <div class="lx-cs-placeholder"></div>
+                <div class="lx-cs-placeholder"></div>
+                <div class="lx-cs-placeholder"></div>
+              </div>
+            </div>
+          </div>
+          <script>
+          (function() {
+            var productId = {{ cart.items.first.product_id | json }};
+            var url = window.Shopify.routes.root + 'recommendations/products.json?product_id=' + productId + '&limit=6&intent=related';
+            fetch(url)
+              .then(function(r){ return r.json(); })
+              .then(function(data){
+                var container = document.getElementById('lx-cs-products-mobile');
+                if (!container) return;
+                var products = data.products;
+                if (!products || products.length === 0) {
+                  var w = document.getElementById('lx-mobile-cross-sell-wrapper');
+                  if(w) w.style.display='none';
+                  return;
+                }
+                window._lxProducts = window._lxProducts || {};
+                var html = '';
+                products.forEach(function(p) {
+                  if (window.applyLxComboConfig) window.applyLxComboConfig(p);
+                  window._lxProducts[p.id] = p;
+                  var imgSrc = '';
+                  if (p.featured_image) {
+                    imgSrc = typeof p.featured_image === 'object' ? (p.featured_image.src || '') : p.featured_image;
+                  }
+                  if (imgSrc && imgSrc.indexOf('?') === -1) imgSrc += '?width=400';
+                  var productUrl = p.url || ('/products/' + p.handle);
+                  var price = (p.price/100).toLocaleString('en-IN',{style:'currency',currency:'INR',minimumFractionDigits:0});
+                  var comparePrice = '';
+                  if(p.compare_at_price && p.compare_at_price > p.price){
+                    comparePrice = '<span style="font-size:10.5px;color:#9CA3AF;text-decoration:line-through;margin-left:4px;">'+(p.compare_at_price/100).toLocaleString('en-IN',{style:'currency',currency:'INR',minimumFractionDigits:0})+'</span>';
+                  }
+                  var hasOnlyDefault = p.variants && p.variants.length === 1 && p.variants[0].title === 'Default Title';
+                  var variantId = p.variants && p.variants[0] ? p.variants[0].id : '';
+                  html += '<div style="min-width:130px;max-width:130px;flex-shrink:0;">';
+                  html += '<a href="'+productUrl+'" style="display:block;height:160px;border-radius:10px;overflow:hidden;margin-bottom:8px;background:#F3F2EF;">';
+                  if(imgSrc) html += '<img src="'+imgSrc+'" alt="'+p.title+'" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">';
+                  html += '</a>';
+                  html += '<a href="'+productUrl+'" style="font-size:11.5px;font-weight:500;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#1A202C;text-decoration:none;margin-bottom:3px;">'+p.title+'</a>';
+                  html += '<p style="font-size:12px;font-weight:700;margin:0 0 7px;color:#1A202C;">'+price+comparePrice+'</p>';
+                  if(hasOnlyDefault){
+                    html += '<button type="button" onclick="lxDirectAdd(this,\''+variantId+'\')" style="width:100%;background:#F3F2EF;border:1px solid #E5E7EB;color:#1A202C;border-radius:5px;padding:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">+ Quick Add</button>';
+                  } else {
+                    html += '<button type="button" onclick="lxOpenVariantModal(\'' + p.id + '\')" style="width:100%;background:#F3F2EF;border:1px solid #E5E7EB;color:#1A202C;border-radius:5px;padding:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">+ Quick Add</button>';
+                  }
+                  html += '</div>';
+                });
+                container.innerHTML = html;
+              })
+              .catch(function(){
+                var w = document.getElementById('lx-mobile-cross-sell-wrapper');
+                if(w) w.style.display='none';
+              });
+          })();
+          </script>
+          {%- endif -%}
+
+          <div class="lx-mobile-bar lx-mobile">
+            <div class="lx-mob-total">
+              <span class="lx-mob-total-label">Amount Payable</span>
+              <span class="lx-mob-total-val">{{ cart.total_price | money }}</span>
+              {%- if total_cart_savings > 0 -%}
+                <span class="lx-mob-savings">Saving {{ total_cart_savings | money }}</span>
+              {%- endif -%}
+            </div>
+            <button type="button" class="lx-checkout-btn cart__checkout-button button" name="checkout" onclick="event.preventDefault();if(window.openWaModal)window.openWaModal();">
+              Checkout <i class="ti ti-arrow-right"></i>
+            </button>
+          </div>
+
+        {%- endif -%}
+      </div>
+    </div>
+    
+    <p class="visually-hidden" id="cart-live-region-text" aria-live="polite" role="status"></p>
+    <p class="visually-hidden" id="shopping-cart-line-item-status" aria-live="polite" aria-hidden="true" role="status">{{ 'accessibility.loading' | t }}</p>
+  </form>
+
+  <div id="main-cart-footer" data-id="fake-footer-id-do-not-remove" style="display:none;"></div>
+
+</cart-items>
+
+<script>
+  window.lxVipConfig = {
+    vipCode: {{ section.settings.vip_discount_code | default: 'PURCHASE1999' | json }},
+    vipThreshold: {{ section.settings.vip_threshold | default: 2500 | times: 100 | json }}
+  };
+</script>
+<script>
+/* ═══════════════════════════════════════════════════
+   LUXURY CART — COUPON SYSTEM
+   ═══════════════════════════════════════════════════ */
+(function () {
+  const STORAGE_KEY = 'lx_coupon_code';
+  const STORAGE_TIME = 'lx_coupon_time';
+
+  // Check state on initial page load
+  document.addEventListener('DOMContentLoaded', function () {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) showAppliedState(saved);
+  });
+
+  // --- MANUAL COUPON SYSTEM ---
+  function showAppliedState(code) {
+    const banner  = document.getElementById('lx-applied-coupon');
+    const picker  = document.getElementById('lx-coupon-picker');
+    const codeLbl = document.getElementById('lx-applied-code-label');
+    const timeLbl = document.getElementById('lx-applied-time');
+    if (!banner || !picker) return;
+
+    if (codeLbl) codeLbl.innerText = code;
+    if (timeLbl) {
+      const t = localStorage.getItem(STORAGE_TIME);
+      timeLbl.innerText = t ? 'Applied at ' + t : '';
+    }
+    banner.classList.add('show');
+    picker.style.display = 'none';
+  }
+
+  function hideAppliedState() {
+    const banner = document.getElementById('lx-applied-coupon');
+    const picker = document.getElementById('lx-coupon-picker');
+    if (banner) banner.classList.remove('show');
+    if (picker) picker.style.display = '';
+  }
+
+  function setMsg(text, type) {
+    const el = document.getElementById('lx-coupon-msg');
+    if (!el) return;
+    const icons = { success: 'ti-circle-check', error: 'ti-alert-circle', warn: 'ti-lock' };
+    const colors = { success: 'var(--lx-success)', error: 'var(--lx-danger)', warn: 'var(--lx-warn)' };
+    el.style.color = colors[type] || 'var(--lx-text)';
+    el.innerHTML = `<i class="ti ${icons[type] || ''}" style="font-size:14px;"></i> ${text}`;
+  }
+
+  window.lxApplyCoupon = async function (code) {
+    if (!code || !code.trim()) { setMsg('Please enter a coupon code.', 'error'); return; }
+    code = code.trim().toUpperCase();
+
+    const vipCode = {{ section.settings.vip_discount_code | json }};
+    const cartTotal = {{ cart.total_price | default: 0 }};
+    const vipThreshold = {{ section.settings.vip_threshold | times: 100 | json }} || 999999999;
+    
+    let finalCode = code;
+    
+    // Stack with VIP if VIP threshold is met
+    if (cartTotal >= vipThreshold && vipCode && vipCode.toUpperCase() !== code) {
+       finalCode = vipCode + ',' + code;
+    }
+
+    setMsg('Applying ' + code + '…', null);
+
+    try {
+      const res = await fetch(window.Shopify.routes.root + 'cart/update.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ discount: finalCode })
+      });
+
+      if (res.ok) {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        localStorage.setItem(STORAGE_KEY, code);
+        localStorage.setItem(STORAGE_TIME, timeStr);
+
+        setMsg('Coupon applied successfully!', 'success');
+
+        const card = document.querySelector('.lx-summary-card');
+        if (card) card.classList.add('lx-coupon-success-anim');
+
+        setTimeout(() => {
+          if (window.lxRefreshCartUI) {
+            window.lxRefreshCartUI();
+          } else {
+            location.reload();
+          }
+        }, 500);
+      } else {
+        setMsg('Unable to apply coupon. Check the code and try again.', 'error');
+      }
+    } catch (e) {
+      setMsg('Something went wrong. Please try again.', 'error');
+    }
+  };
+
+  window.lxRemoveCoupon = async function () {
+    const vipCode = {{ section.settings.vip_discount_code | json }};
+    const cartTotal = {{ cart.total_price | default: 0 }};
+    const vipThreshold = {{ section.settings.vip_threshold | times: 100 | json }} || 999999999;
+    
+    let finalCode = '';
+    
+    // Ensure VIP remains applied when user removes their manual coupon
+    if (cartTotal >= vipThreshold && vipCode) {
+       finalCode = vipCode; 
+    }
+
+    try {
+      const res = await fetch(window.Shopify.routes.root + 'cart/update.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ discount: finalCode })
+      });
+      if (res.ok) {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(STORAGE_TIME);
+        hideAppliedState();
+        setTimeout(() => {
+          if (window.lxRefreshCartUI) {
+            window.lxRefreshCartUI();
+          } else {
+            location.reload();
+          }
+        }, 200);
+      }
+    } catch (e) {
+      console.error('Remove coupon error:', e);
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('lx-code-input');
+    if (input) {
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          window.lxApplyCoupon(this.value);
+        }
+      });
+    }
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Cart items & Footer",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Empty Cart"
+    },
+    {
+      "type": "collection",
+      "id": "empty_cart_collection",
+      "label": "Empty Cart Cross-sell Collection",
+      "info": "Products to show when the cart is empty. Defaults to all products."
+    },
+    {
+      "type": "header",
+      "content": "Offers & Coupons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_coupon_section",
+      "label": "Show Coupon Section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "coupon_title",
+      "label": "Coupon Section Title",
+      "default": "Coupons & Offers"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_available_offers",
+      "label": "Show Available Offers List",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "offers_label",
+      "label": "Offers List Label",
+      "default": "Available Offers"
+    },
+    {
+      "type": "header",
+      "content": "Thresholds"
+    },
+    {
+      "type": "number",
+      "id": "free_shipping_threshold",
+      "label": "Free Shipping Threshold (in ₹)",
+      "default": 1500
+    },
+    {
+      "type": "number",
+      "id": "vip_threshold",
+      "label": "VIP Discount Threshold (in ₹)",
+      "default": 2500
+    },
+    {
+      "type": "text",
+      "id": "vip_discount_code",
+      "label": "VIP Auto-Discount Code",
+      "info": "This code auto-applies when the VIP threshold is reached. MUST be set to 'Combines with other discounts' in Shopify Admin to stack."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "coupon",
+      "name": "Coupon Offer",
+      "settings": [
+        {
+          "type": "text",
+          "id": "code",
+          "label": "Coupon Code",
+          "default": "SAVE20"
+        },
+        {
+          "type": "number",
+          "id": "min_spend",
+          "label": "Min Spend (in Rupees)",
+          "default": 999
+        },
+        {
+          "type": "text",
+          "id": "desc",
+          "label": "Offer Description",
+          "default": "Get Flat 20% off on orders above ₹999"
+        },
+        {
+          "type": "checkbox",
+          "id": "highlight",
+          "label": "Highlight this offer",
+          "default": false,
+          "info": "Adds a visual highlight to this offer card"
+        }
+      ]
+    },
+    {
+      "type": "subtotal",
+      "name": "Subtotal",
+      "limit": 1
+    },
+    {
+      "type": "buttons",
+      "name": "Buttons",
+      "limit": 1
+    },
+    {
+      "type": "@app"
+    }
+  ]
+}
+{% endschema %}

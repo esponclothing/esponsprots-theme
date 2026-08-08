@@ -1,0 +1,545 @@
+{% comment %}
+  ============================================================
+  11FIT — tabbed-slider.liquid (ELEGANT UPGRADE + TEXT COLORS)
+  Drop this file into: sections/tabbed-slider.liquid
+  ============================================================
+{% endcomment %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+
+<style>
+  .fit11-tabs-wrapper {
+    background-color: {{ section.settings.bg_color }};
+    padding: 60px 0 50px 0;
+    font-family: 'Outfit', sans-serif;
+    overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .fit11-tabs-wrapper * {
+    box-sizing: border-box;
+  }
+
+  /* ── HEADER ── */
+  .fit11-tabs-header-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px;
+    margin-bottom: 32px;
+    max-width: 1300px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+
+  .fit11-tabs-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .fit11-tabs-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: {{ section.settings.accent_color }};
+    border-radius: 50%;
+    color: #fff;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .fit11-tabs-main-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: {{ section.settings.accent_color }};
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── CATEGORY TABS (SCROLLABLE) ── */
+  .fit11-tabs-nav {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    gap: 12px;
+    padding: 4px 20px 12px 20px;
+    width: 100%;
+    max-width: 800px;
+  }
+
+  .fit11-tabs-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .fit11-tab-btn {
+    background: #ffffff;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    padding: 10px 24px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    scroll-snap-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .fit11-tab-btn:hover {
+    border-color: #cbd5e1;
+    color: {{ section.settings.accent_color }};
+  }
+
+  /* Active Tab State */
+  .fit11-tab-btn.active {
+    background: {{ section.settings.active_tab_color }};
+    color: #ffffff;
+    border-color: {{ section.settings.active_tab_color }};
+    box-shadow: 0 4px 12px {{ section.settings.active_tab_color | color_modify: 'alpha', 0.25 }};
+  }
+
+  /* ── CONTENT PANELS ── */
+  .fit11-tabs-content-wrap {
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .fit11-tab-panel {
+    display: none;
+    animation: 11fitFadeIn 0.4s ease-in-out;
+  }
+
+  .fit11-tab-panel.active {
+    display: block;
+  }
+
+  @keyframes 11fitFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── PRODUCT SLIDER ── */
+  .fit11-tab-slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px 20px 30px 20px;
+    gap: 16px;
+  }
+
+  .fit11-tab-slider::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ── PRODUCT CARD (MATCHING TRENDING SEC) ── */
+  .fit11-tab-card {
+    flex: 0 0 240px;
+    scroll-snap-align: start;
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    padding: 12px;
+    text-decoration: none;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+  }
+
+  .fit11-tab-card:hover {
+    border-color: #cbd5e0;
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.04);
+  }
+
+  .fit11-tab-badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #48bb78;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    z-index: 2;
+    text-transform: capitalize;
+    overflow: hidden;
+  }
+  .fit11-tab-badge::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -150%; width: 50%; height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent);
+    transform: skewX(-25deg);
+    animation: badge-shimmer-diamond 2.5s infinite forwards;
+    z-index: 1;
+  }
+
+  .fit11-tab-img-wrap {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #f8fafc;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .fit11-tab-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .fit11-tab-card:hover .fit11-tab-img-wrap img {
+    transform: scale(1.05);
+  }
+
+  .fit11-tab-vendor {
+    font-size: 11px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+
+  .fit11-tab-prod-title {
+    font-family: 'Playfair Display', serif;
+    color: {{ section.settings.accent_color }};
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.3;
+    margin: 0 0 12px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .fit11-tab-price-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+  }
+
+  .fit11-tab-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a202c;
+    line-height: 1;
+  }
+
+  .fit11-tab-compare {
+    font-size: 13px;
+    color: #94a3b8;
+    text-decoration: line-through;
+    font-weight: 500;
+  }
+
+  /* ── DESKTOP ADJUSTMENTS ── */
+  @media (min-width: 769px) {
+    .fit11-tabs-wrapper {
+      background: radial-gradient(circle at bottom, #ffffff 0%, {{ section.settings.bg_color }} 100%);
+      padding: 100px 0;
+    }
+    .fit11-tabs-nav { justify-content: center; overflow: visible; padding-bottom: 0; }
+    .fit11-tab-slider { justify-content: flex-start; padding: 20px 0; }
+    .fit11-tab-card { flex: 0 0 calc(25% - 12px); }
+  }
+
+  /* ── MOBILE OVERRIDES ── */
+  @media (max-width: 767px) {
+    .fit11-tabs-wrapper { padding: 40px 0; }
+    .fit11-tabs-main-heading { font-size: 26px; }
+    .fit11-tab-btn { padding: 8px 20px; font-size: 13px; }
+    
+    .fit11-tab-card { flex: 0 0 180px; padding: 10px; }
+    .fit11-tab-badge { top: 16px; left: 16px; font-size: 10px; padding: 2px 6px; }
+    .fit11-tab-img-wrap { margin-bottom: 12px; }
+    .fit11-tab-prod-title { font-size: 16px; margin-bottom: 8px; }
+    .fit11-tab-price { font-size: 16px; }
+    .fit11-tab-compare { font-size: 12px; }
+  }
+</style>
+
+<div class="fit11-tabs-wrapper pc-reveal" id="11fitTabsWrapper-{{ section.id }}" data-speed="{{ section.settings.autoplay_speed | times: 1000 }}">
+  
+  <div class="fit11-tabs-header-wrap pc-reveal">
+    <div class="fit11-tabs-title-row">
+      <div class="fit11-tabs-icon"><i class="ti ti-star"></i></div>
+      <h2 class="fit11-tabs-main-heading">{{ section.settings.heading }}</h2>
+    </div>
+    
+    <div class="fit11-tabs-nav" id="11fitTabsNav-{{ section.id }}">
+      {% for block in section.blocks %}
+        <button class="fit11-tab-btn {% if forloop.first %}active{% endif %}" 
+                data-target="panel-{{ section.id }}-{{ forloop.index }}" 
+                {{ block.shopify_attributes }}>
+          {{ block.settings.tab_name }}
+        </button>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="fit11-tabs-content-wrap">
+    {% for block in section.blocks %}
+      {% assign collection = collections[block.settings.collection] %}
+      
+      <div class="fit11-tab-panel {% if forloop.first %}active{% endif %}" id="panel-{{ section.id }}-{{ forloop.index }}">
+        <div class="fit11-tab-slider pc-reveal-stagger">
+          
+          {% if collection != blank and collection.products_count > 0 %}
+            {% for product in collection.products limit: block.settings.product_limit %}
+              <a href="{{ product.url }}" class="fit11-tab-card">
+                
+                {% if product.compare_at_price > product.price %}
+                  {% assign saving = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round %}
+                  <div class="fit11-tab-badge">{{ saving }}% OFF</div>
+                {% endif %}
+
+                <div class="fit11-tab-img-wrap">
+                  <img src="{{ product.featured_image | img_url: '400x400', crop: 'center' }}" alt="{{ product.title | escape }}" loading="lazy">
+                </div>
+
+                <div class="fit11-tab-vendor">{{ product.vendor | default: 'Espon Sports' }}</div>
+                <div class="fit11-tab-prod-title">{{ product.title }}</div>
+                
+                <div class="fit11-tab-price-row">
+                  <span class="fit11-tab-price">{{ product.price | money_without_trailing_zeros }}</span>
+                  {% if product.compare_at_price > product.price %}
+                    <span class="fit11-tab-compare">{{ product.compare_at_price | money_without_trailing_zeros }}</span>
+                  {% endif %}
+                </div>
+              </a>
+            {% endfor %}
+          {% else %}
+            {% comment %} Fallback UI if no collection is selected {% endcomment %}
+            {% for i in (1..4) %}
+              <div class="fit11-tab-card">
+                <div class="fit11-tab-badge">Special</div>
+                <div class="fit11-tab-img-wrap">
+                  <span style="font-size:12px; color:#94a3b8; font-weight:500;">Select Collection</span>
+                </div>
+                <div class="fit11-tab-vendor">Espon Sports</div>
+                <div class="fit11-tab-prod-title">Premium {{ block.settings.tab_name }} Example {{ i }}</div>
+                <div class="fit11-tab-price-row">
+                  <span class="fit11-tab-price">₹1,999</span>
+                  <span class="fit11-tab-compare">₹2,499</span>
+                </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const wrapper = document.getElementById('11fitTabsWrapper-{{ section.id }}');
+    if (!wrapper) return;
+
+    const navTrack = document.getElementById('11fitTabsNav-{{ section.id }}');
+    const tabButtons = wrapper.querySelectorAll('.fit11-tab-btn');
+    const tabPanels = wrapper.querySelectorAll('.fit11-tab-panel');
+    
+    // Auto-swipe settings
+    const speed = parseInt(wrapper.getAttribute('data-speed')) || 3000;
+    let autoPlayInterval;
+    
+    let navDirection = 1; 
+    let prodDirections = {}; // Keeps track of swipe direction for each individual tab panel
+
+    // --- MANUAL TAB CLICKING LOGIC ---
+    tabButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabPanels.forEach(panel => panel.classList.remove('active'));
+
+        this.classList.add('active');
+        const targetPanel = document.getElementById(this.getAttribute('data-target'));
+        if (targetPanel) {
+          targetPanel.classList.add('active');
+        }
+        
+        // Center the clicked tab smoothly without scrolling the entire page vertically
+        if (navTrack) {
+          const scrollLeft = this.offsetLeft - (navTrack.clientWidth / 2) + (this.clientWidth / 2);
+          navTrack.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+        }
+      });
+    });
+
+    // --- AUTO-SWIPE LOGIC ---
+    function performAutoSwipes() {
+      const activeSlider = wrapper.querySelector('.fit11-tab-panel.active .fit11-tab-slider');
+      let switchedTab = false;
+
+      if (activeSlider && activeSlider.scrollWidth > activeSlider.clientWidth) {
+        const maxProdScroll = activeSlider.scrollWidth - activeSlider.clientWidth;
+        const card = activeSlider.querySelector('.fit11-tab-card');
+        const scrollAmount = card ? card.offsetWidth + 16 : 256;
+
+        if (activeSlider.scrollLeft >= maxProdScroll - 10) {
+          // Reached the end of products, switch to next tab
+          switchedTab = true;
+        } else {
+          // Keep scrolling products
+          activeSlider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+      } else {
+        // No products to scroll (or they all fit on screen), just switch tab
+        switchedTab = true;
+      }
+
+      if (switchedTab) {
+        const activeBtn = wrapper.querySelector('.fit11-tab-btn.active');
+        if (activeBtn) {
+          let nextBtn = activeBtn.nextElementSibling;
+          if (!nextBtn || !nextBtn.classList.contains('fit11-tab-btn')) {
+            nextBtn = tabButtons[0]; // Loop back to start
+          }
+          nextBtn.click(); // Triggers the existing manual click logic
+
+          // Ensure the new active slider starts at the very left
+          setTimeout(() => {
+            const newActiveSlider = wrapper.querySelector('.fit11-tab-panel.active .fit11-tab-slider');
+            if (newActiveSlider) {
+              newActiveSlider.scrollTo({left: 0, behavior: 'instant'});
+            }
+          }, 50);
+        }
+      }
+    }
+
+    function startAutoPlay() {
+      autoPlayInterval = setInterval(performAutoSwipes, speed);
+    }
+
+    function stopAutoPlay() {
+      clearInterval(autoPlayInterval);
+    }
+
+    // Pause everything if the user touches or hovers over the section
+    wrapper.addEventListener('touchstart', stopAutoPlay, {passive: true});
+    wrapper.addEventListener('touchend', startAutoPlay, {passive: true});
+    wrapper.addEventListener('mouseenter', stopAutoPlay);
+    wrapper.addEventListener('mouseleave', startAutoPlay);
+
+    // Start auto-play globally (it detects automatically if scrolling is needed)
+    startAutoPlay();
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Curated Tabbed Slider",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#FAFAFA"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Luxury Accent Color",
+      "default": "#9A7B4F",
+      "info": "Used for headings, icons, and product titles."
+    },
+    {
+      "type": "color",
+      "id": "active_tab_color",
+      "label": "Active Tab Background",
+      "default": "#9A7B4F",
+      "info": "Color for the selected category pill. Usually matches the accent color."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "CURATED COLLECTIONS"
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "sec",
+      "label": "Auto-Swipe Speed",
+      "default": 3,
+      "info": "Controls how fast the tabs and products auto-scroll."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab_collection",
+      "name": "Category Tab",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_name",
+          "label": "Tab Name",
+          "default": "Athletic Wear"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Select Collection"
+        },
+        {
+          "type": "range",
+          "id": "product_limit",
+          "min": 4,
+          "max": 12,
+          "step": 2,
+          "label": "Products to Show",
+          "default": 6
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Curated Tabbed Slider",
+      "blocks": [
+        { "type": "tab_collection", "settings": { "tab_name": "New Arrivals" } },
+        { "type": "tab_collection", "settings": { "tab_name": "Best Sellers" } },
+        { "type": "tab_collection", "settings": { "tab_name": "Activewear" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

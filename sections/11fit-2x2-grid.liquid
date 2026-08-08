@@ -1,0 +1,295 @@
+{% schema %}
+{
+  "name": "Luxury 2x2 Grid",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading Font",
+      "default": "playfair_display_n4"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body Font",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background",
+      "default": "#F9F9F8"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent / Muted Text",
+      "default": "#737373"
+    },
+    {
+      "type": "header",
+      "content": "Content & Layout"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "CURATED COLLECTION"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Grid Title",
+      "default": "Timeless Elegance"
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "View All Text",
+      "default": "Discover More"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "View All Link"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image Aspect Ratio",
+      "options": [
+        { "value": "1 / 1", "label": "Square (1:1)" },
+        { "value": "3 / 4", "label": "Portrait (3:4)" }
+      ],
+      "default": "3 / 4"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "grid_item",
+      "name": "Luxury Item",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Product Image"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Product Name",
+          "default": "Signature Piece"
+        },
+        {
+          "type": "text",
+          "id": "subtext",
+          "label": "Subtext (Price/Brand)",
+          "default": "Explore"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Product Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Luxury 2x2 Grid",
+      "blocks": [
+        { "type": "grid_item" },
+        { "type": "grid_item" },
+        { "type": "grid_item" },
+        { "type": "grid_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+{%- style -%}
+  {{ section.settings.heading_font | font_face: font_display: 'swap' }}
+  {{ section.settings.body_font | font_face: font_display: 'swap' }}
+
+  :root {
+    --lux-heading-font: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
+    --lux-heading-weight: {{ section.settings.heading_font.weight }};
+    --lux-body-font: {{ section.settings.body_font.family }}, {{ section.settings.body_font.fallback_families }};
+    --lux-body-weight: {{ section.settings.body_font.weight }};
+  }
+
+  .lux-grid-wrapper {
+    background-color: {{ section.settings.bg_color }};
+    padding: 60px 20px;
+    font-family: var(--lux-body-font);
+  }
+
+  .lux-grid-card {
+    background: {{ section.settings.card_bg }};
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px 30px;
+    border: 1px solid rgba(0,0,0,0.04);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+  }
+
+  .lux-grid-header {
+    text-align: center;
+    margin-bottom: 35px;
+  }
+
+  .lux-grid-subtitle {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: {{ section.settings.accent_color }};
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .lux-grid-title {
+    font-family: var(--lux-heading-font);
+    font-weight: var(--lux-heading-weight);
+    font-size: 28px;
+    color: {{ section.settings.text_color }};
+    margin: 0 0 15px 0;
+    letter-spacing: 0.02em;
+  }
+
+  .lux-grid-view-all {
+    color: {{ section.settings.text_color }};
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+  }
+
+  .lux-grid-view-all:hover {
+    border-bottom-color: {{ section.settings.text_color }};
+    opacity: 0.7;
+  }
+
+  .lux-grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .lux-grid-item {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    group: lux-item; /* For hover targeting */
+  }
+
+  .lux-grid-img-wrap {
+    width: 100%;
+    aspect-ratio: {{ section.settings.image_ratio }};
+    overflow: hidden;
+    background: #F4F4F4;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .lux-grid-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .lux-grid-item:hover .lux-grid-img-wrap img {
+    transform: scale(1.05);
+  }
+
+  .lux-grid-label {
+    color: {{ section.settings.text_color }};
+    font-family: var(--lux-heading-font);
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .lux-grid-subtext {
+    color: {{ section.settings.accent_color }};
+    font-size: 12px;
+    text-align: center;
+    letter-spacing: 0.03em;
+  }
+
+  /* Desktop Adjustments */
+  @media (min-width: 769px) {
+    .lux-grid-wrapper { 
+      padding: 100px 40px; 
+      background: radial-gradient(circle at center, #ffffff 0%, {{ section.settings.bg_color }} 80%);
+    }
+    .lux-grid-card { padding: 60px 40px; max-width: 1200px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.02); }
+    .lux-grid-container { grid-template-columns: repeat(4, 1fr); gap: 30px; }
+    .lux-grid-title { font-size: 32px; }
+    .lux-grid-item:hover .lux-grid-img-wrap img { transform: scale(1.08); }
+    .lux-grid-item:hover { transform: translateY(-5px); }
+    .lux-grid-item { transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+  }
+{%- endstyle -%}
+
+<div class="lux-grid-wrapper pc-reveal">
+  <div class="lux-grid-card">
+    
+    <div class="lux-grid-header pc-reveal">
+      {% if section.settings.subtitle != blank %}
+        <span class="lux-grid-subtitle">{{ section.settings.subtitle }}</span>
+      {% endif %}
+      
+      <h2 class="lux-grid-title">{{ section.settings.title }}</h2>
+      
+      {% if section.settings.view_all_link %}
+        <a href="{{ section.settings.view_all_link }}" class="lux-grid-view-all">{{ section.settings.view_all_text }}</a>
+      {% endif %}
+    </div>
+
+    <div class="lux-grid-container pc-reveal-stagger">
+      {% for block in section.blocks %}
+        <a href="{{ block.settings.link | default: '#' }}" class="lux-grid-item" {{ block.shopify_attributes }}>
+          <div class="lux-grid-img-wrap">
+            {% if block.settings.image %}
+              <img src="{{ block.settings.image | img_url: '600x' }}" alt="{{ block.settings.label | escape }}" loading="lazy">
+            {% else %}
+              <div style="display:flex; align-items:center; justify-content:center; height:100%; color: #999; font-size: 11px; letter-spacing:0.1em; text-transform:uppercase;">
+                Placeholder
+              </div>
+            {% endif %}
+          </div>
+          <div class="lux-grid-label">{{ block.settings.label }}</div>
+          {% if block.settings.subtext != blank %}
+            <div class="lux-grid-subtext">{{ block.settings.subtext }}</div>
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>

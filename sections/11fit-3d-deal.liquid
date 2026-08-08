@@ -1,0 +1,1029 @@
+{% schema %}
+{
+  "name": "Luxe Swipe Deal",
+  "settings": [
+    {
+      "type": "header",
+      "content": "✨ Typography Settings"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading Font",
+      "default": "playfair_display_n4"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body Font",
+      "default": "lato_n4"
+    },
+    {
+      "type": "header",
+      "content": "🎨 Aesthetics"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "EXCLUSIVES"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Unlock limited-time privileges"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background",
+      "default": "#FAFAFA"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Main Text Color",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Luxury Accent (Gold/Champagne)",
+      "default": "#C5A059"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg_color",
+      "label": "Unlocked Button Color",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "btn_text_color",
+      "label": "Unlocked Button Text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "sec",
+      "label": "Auto-Swipe Speed",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "⏳ Urgency Settings"
+    },
+    {
+      "type": "number",
+      "id": "timer_hours",
+      "label": "Countdown Hours",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "📐 Layout & Borders"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_luxury_border",
+      "label": "Enable Luxury Border Frame",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "label": "Vertical Padding",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "deal",
+      "name": "Luxury Product",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Luxe Swipe Deal",
+      "blocks": [
+        { "type": "deal" },
+        { "type": "deal" },
+        { "type": "deal" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+{%- assign heading_font = section.settings.heading_font -%}
+{%- assign body_font = section.settings.body_font -%}
+
+<style>
+  /* Load Custom Fonts */
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+
+  #luxe-wrapper-{{ section.id }} {
+    --font-heading: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --font-body: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --color-bg: {{ section.settings.bg_color }};
+    --color-text: {{ section.settings.text_color }};
+    --color-accent: {{ section.settings.accent_color }};
+    --color-btn-bg: {{ section.settings.btn_bg_color }};
+    --color-btn-text: {{ section.settings.btn_text_color }};
+    --padding-y: {{ section.settings.padding_vertical }}px;
+    
+    background-color: var(--color-bg);
+    padding: var(--padding-y) 20px;
+    font-family: var(--font-body);
+    overflow: hidden;
+    color: var(--color-text);
+    position: relative;
+  }
+
+  /* Luxury Inner Frame Border */
+  {% if section.settings.show_luxury_border %}
+  #luxe-wrapper-{{ section.id }}::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    border: 1px solid var(--color-accent);
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 1;
+  }
+  {% endif %}
+
+  .luxe-header {
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .luxe-heading {
+    font-family: var(--font-heading);
+    font-size: 28px;
+    font-weight: 400;
+    margin: 0 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--color-text);
+  }
+
+  .luxe-subheading {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--color-accent);
+    margin: 0;
+  }
+
+  /* Refined Countdown Timer */
+  .luxe-timer-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .luxe-timer-box {
+    background: transparent;
+    border: 1px solid rgba(0,0,0,0.1);
+    color: var(--color-text);
+    padding: 12px 14px;
+    font-family: var(--font-heading);
+    font-weight: 300;
+    font-size: 22px;
+    min-width: 55px;
+    text-align: center;
+    position: relative;
+    box-shadow: inset 0 0 20px rgba(255,255,255,0.5);
+  }
+
+  .luxe-timer-colon {
+    font-weight: 300;
+    font-size: 20px;
+    color: var(--color-accent);
+  }
+
+  .luxe-timer-label {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    margin-top: 4px;
+  }
+
+  /* Slider Area */
+  .luxe-slider-wrap {
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 1 / 1;
+    position: relative;
+    margin: 0 auto 20px auto;
+    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+    border-radius: 50%;
+    z-index: 2;
+  }
+
+  .luxe-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: grab;
+    position: relative;
+  }
+
+  .luxe-track.dragging {
+    scroll-behavior: auto !important;
+    scroll-snap-type: none !important;
+    cursor: grabbing;
+  }
+
+  .luxe-track::-webkit-scrollbar { display: none; }
+
+  .luxe-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    scroll-snap-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: opacity 0.5s ease;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .luxe-slide img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0px 20px 30px rgba(0,0,0,0.08));
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+  }
+  
+  .luxe-slide:hover img {
+    transform: scale(1.05);
+  }
+
+  /* Elegant Dots */
+  .luxe-dots {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 10px;
+    position: relative;
+    z-index: 2;
+  }
+  .luxe-dot { 
+    width: 6px; 
+    height: 6px; 
+    border-radius: 50%; 
+    background: transparent; 
+    border: 1px solid var(--color-accent);
+    transition: all 0.4s ease; 
+    cursor: pointer; 
+  }
+  .luxe-dot.is-active { 
+    background: var(--color-accent); 
+    transform: scale(1.3);
+  }
+
+  /* Product Info */
+  .luxe-text-area {
+    text-align: center;
+    max-width: 400px;
+    margin: 30px auto 0;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    position: relative;
+    z-index: 2;
+  }
+  .luxe-text-area.is-fading {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .luxe-title {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 400;
+    margin: 0 0 15px 0;
+    line-height: 1.4;
+    color: var(--color-text);
+  }
+
+  /* Price Reveal */
+  .luxe-price-row {
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    height: 40px;
+  }
+
+  .luxe-locked-text {
+    font-size: 20px;
+    font-weight: 300;
+    color: #A0A0A0;
+    letter-spacing: 6px;
+  }
+
+  .luxe-unlocked-text {
+    font-family: var(--font-heading);
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--color-accent);
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  .luxe-compare {
+    font-size: 14px;
+    color: #A0A0A0;
+    text-decoration: line-through;
+    font-weight: 300;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .luxe-compare.is-visible {
+    opacity: 1;
+  }
+
+  @keyframes fadeUp {
+    0% { transform: translateY(10px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  /* Luxury Button */
+  .luxe-btn {
+    display: inline-block;
+    width: 100%;
+    max-width: 320px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    padding: 18px 24px;
+    letter-spacing: 2px;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .luxe-btn-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    background: var(--color-accent);
+    opacity: 0.25;
+    transition: none;
+    pointer-events: none;
+  }
+  .luxe-btn.is-holding {
+    transform: scale(0.97);
+  }
+  @keyframes unlock-shake {
+    0%, 100% { transform: scale(1); }
+    20%, 60% { transform: scale(1.05) rotate(-2deg); }
+    40%, 80% { transform: scale(1.05) rotate(2deg); }
+  }
+  .unlocked-shake {
+    animation: unlock-shake 0.4s ease;
+  }
+
+  /* Locked State = Elegant Outline */
+  .luxe-btn.is-locked {
+    background: transparent;
+    color: var(--color-text);
+    border: 1px solid var(--color-text);
+  }
+
+  .luxe-btn.is-locked:hover {
+    background: rgba(0,0,0,0.03);
+  }
+
+  /* Unlocked State = Solid Premium */
+  .luxe-btn.is-unlocked {
+    background: var(--color-btn-bg);
+    color: var(--color-btn-text);
+    border: 1px solid var(--color-btn-bg);
+  }
+
+  .luxe-btn.is-unlocked:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+
+  /* Timer Pulse for PC */
+  @keyframes luxe-pulse {
+    0% { box-shadow: inset 0 0 20px rgba(255,255,255,0.5); }
+    50% { box-shadow: inset 0 0 30px rgba(197,160,89,0.4), 0 0 15px rgba(197,160,89,0.3); border-color: rgba(197,160,89,0.5); }
+    100% { box-shadow: inset 0 0 20px rgba(255,255,255,0.5); }
+  }
+
+  /* PC Refinements */
+  @media (min-width: 769px) {
+    #luxe-wrapper-{{ section.id }} {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      grid-template-areas: 
+        "header slider"
+        "timer slider"
+        ". dots"
+        ". textarea";
+      align-items: center;
+      gap: 20px 40px;
+      padding: 80px 50px;
+      background: radial-gradient(circle at left, #ffffff 0%, var(--color-bg) 80%);
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.03);
+    }
+    
+    .luxe-timer-box { animation: luxe-pulse 2.5s infinite ease-in-out; }
+    
+    .luxe-header { grid-area: header; text-align: left; margin-bottom: 0; align-self: end; }
+    .luxe-timer-wrap { grid-area: timer; justify-content: flex-start; margin-bottom: 0; align-self: start; }
+    
+    /* Move text area to the right column below slider */
+    .luxe-text-area { grid-area: textarea; text-align: center; margin: 0 auto; max-width: 400px; }
+    .luxe-price-row { justify-content: center; }
+    
+    .luxe-slider-wrap { grid-area: slider; margin: 0 auto; max-width: 500px; width: 100%; align-self: center; position: relative; }
+    .luxe-dots { grid-area: dots; margin-top: 10px; justify-content: center; }
+  }
+
+  /* Carousel Arrows */
+  .luxe-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--color-text);
+    color: var(--color-bg);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    opacity: 0.8;
+  }
+  .luxe-arrow:hover { opacity: 1; transform: translateY(-50%) scale(1.1); }
+  .luxe-arrow.prev { left: -20px; }
+  .luxe-arrow.next { right: -20px; }
+  @media (max-width: 768px) {
+    .luxe-arrow { display: none; } /* Hide arrows on mobile where touch swipe is natural */
+  }
+</style>
+
+<div class="luxe-wrapper pc-reveal" id="luxe-wrapper-{{ section.id }}" data-speed="{{ section.settings.autoplay_speed | times: 1000 }}" data-timer="{{ section.settings.timer_hours }}">
+  
+  <div class="luxe-header pc-reveal-stagger">
+    <h2 class="luxe-heading">{{ section.settings.heading }}</h2>
+    <p class="luxe-subheading">{{ section.settings.subheading }}</p>
+  </div>
+
+  <div class="luxe-timer-wrap">
+    <div class="luxe-timer-box">
+      <span id="luxeHr-{{ section.id }}">00</span>
+      <span class="luxe-timer-label">Hours</span>
+    </div>
+    <span class="luxe-timer-colon">:</span>
+    <div class="luxe-timer-box">
+      <span id="luxeMin-{{ section.id }}">00</span>
+      <span class="luxe-timer-label">Mins</span>
+    </div>
+    <span class="luxe-timer-colon">:</span>
+    <div class="luxe-timer-box">
+      <span id="luxeSec-{{ section.id }}">00</span>
+      <span class="luxe-timer-label">Secs</span>
+    </div>
+  </div>
+
+  <div class="luxe-slider-wrap">
+    <button class="luxe-arrow prev" id="luxePrev-{{ section.id }}" aria-label="Previous Deal"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+    <button class="luxe-arrow next" id="luxeNext-{{ section.id }}" aria-label="Next Deal"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+    <div class="luxe-track" id="luxeTrack-{{ section.id }}">
+      {% for block in section.blocks %}
+        {% assign product = block.settings.product %}
+        <div class="luxe-slide" 
+             data-index="{{ forloop.index0 }}"
+             data-title="{{ product.title | default: 'The Signature Collection' | escape }}"
+             data-price="{{ product.price | default: 99900 | money_without_trailing_zeros }}"
+             data-compare="{% if product.compare_at_price > product.price %}{{ product.compare_at_price | money_without_trailing_zeros }}{% endif %}"
+             data-url="{{ product.url | default: '#' }}"
+             {{ block.shopify_attributes }}>
+          {% if product != blank and product.featured_image %}
+            <img src="{{ product.featured_image | img_url: '800x800' }}" alt="{{ product.title | escape }}" loading="lazy">
+          {% else %}
+            <div style="color: #A0A0A0; font-weight: 300; letter-spacing: 2px;">PRODUCT PREVIEW</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="luxe-dots" id="luxeDots-{{ section.id }}">
+    {% for block in section.blocks %}
+      <div class="luxe-dot {% if forloop.first %}is-active{% endif %}" data-index="{{ forloop.index0 }}"></div>
+    {% endfor %}
+  </div>
+
+  <div class="luxe-text-area" id="luxeTextArea-{{ section.id }}">
+    <h3 class="luxe-title" id="luxeTitle-{{ section.id }}">Loading...</h3>
+    
+    <div class="luxe-price-row">
+      <span id="luxePrice-{{ section.id }}"><span class="luxe-locked-text">••••••</span></span>
+      <span class="luxe-compare" id="luxeCompare-{{ section.id }}"></span>
+    </div>
+
+    <a href="#" class="luxe-btn is-unlocked" id="luxeBtn-{{ section.id }}">
+      <span class="luxe-btn-progress" style="display:none;"></span>
+      <span class="luxe-btn-text">View Deal</span>
+    </a>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  function initLuxeDeal(wrapper) {
+    if (wrapper.dataset.initialized === 'true') return;
+    wrapper.dataset.initialized = 'true';
+
+    const sectionId = wrapper.id.replace('luxe-wrapper-', '');
+    
+    // --- 1. ELEGANT COUNTDOWN TIMER ---
+    const timerHours = parseInt(wrapper.getAttribute('data-timer')) || 12;
+    const hrEl = document.getElementById('luxeHr-' + sectionId);
+    const minEl = document.getElementById('luxeMin-' + sectionId);
+    const secEl = document.getElementById('luxeSec-' + sectionId);
+    
+    let endTime;
+    try {
+      endTime = localStorage.getItem('luxe_timer_' + sectionId);
+      if (!endTime || new Date().getTime() > endTime) {
+        endTime = new Date().getTime() + (timerHours * 60 * 60 * 1000);
+        localStorage.setItem('luxe_timer_' + sectionId, endTime);
+      }
+    } catch (e) {
+      // Fallback if localStorage is blocked (e.g. incognito or Shopify Theme Editor iframe)
+      endTime = new Date().getTime() + (timerHours * 60 * 60 * 1000);
+    }
+
+    function updateTimer() {
+      let now = new Date().getTime();
+      let distance = endTime - now;
+      if (distance < 0) {
+        endTime = new Date().getTime() + (timerHours * 60 * 60 * 1000);
+        try { localStorage.setItem('luxe_timer_' + sectionId, endTime); } catch (e) {}
+        distance = endTime - now;
+      }
+      let h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      let m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      let s = Math.floor((distance % (1000 * 60)) / 1000);
+      
+      if(hrEl) hrEl.innerText = (h < 10 ? '0' : '') + h;
+      if(minEl) minEl.innerText = (m < 10 ? '0' : '') + m;
+      if(secEl) secEl.innerText = (s < 10 ? '0' : '') + s;
+    }
+    updateTimer(); 
+    const timerInterval = setInterval(updateTimer, 1000);
+
+    // --- 2. ROBUST SLIDER LOGIC ---
+    const track = document.getElementById('luxeTrack-' + sectionId);
+    if (!track) return;
+    
+    const slides = Array.from(track.querySelectorAll('.luxe-slide'));
+    const dots = document.querySelectorAll('#luxeDots-' + sectionId + ' .luxe-dot');
+    
+    const textArea = document.getElementById('luxeTextArea-' + sectionId);
+    const titleEl = document.getElementById('luxeTitle-' + sectionId);
+    const priceEl = document.getElementById('luxePrice-' + sectionId);
+    const compareEl = document.getElementById('luxeCompare-' + sectionId);
+    const btnEl = document.getElementById('luxeBtn-' + sectionId);
+    
+    const speed = parseInt(wrapper.getAttribute('data-speed')) || 4000;
+    let currentIndex = 0;
+    let autoPlayInterval = null;
+    let swipeDirection = 1;
+    let isPriceUnlocked = false; 
+
+    if (slides.length < 1) return;
+
+    // UNLOCK BUTTON LOGIC - PRESS AND HOLD TO UNLOCK
+    let holdTimeout = null;
+    let holdInterval = null;
+    let holdPercent = 0;
+    let isHolding = false;
+
+    const btnProgress = btnEl.querySelector('.luxe-btn-progress');
+    const btnText = btnEl.querySelector('.luxe-btn-text');
+
+    function startHold(e) {
+      if (isPriceUnlocked || isHolding) return;
+      isHolding = true;
+      holdPercent = 0;
+      btnEl.classList.add('is-holding');
+
+      holdInterval = setInterval(() => {
+        if (holdPercent < 100) {
+          holdPercent += 5;
+          if (btnProgress) btnProgress.style.width = holdPercent + '%';
+        } else {
+          clearInterval(holdInterval);
+        }
+      }, 50);
+
+      holdTimeout = setTimeout(() => {
+        triggerUnlock();
+      }, 1000);
+    }
+
+    function cancelHold() {
+      if (isPriceUnlocked || !isHolding) return;
+      isHolding = false;
+      btnEl.classList.remove('is-holding');
+      clearTimeout(holdTimeout);
+      clearInterval(holdInterval);
+
+      if (btnProgress) {
+        btnProgress.style.transition = 'width 0.3s ease-out';
+        btnProgress.style.width = '0%';
+        setTimeout(() => {
+          btnProgress.style.transition = 'none';
+        }, 300);
+      }
+    }
+
+    function triggerUnlock() {
+      isHolding = false;
+      clearTimeout(holdTimeout);
+      clearInterval(holdInterval);
+      isPriceUnlocked = true;
+      stopAutoPlay();
+
+      if (btnProgress) btnProgress.style.width = '100%';
+
+      const activeSlide = slides[currentIndex];
+      if (!activeSlide) return;
+      priceEl.innerHTML = '<span class="luxe-unlocked-text">' + activeSlide.getAttribute('data-price') + '</span>';
+      
+      if (activeSlide.getAttribute('data-compare')) {
+        compareEl.innerText = activeSlide.getAttribute('data-compare');
+        compareEl.classList.add('is-visible');
+      }
+
+      btnEl.classList.add('unlocked-shake');
+      
+      setTimeout(() => {
+        btnEl.classList.remove('is-locked');
+        btnEl.classList.add('is-unlocked');
+        if (btnText) btnText.innerText = 'Add To Bag';
+        btnEl.href = activeSlide.getAttribute('data-url');
+        if (btnProgress) btnProgress.style.display = 'none';
+        btnEl.classList.remove('unlocked-shake');
+      }, 400);
+
+      createGoldParticles(btnEl);
+    }
+
+    function createGoldParticles(parent) {
+      const rect = parent.getBoundingClientRect();
+      const count = 30;
+      const particles = [];
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.style.position = 'fixed';
+        p.style.width = Math.random() * 6 + 4 + 'px';
+        p.style.height = p.style.width;
+        p.style.background = 'radial-gradient(circle, #fff, #c5a059)';
+        p.style.borderRadius = '50%';
+        p.style.pointerEvents = 'none';
+        p.style.zIndex = '99999';
+        
+        const startX = rect.left + rect.width / 2;
+        const startY = rect.top + rect.height / 2;
+        p.style.left = startX + 'px';
+        p.style.top = startY + 'px';
+        
+        document.body.appendChild(p);
+
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 8 + 4;
+        particles.push({
+          el: p,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 2,
+          opacity: 1,
+          scale: 1,
+          x: startX,
+          y: startY
+        });
+      }
+
+      function animateParticles() {
+        let active = false;
+        for (let i = 0; i < particles.length; i++) {
+          let pt = particles[i];
+          if (pt.opacity <= 0 || pt.scale <= 0) continue;
+          active = true;
+          pt.x += pt.vx;
+          pt.y += pt.vy;
+          pt.vy += 0.35;
+          pt.vx *= 0.96;
+          pt.opacity -= 0.03;
+          pt.scale -= 0.02;
+          
+          pt.el.style.left = pt.x + 'px';
+          pt.el.style.top = pt.y + 'px';
+          pt.el.style.opacity = pt.opacity;
+          pt.el.style.transform = `scale(${pt.scale})`;
+
+          if (pt.opacity <= 0 || pt.scale <= 0) {
+            pt.el.remove();
+          }
+        }
+        if (active) {
+          requestAnimationFrame(animateParticles);
+        }
+      }
+      requestAnimationFrame(animateParticles);
+    }
+
+    btnEl.addEventListener('mousedown', startHold);
+    btnEl.addEventListener('touchstart', startHold, {passive: true});
+
+    window.addEventListener('mouseup', cancelHold);
+    window.addEventListener('touchend', cancelHold);
+    btnEl.addEventListener('mouseleave', cancelHold);
+
+    btnEl.addEventListener('click', function(e) {
+      if (!isPriceUnlocked) {
+        e.preventDefault();
+      }
+    });
+
+    function updateTextForSlide(index) {
+      if (!slides[index]) return;
+      textArea.classList.add('is-fading');
+      
+      setTimeout(() => {
+        const activeSlide = slides[index];
+        titleEl.innerText = activeSlide.getAttribute('data-title') || '';
+        
+        isPriceUnlocked = true;
+        const priceVal = activeSlide.getAttribute('data-price');
+        const compVal = activeSlide.getAttribute('data-compare');
+        
+        // Format price
+        priceEl.innerText = 'Rs. ' + priceVal;
+        if (compVal && compVal !== '0') {
+          compareEl.innerText = 'Rs. ' + compVal;
+          compareEl.classList.add('is-visible');
+        } else {
+          compareEl.innerText = '';
+          compareEl.classList.remove('is-visible');
+        }
+        
+        btnEl.classList.remove('is-locked');
+        btnEl.classList.add('is-unlocked');
+        const slideBtnText = btnEl.querySelector('.luxe-btn-text');
+        const slideBtnProgress = btnEl.querySelector('.luxe-btn-progress');
+        if (slideBtnText) slideBtnText.innerText = 'View Deal';
+        if (slideBtnProgress) slideBtnProgress.style.display = 'none';
+        btnEl.href = activeSlide.getAttribute('data-url');
+        
+        textArea.classList.remove('is-fading');
+      }, 400);
+    }
+
+    function updateActiveDot(index) {
+      dots.forEach(d => d.classList.remove('is-active'));
+      if(dots[index]) dots[index].classList.add('is-active');
+    }
+
+    // Robust slide detection using IntersectionObserver
+    const slideObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const index = slides.indexOf(entry.target);
+          if (index !== -1 && index !== currentIndex) {
+            currentIndex = index;
+            updateActiveDot(currentIndex);
+            updateTextForSlide(currentIndex);
+          }
+        }
+      });
+    }, { root: track, threshold: 0.5 });
+    
+    slides.forEach(slide => slideObserver.observe(slide));
+
+    updateTextForSlide(0);
+    updateActiveDot(0);
+
+    function scrollToSlide(index) {
+      if (!slides[index]) return;
+      var target = slides[index].offsetLeft;
+      // Temporarily disable snap so smooth animation isn't fought
+      track.style.scrollSnapType = 'none';
+      track.scrollTo({ left: target, behavior: 'smooth' });
+      setTimeout(function() {
+        track.style.scrollSnapType = 'x mandatory';
+      }, 600);
+    }
+
+    function autoScroll() {
+      if (slides.length <= 1) return;
+      if (currentIndex >= slides.length - 1 && swipeDirection === 1) {
+        swipeDirection = -1;
+      } else if (currentIndex <= 0 && swipeDirection === -1) {
+        swipeDirection = 1;
+      }
+      const nextIndex = currentIndex + swipeDirection;
+      scrollToSlide(nextIndex);
+    }
+
+    function startAutoPlay() { 
+      if (slides.length <= 1) return;
+      if (autoPlayInterval) clearInterval(autoPlayInterval);
+      autoPlayInterval = setInterval(autoScroll, speed); 
+    }
+    
+    function stopAutoPlay() { 
+      if (autoPlayInterval) clearInterval(autoPlayInterval);
+    }
+
+    dots.forEach((dot) => {
+      dot.addEventListener('click', (e) => {
+        stopAutoPlay();
+        const clickedIndex = parseInt(e.currentTarget.getAttribute('data-index'));
+        scrollToSlide(clickedIndex);
+        if(!isPriceUnlocked) startAutoPlay();
+      });
+    });
+
+    const prevBtn = document.getElementById('luxePrev-' + sectionId);
+    const nextBtn = document.getElementById('luxeNext-' + sectionId);
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        stopAutoPlay();
+        let nextIdx = currentIndex - 1;
+        if (nextIdx < 0) nextIdx = slides.length - 1;
+        scrollToSlide(nextIdx);
+        if(!isPriceUnlocked) startAutoPlay();
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        stopAutoPlay();
+        let nextIdx = currentIndex + 1;
+        if (nextIdx >= slides.length) nextIdx = 0;
+        scrollToSlide(nextIdx);
+        if(!isPriceUnlocked) startAutoPlay();
+      });
+    }
+
+    track.addEventListener('touchstart', stopAutoPlay, {passive: true});
+    track.addEventListener('touchend', () => { if(!isPriceUnlocked) startAutoPlay(); }, {passive: true});
+    track.addEventListener('mouseenter', stopAutoPlay);
+    track.addEventListener('mouseleave', () => { if(!isPriceUnlocked) startAutoPlay(); });
+
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    
+    // Prevent native image drag on PC so manual swiping works
+    track.querySelectorAll('img').forEach(img => {
+      img.addEventListener('dragstart', (e) => e.preventDefault());
+    });
+
+    track.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      isDown = true;
+      track.classList.add('dragging');
+      startX = e.clientX;
+      scrollLeft = track.scrollLeft;
+      stopAutoPlay();
+      try {
+        track.setPointerCapture(e.pointerId);
+      } catch (err) {}
+    });
+    
+    track.addEventListener('pointerup', (e) => {
+      if (e.pointerType !== 'mouse' || !isDown) return;
+      isDown = false;
+      track.classList.remove('dragging');
+      try {
+        track.releasePointerCapture(e.pointerId);
+      } catch (err) {}
+      snapToClosest();
+    });
+
+    track.addEventListener('pointercancel', (e) => {
+      if (e.pointerType !== 'mouse' || !isDown) return;
+      isDown = false;
+      track.classList.remove('dragging');
+      try {
+        track.releasePointerCapture(e.pointerId);
+      } catch (err) {}
+      snapToClosest();
+    });
+    
+    track.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse' || !isDown) return;
+      e.preventDefault();
+      const x = e.clientX;
+      const walk = (x - startX) * 1.5; 
+      track.scrollLeft = scrollLeft - walk;
+    });
+
+    function snapToClosest() {
+      const slideWidth = track.clientWidth || slides[0]?.clientWidth || 1;
+      const index = Math.round(track.scrollLeft / slideWidth);
+      scrollToSlide(Math.max(0, Math.min(index, slides.length - 1)));
+      if(!isPriceUnlocked) startAutoPlay();
+    }
+
+    startAutoPlay();
+  }
+
+  function initAll() {
+    document.querySelectorAll('.luxe-wrapper').forEach(initLuxeDeal);
+  }
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
+  }
+
+  if (window.Shopify && window.Shopify.designMode) {
+    document.addEventListener('shopify:section:load', function(event) {
+      if (event.target.classList && event.target.classList.contains('shopify-section')) {
+        const wrapper = event.target.querySelector('.luxe-wrapper');
+        if (wrapper) initLuxeDeal(wrapper);
+      } else if (event.target.querySelector) {
+        const wrapper = event.target.querySelector('.luxe-wrapper');
+        if (wrapper) initLuxeDeal(wrapper);
+      }
+    });
+  }
+})();
+</script>

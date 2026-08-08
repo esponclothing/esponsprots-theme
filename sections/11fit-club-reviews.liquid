@@ -1,0 +1,374 @@
+{% comment %}
+  11FIT CLUB REVIEWS SECTION v3
+  - Fixed: larger, readable text on mobile
+  - Fixed: card fills screen properly between nav buttons
+  - No overflow clipping
+{% endcomment %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+{% style %}
+  .fit-reviews-section {
+    --font: 'Outfit', sans-serif;
+    --black: #080808;
+    --white: #ffffff;
+    --gold: #C5A059;
+    --text-grey: #666666;
+    font-family: var(--font);
+    padding: 80px 0;
+    background: {{ section.settings.bg_color }};
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .fit-reviews-section * { box-sizing: border-box; }
+
+  .fit-reviews-header { margin-bottom: 45px; padding: 0 20px; }
+  .fit-reviews-title {
+    font-size: 3.5rem; font-weight: 800; text-transform: uppercase;
+    letter-spacing: -1px; margin: 0; line-height: 0.9;
+    color: {{ section.settings.title_color }};
+  }
+  .fit-reviews-subtitle {
+    color: var(--text-grey); margin-top: 12px; font-size: 0.9rem;
+    text-transform: uppercase; letter-spacing: 3px; font-weight: 500;
+  }
+
+  .fit-r-reveal { opacity: 0; transform: translateY(40px); transition: all 0.9s cubic-bezier(0.165,0.84,0.44,1); }
+  .fit-r-reveal.active { opacity: 1; transform: translateY(0); }
+
+  /* Nav row */
+  .fit-reviews-nav-row {
+    display: flex; align-items: center;
+    width: 100%; max-width: 1400px;
+    margin: 0 auto; padding: 0 20px;
+  }
+
+  .fit-review-nav {
+    flex-shrink: 0;
+    width: 44px; height: 44px;
+    background: var(--white); color: var(--black);
+    border: 2px solid var(--black); border-radius: 50%;
+    cursor: pointer; font-size: 0.95rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: 0.25s ease;
+  }
+  .fit-review-nav:hover { background: var(--gold); color: var(--white); border-color: var(--gold); }
+
+  .fit-reviews-scroll {
+    flex: 1; overflow-x: auto;
+    scrollbar-width: none; -ms-overflow-style: none;
+    scroll-behavior: smooth; scroll-snap-type: x mandatory;
+  }
+  .fit-reviews-scroll::-webkit-scrollbar { display: none; }
+
+  .fit-reviews-track {
+    display: flex; gap: 20px;
+    width: max-content; padding: 10px 15px 20px;
+  }
+
+  /* Card — desktop */
+  .fit-review-card {
+    scroll-snap-align: start;
+    width: 300px; flex: 0 0 300px; height: 460px;
+    position: relative; border-radius: 18px; overflow: hidden;
+    cursor: pointer; box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  .fit-review-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(197,160,89,0.2); }
+
+  .fit-review-bg {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%; object-fit: cover; z-index: 0;
+    transition: transform 0.6s ease, filter 0.4s ease; filter: brightness(0.65);
+  }
+  .fit-review-card:hover .fit-review-bg { transform: scale(1.08); filter: brightness(0.45); }
+
+  .fit-review-content {
+    position: absolute; bottom: 0; left: 0;
+    width: 100%; z-index: 2; padding: 22px; text-align: left; color: white;
+    background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.35) 70%, transparent 100%);
+  }
+
+  /* Desktop text sizes */
+  .fit-review-icon { font-size: 1.6rem; color: var(--gold); margin-bottom: 8px; display: block; }
+  .fit-review-stars { color: var(--gold); margin-bottom: 8px; font-size: 1rem; letter-spacing: 3px; display: block; }
+  .fit-review-text {
+    font-size: 1rem; line-height: 1.5; margin-bottom: 16px; font-weight: 500;
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .fit-review-author {
+    display: flex; align-items: center; gap: 10px;
+    border-top: 1px solid rgba(255,255,255,0.2); padding-top: 12px;
+  }
+  .fit-author-avatar {
+    width: 40px; height: 40px; background: var(--gold); color: var(--black);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1.1rem; flex-shrink: 0;
+  }
+  .fit-author-info h4 { margin: 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: white; }
+  .fit-author-info span { font-size: 0.78rem; color: rgba(255,255,255,0.7); text-transform: uppercase; }
+
+  /* ==============================
+     DESKTOP REFINEMENTS
+  ============================== */
+  @media (min-width: 769px) {
+    .fit-reviews-wrapper {
+      padding: 100px 0 120px;
+      background: radial-gradient(circle at center, #111111 0%, {{ section.settings.bg_color }} 80%);
+    }
+    .fit-reviews-track {
+      justify-content: center;
+      min-width: 100%;
+    }
+    .fit-review-card {
+      width: 320px; flex: 0 0 320px; height: 480px;
+    }
+    .fit-review-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+    }
+    .fit-review-card:hover .fit-review-bg img {
+      transform: scale(1.1);
+    }
+  }
+
+  /* ==============================
+     MOBILE FIXES
+     - Bigger text throughout
+     - Card fills width between nav buttons exactly
+  ============================== */
+  @media (max-width: 768px) {
+    .fit-reviews-section { padding: 45px 0 50px; }
+
+    /* Bigger section title on mobile */
+    .fit-reviews-title { font-size: 2.2rem !important; letter-spacing: -0.5px; }
+    .fit-reviews-subtitle { font-size: 0.82rem !important; letter-spacing: 2px; margin-top: 10px; }
+    .fit-reviews-header { margin-bottom: 28px; }
+
+    .fit-reviews-nav-row { padding: 0 8px; }
+    .fit-review-nav { width: 40px !important; height: 40px !important; font-size: 0.9rem !important; border-width: 2px !important; }
+
+    /* Card exactly fills space between the two 40px nav buttons + 8px padding each side */
+    /* Available = 100vw - 8px*2 (row padding) - 40px*2 (buttons) = 100vw - 96px */
+    .fit-review-card {
+      width: calc(100vw - 96px) !important;
+      flex: 0 0 calc(100vw - 96px) !important;
+      height: auto !important;
+      aspect-ratio: 3 / 4;
+      border-radius: 14px !important;
+    }
+
+    .fit-reviews-track { gap: 10px !important; padding: 6px 6px 16px !important; }
+    .fit-review-content { padding: 20px !important; }
+
+    /* BIGGER text on mobile cards */
+    .fit-review-icon { font-size: 1.6rem !important; margin-bottom: 10px !important; }
+    .fit-review-stars { font-size: 1.1rem !important; letter-spacing: 3px !important; margin-bottom: 10px !important; }
+    .fit-review-text {
+      font-size: 1rem !important;
+      line-height: 1.55 !important;
+      margin-bottom: 14px !important;
+      -webkit-line-clamp: 4 !important;
+    }
+    .fit-author-avatar { width: 40px !important; height: 40px !important; font-size: 1.1rem !important; }
+    .fit-author-info h4 { font-size: 0.9rem !important; letter-spacing: 0.5px !important; }
+    .fit-author-info span { font-size: 0.78rem !important; }
+  }
+
+  @media (max-width: 400px) {
+    .fit-review-card {
+      width: calc(100vw - 88px) !important;
+      flex: 0 0 calc(100vw - 88px) !important;
+      height: auto !important;
+      aspect-ratio: 3 / 4;
+    }
+    .fit-review-text { font-size: 0.95rem !important; -webkit-line-clamp: 3 !important; }
+  }
+{% endstyle %}
+
+<section class="fit-reviews-section" id="fit-reviews-{{ section.id }}">
+
+  <div class="fit-reviews-header">
+    <h2 class="fit-reviews-title">{{ section.settings.section_title }}</h2>
+    <p class="fit-reviews-subtitle">{{ section.settings.section_subtitle }}</p>
+  </div>
+
+  <div class="fit-reviews-nav-row">
+
+    <button class="fit-review-nav prev" aria-label="Previous review">
+      <i class="fa fa-chevron-left"></i>
+    </button>
+
+    <div class="fit-reviews-scroll" id="fitReviewScroll-{{ section.id }}">
+      <div class="fit-reviews-track">
+        {% for block in section.blocks %}
+          {% if block.type == 'review' %}
+            <div class="fit-review-card" {{ block.shopify_attributes }}>
+
+              {% if block.settings.review_image != blank %}
+                <img
+                  src="{{ block.settings.review_image | img_url: '600x800', crop: 'center' }}"
+                  class="fit-review-bg"
+                  alt="{{ block.settings.author_name }}"
+                  loading="lazy">
+              {% else %}
+                <div style="position:absolute;inset:0;background:linear-gradient(135deg,#1a1a1a,#333);z-index:0;"></div>
+              {% endif %}
+
+              <div class="fit-review-content">
+                <i class="fa fa-quote-left fit-review-icon"></i>
+                <span class="fit-review-stars">
+                  {% assign stars = block.settings.star_rating | default: 5 %}
+                  {% for i in (1..stars) %}★{% endfor %}
+                  {% assign empty = 5 | minus: stars %}
+                  {% for i in (1..empty) %}☆{% endfor %}
+                </span>
+                <p class="fit-review-text">"{{ block.settings.review_text }}"</p>
+                <div class="fit-review-author">
+                  <div class="fit-author-avatar">{{ block.settings.author_name | slice: 0 | upcase }}</div>
+                  <div class="fit-author-info">
+                    <h4>{{ block.settings.author_name }}</h4>
+                    <span>{{ block.settings.author_location }}</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <button class="fit-review-nav next" aria-label="Next review">
+      <i class="fa fa-chevron-right"></i>
+    </button>
+
+  </div>
+</section>
+
+<script>
+(function() {
+  var sectionId = {{ section.id | json }};
+  function initReviews() {
+    var scrollEl = document.getElementById('fitReviewScroll-' + sectionId);
+    var sectionEl = document.getElementById('fit-reviews-' + sectionId);
+    if (!scrollEl || !sectionEl) return;
+
+    var prevBtn = sectionEl.querySelector('.fit-review-nav.prev');
+    var nextBtn = sectionEl.querySelector('.fit-review-nav.next');
+
+    var revealObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('active'); revealObs.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    sectionEl.querySelectorAll('.fit-r-reveal').forEach(function(el) { revealObs.observe(el); });
+
+    function getCardWidth() {
+      var card = scrollEl.querySelector('.fit-review-card');
+      if (!card) return 320;
+      var track = scrollEl.querySelector('.fit-reviews-track');
+      var gap = track ? (parseInt(window.getComputedStyle(track).gap) || 20) : 20;
+      return card.offsetWidth + gap;
+    }
+
+    function moveSlider(dir) {
+      var cardW = getCardWidth();
+      var maxScroll = Math.floor(scrollEl.scrollWidth - scrollEl.clientWidth);
+      var currentLeft = Math.ceil(scrollEl.scrollLeft);
+      
+      if (dir === 'next') {
+        if (currentLeft >= maxScroll - 10) {
+          scrollEl.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          scrollEl.scrollBy({ left: cardW, behavior: 'smooth' });
+        }
+      } else {
+        if (currentLeft <= 10) {
+          scrollEl.scrollTo({ left: maxScroll, behavior: 'smooth' });
+        } else {
+          scrollEl.scrollBy({ left: -cardW, behavior: 'smooth' });
+        }
+      }
+    }
+
+    var autoInterval = null;
+    var autoDelay = {{ section.settings.auto_scroll_delay | default: 3500 }};
+    function startAuto() { if (autoDelay > 0) autoInterval = setInterval(function() { moveSlider('next'); }, autoDelay); }
+    function stopAuto() { clearInterval(autoInterval); }
+    function resetAuto() { stopAuto(); startAuto(); }
+
+    startAuto();
+    if (nextBtn) nextBtn.addEventListener('click', function() { moveSlider('next'); resetAuto(); });
+    if (prevBtn) prevBtn.addEventListener('click', function() { moveSlider('prev'); resetAuto(); });
+    scrollEl.addEventListener('touchstart', stopAuto, { passive: true });
+    scrollEl.addEventListener('touchend', function() { setTimeout(startAuto, 2500); });
+    scrollEl.addEventListener('mouseleave', startAuto);
+  }
+
+  // Run initialization immediately since script is at the bottom
+  initReviews();
+
+  // Support for Shopify theme editor events
+  if (window.Shopify && Shopify.designMode) {
+    document.addEventListener('shopify:section:load', function(event) {
+      if (event.detail.sectionId === sectionId) {
+        initReviews();
+      }
+    });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "11FIT Club Reviews",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "header", "content": "Section Header" },
+    { "type": "text", "id": "section_title", "label": "Section Title", "default": "Club Reviews" },
+    { "type": "text", "id": "section_subtitle", "label": "Section Subtitle", "default": "Athletes Trust 11FIT" },
+    { "type": "color", "id": "bg_color", "label": "Background Color", "default": "#ffffff" },
+    { "type": "color", "id": "title_color", "label": "Title Color", "default": "#080808" },
+    { "type": "header", "content": "Auto Scroll" },
+    {
+      "type": "select", "id": "auto_scroll_delay", "label": "Auto Scroll Speed",
+      "options": [
+        { "value": "0", "label": "Disabled" },
+        { "value": "2500", "label": "Fast (2.5s)" },
+        { "value": "3500", "label": "Normal (3.5s)" },
+        { "value": "5000", "label": "Slow (5s)" }
+      ],
+      "default": "3500"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review", "name": "Review Card",
+      "settings": [
+        { "type": "image_picker", "id": "review_image", "label": "Background Image", "info": "Portrait photo recommended (3:4 ratio)" },
+        { "type": "range", "id": "star_rating", "min": 1, "max": 5, "step": 1, "label": "Star Rating", "default": 5 },
+        { "type": "textarea", "id": "review_text", "label": "Review Text", "default": "The quality is absolutely amazing. Best sportswear I've ever worn." },
+        { "type": "text", "id": "author_name", "label": "Customer Name", "default": "Rahul S." },
+        { "type": "text", "id": "author_location", "label": "Customer Location", "default": "Delhi, India" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "11FIT Club Reviews",
+      "blocks": [
+        { "type": "review", "settings": { "star_rating": 5, "review_text": "The compression on these track pants is unmatched. I've tried every brand, but 11FIT holds up through the toughest sessions.", "author_name": "Rahul S.", "author_location": "Delhi, India" } },
+        { "type": "review", "settings": { "star_rating": 5, "review_text": "Finally, shorts that actually fit perfectly and support high-impact cardio. The lycra fabric is so soft yet durable. Worth every rupee.", "author_name": "Priya M.", "author_location": "Mumbai, India" } },
+        { "type": "review", "settings": { "star_rating": 5, "review_text": "I wore the Air Flex track pants for my morning run and had zero discomfort. Absolutely premium quality gear for this price.", "author_name": "Arjun T.", "author_location": "Bangalore, India" } },
+        { "type": "review", "settings": { "star_rating": 5, "review_text": "The aesthetics are on point. I wear the joggers to the gym and out for chai. Fits perfectly and looks great.", "author_name": "Sneha D.", "author_location": "Pune, India" } },
+        { "type": "review", "settings": { "star_rating": 5, "review_text": "Fast delivery and the packaging was premium. You can tell 11FIT cares about every detail. Ordered again within a week.", "author_name": "Vikram K.", "author_location": "Hyderabad, India" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
